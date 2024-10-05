@@ -39,3 +39,5 @@ NETWORK ID     NAME                  DRIVER    SCOPE
 
 $ docker network inspect <NAME>
 ```
+
+**ALWAYS RUN `docker-compose down` WHEN FINISHED DEVELOPING**
