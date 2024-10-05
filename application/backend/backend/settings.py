@@ -48,7 +48,8 @@ CORS_ALLOW_HEADERS = [
 # Application definition
 
 INSTALLED_APPS = [
-        'corsheaders',
+    'daphne',  # ! always first
+    'corsheaders',  # ! always second
     'rest_framework',
     'rest_framework_simplejwt',
     'api',
@@ -110,14 +111,24 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres', #! THIS IS NOT READY FOR PRODUCTION
-        'USER': 'postgres', #! THIS IS NOT READY FOR PRODUCTION
-        'PASSWORD': 'mypassword', #! THIS IS NOT READY FOR PRODUCTION
-        'HOST': 'my-postgres', #! THIS IS NOT READY FOR PRODUCTION
-        'PORT': '5432', #! THIS IS NOT READY FOR PRODUCTION
+        'NAME': 'postgres',  # ! THIS IS NOT READY FOR PRODUCTION
+        'USER': 'postgres',  # ! THIS IS NOT READY FOR PRODUCTION
+        'PASSWORD': 'mypassword',  # ! THIS IS NOT READY FOR PRODUCTION
+        'HOST': 'my-postgres',  # ! THIS IS NOT READY FOR PRODUCTION
+        'PORT': '5432',  # ! THIS IS NOT READY FOR PRODUCTION
     }
 }
 
+ASGI_APPLICATION = 'backend.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default':{
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },    
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
