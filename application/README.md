@@ -16,11 +16,19 @@
 - Docker Desktop [↗](https://docs.docker.com/desktop/install/windows-install/)
   - `docker-compose --version`
   - Output: 2.28.1-desktop.1
-- PostgreSQL [↗](https://www.postgresql.org/download/)
   
 ## How to Host Application with Docker
 - Navigate to DanglingPointers\application
-- `$ docker-compose up --build`
+```
+$ python -m venv .venv
+$ .venv\Scripts\activate.ps1 (PowerShell)
+$ .venv\Scripts\activate (Windows CMD)
+$ source bin/activate (Linux/MacOS)
+$ pip install -r backend/requirements.txt
+$ docker-compose up --build
+```
+
+## Additional Tips 
 - Open a second terminal window
 
 ```
