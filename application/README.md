@@ -46,6 +46,11 @@ NETWORK ID     NAME                  DRIVER    SCOPE
 ...            ...                   ...       ...
 
 $ docker network inspect <NAME>
+
+$ docker-compose exec api bash
+$ python manage.py makemigrations
+$ python manage.py migrate
+$ python manage.py createsuperuser
 ```
 
 **ALWAYS RUN `docker-compose down` WHEN FINISHED DEVELOPING**
