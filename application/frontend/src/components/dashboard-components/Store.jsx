@@ -3,13 +3,13 @@ import ItemEntry from "../entries/ItemEntry"
 export default function Store() {
     return (
         <main>
-            <section className="store">
-                <ItemEntry itemName={"item 1"}/>
-                <ItemEntry itemName={"item 2"}/>
-                <ItemEntry itemName={"item 3"}/>
-                <ItemEntry itemName={"item 4"}/>
-                <ItemEntry itemName={"item 5"}/>
-            </section>
+            <article className="store">
+                <ItemEntry itemName={"Item 1"} description={"This is a generic description of item 1"}/>
+                <ItemEntry itemName={"Item 2"} description={"This is a generic description of item 2"}/>
+                <ItemEntry itemName={"Item 3"} description={"This is a generic description of item 3"}/>
+                <ItemEntry itemName={"Item 4"} description={"This is a generic description of item 4"}/>
+                <ItemEntry itemName={"Item 5"} description={"This is a generic description of item 5"}/>
+            </article>
         </main>
     )
 };
