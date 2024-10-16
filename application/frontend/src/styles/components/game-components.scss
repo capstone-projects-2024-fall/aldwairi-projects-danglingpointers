@@ -1,0 +1,63 @@
+.game {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.stack {
+    height: 306px;
+    width: 100px;
+    background-color: white;
+    padding: 1px;
+  }
+  
+  #memory {
+    height: 49px;
+    width: 98px;
+    margin: 1px 0 2px 1px;
+    font-size: 24px;
+    opacity: .5;
+  }
+  
+  .memory1 {
+    color: white;
+    background-color: red;
+  }
+  
+  .memory2 {
+    background-color: orange;
+  }
+  
+  .memory3 {
+    background-color: yellow;
+  }
+  
+  .memory4 {
+    color: white;
+    background-color: green;
+  }
+  
+  .memory5 {
+    color: white;
+    background-color: blue;
+  }
+  
+  .memory6 {
+    color: white;
+    background-color: purple;
+  }
+
+  .garbage-collector {
+    height: 25px;
+    width: 75px;
+    background: green;
+    position: relative;
+    bottom: 15px;
+  }
+  
+  .recycling-bin {
+    height: 100px;
+    width: 300px;
+    background: purple;
+  }
