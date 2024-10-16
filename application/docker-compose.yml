@@ -1,0 +1,25 @@
+services:
+  api:
+    build:
+      context: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/backend
+    command: bash -c "python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - my-postgres
+  my-postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: mypassword
+  web:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/src:/frontend/src
+    command: bash -c "npm run dev"
+  redis:
+    image: redis:latest
