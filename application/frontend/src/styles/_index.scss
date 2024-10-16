@@ -1,0 +1,11 @@
+/*
+* https://sass-lang.com/documentation/at-rules/use
+* https://sass-lang.com/documentation/at-rules/forward
+* https://sass-lang.com/documentation/at-rules/import
+*/
+
+// Layouts
+// @forward "./layouts/*.scss";
+
+// Components
+@forward "./components/game-components.scss";

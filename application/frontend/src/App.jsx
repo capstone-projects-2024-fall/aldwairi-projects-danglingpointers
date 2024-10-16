@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import './styles/App.scss'
 import Stack from './components/Stack'
 import RecyclingBin from './components/RecyclingBin'
 import GarbageCollector from './components/GarbageCollector'
