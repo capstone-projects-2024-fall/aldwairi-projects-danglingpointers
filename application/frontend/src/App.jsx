@@ -1,18 +1,12 @@
 import './App.css'
 import './styles/App.scss'
-import Stack from './components/Stack'
-import RecyclingBin from './components/RecyclingBin'
-import GarbageCollector from './components/GarbageCollector'
+import Dashboard from './components/Dashboard'
 
 function App() {
 
   return (
     <>
-      <section className="game">
-        <Stack />
-        <GarbageCollector />
-        <RecyclingBin />
-      </section>
+      <Dashboard />
     </>
   )
 }

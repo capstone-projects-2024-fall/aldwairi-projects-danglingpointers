@@ -1,0 +1,41 @@
+.base-entry {
+    height: 80px;
+    width: 400px;
+    background-color: lightgray;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.item-entry {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: start;
+    justify-content: space-between;
+    gap: 25px;
+
+    .item-img-container {
+        display: flex;
+        flex-flow: column;
+        align-items: start;
+        justify-content: start;
+    }
+
+    .item-name {
+        font-size: 14px;
+    }
+
+    .item-description {
+        border: 1px solid gray;
+        padding: 3px;
+        height: 70px;
+        text-align: justify;
+        hyphens: auto;
+    }
+}
+
+.item-img {
+    height: 40px;
+    width: auto;
+}
+

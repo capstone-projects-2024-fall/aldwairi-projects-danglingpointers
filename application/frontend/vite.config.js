@@ -1,14 +1,14 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-import sass from 'vite-plugin-sass';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
+import sass from "vite-plugin-sass";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     sass({
-      includePaths: ['src/styles'],
-  }),
-    react()
+      includePaths: ["src/styles"],
+    }),
+    react(),
   ],
   server: {
     // override default port 5173
@@ -21,4 +21,4 @@ export default defineConfig({
       usePolling: true,
     },
   },
-})
+});
