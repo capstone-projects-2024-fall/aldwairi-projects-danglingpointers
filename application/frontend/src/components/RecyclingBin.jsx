@@ -1,7 +1,7 @@
 export default function RecyclingBin() {
     return (
         <>
-            <p>Recycling Bin!</p>
+            <div className="recycling-bin"></div>
         </>
     )
 };

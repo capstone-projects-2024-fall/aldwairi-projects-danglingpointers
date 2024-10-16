@@ -1,7 +1,7 @@
 export default function GarbageCollector() {
     return (
         <>
-            <p>Garbage Collector!</p>
+            <div className="garbage-collector"></div>
         </>
     )
 };

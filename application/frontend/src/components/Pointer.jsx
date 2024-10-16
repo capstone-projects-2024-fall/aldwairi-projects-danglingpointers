@@ -1,7 +1,7 @@
 export default function Pointer() {
     return (
         <>
-            <p>Pointer!</p>
+            <div className="pointer"></div>
         </>
     )
 };
