@@ -1,8 +1,8 @@
 .store {
-    height: 100vh;
     display: flex;
     flex-flow: column nowrap;
     gap: 10px;
-    justify-content: center;
-    align-items: center;
+    justify-content: start;
+    align-items: start;
+    overflow-y: auto;
 }

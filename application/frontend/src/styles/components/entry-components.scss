@@ -25,13 +25,35 @@
         font-size: 14px;
     }
 
-    .item-description {
+    .item-description-container {
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: space-between;
+        align-items: flex-end;
         border: 1px solid gray;
         padding: 3px;
         height: 70px;
-        text-align: justify;
-        hyphens: auto;
+        
+        .item-description {
+            text-align: justify;
+            hyphens: auto;
+        }
+
+        .btn-item-cost {
+            width: 60px;
+            height: 25px;
+            color: white;
+        }
+
+        .btn-item-cost.blue {
+            background: blue;
+        }
+
+        .btn-item-cost.red {
+            background: red;
+        }
     }
+
 }
 
 .item-img {
