@@ -1,0 +1,8 @@
+.store {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 10px;
+    justify-content: start;
+    align-items: start;
+    overflow-y: auto;
+}
