@@ -4,10 +4,12 @@ function Dashboard() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    //CLEAR AUTHENTICATION HERE IN FUTURE
-    
-    //Redirect to login page
+    localStorage.removeItem('authToken');
     navigate('/');
+  };
+
+  const goToProfile = () => {
+    navigate('/profile');
   };
 
   return (
@@ -15,6 +17,8 @@ function Dashboard() {
       <h2>Dashboard</h2>
       <p>Welcome to your dashboard!</p>
       <button onClick={handleLogout}>Logout</button>
+      <br />
+      <button onClick={goToProfile}>Edit Profile</button>
     </div>
   );
 }
