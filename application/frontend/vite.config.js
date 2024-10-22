@@ -6,9 +6,12 @@ import sass from "vite-plugin-sass";
 export default defineConfig({
   plugins: [
     sass({
-      includePaths: ["src/styles"],
-    }),
-    react(),
+
+      includePaths: ['src/styles'],
+      api: 'modern-compiler', // removes Legacy JS API deprecation warning
+  }),
+    react()
+
   ],
   server: {
     // override default port 5173
