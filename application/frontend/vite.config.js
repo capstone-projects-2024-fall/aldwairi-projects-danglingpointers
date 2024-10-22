@@ -7,6 +7,7 @@ export default defineConfig({
   plugins: [
     sass({
       includePaths: ['src/styles'],
+      api: 'modern-compiler', // removes Legacy JS API deprecation warning
   }),
     react()
   ],
