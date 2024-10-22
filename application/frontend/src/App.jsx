@@ -1,20 +1,19 @@
-import './App.css'
-import './styles/App.scss'
-import Stack from './components/Stack'
-import RecyclingBin from './components/RecyclingBin'
-import GarbageCollector from './components/GarbageCollector'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import LoginPage from './components/LoginPage';
+import SignupPage from './components/SignupPage';
+import Dashboard from './components/Dashboard';
+import './App.css';
 
 function App() {
-
   return (
-    <>
-      <section className="game">
-        <Stack />
-        <GarbageCollector />
-        <RecyclingBin />
-      </section>
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
