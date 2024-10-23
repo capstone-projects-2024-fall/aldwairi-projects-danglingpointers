@@ -1,14 +1,20 @@
 import { forwardRef, useEffect, useState } from "react";
 
-const GarbageCollector = forwardRef((_, ref) => {
+const GarbageCollector = forwardRef((props, ref) => {
   const [styleLeft, setStyleLeft] = useState("1px");
 
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "ArrowLeft") {
-        setStyleLeft((prevLeft) => parseInt(prevLeft) - 10 + "px");
+        setStyleLeft((prevLeft) => {
+          if (parseInt(prevLeft) >= -340) return parseInt(prevLeft) - 10 + "px";
+          else return prevLeft;
+        });
       } else if (event.key === "ArrowRight") {
-        setStyleLeft((prevLeft) => parseInt(prevLeft) + 10 + "px");
+        setStyleLeft((prevLeft) => {
+          if (parseInt(prevLeft) <= 350) return parseInt(prevLeft) + 10 + "px";
+          else return prevLeft;
+        });
       }
     };
 
@@ -18,7 +24,7 @@ const GarbageCollector = forwardRef((_, ref) => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
-  
+
   return (
     <>
       <section

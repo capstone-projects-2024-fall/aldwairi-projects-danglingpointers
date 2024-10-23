@@ -13,7 +13,12 @@
     min-width: 1200px;
     width: 1200px;
     max-width: 1200px;
+    min-height: 500px;
+    height: 500px;
+    max-height: 500px;
     margin-bottom: 20px;
+    border: 2px black solid;
+    border-radius: 5px;
 }
 
 .stack {

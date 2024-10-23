@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 
 export default function Game() {
   const [timer, setTimer] = useState(0);
+  const [canMoveLeft, setCanMoveLeft] = useState(true);
+  const [canMoveRight, setCanMoveRight] = useState(true);
   // const [playingGame, setPlayingGame] = useState(true);
   const intervalRef = useRef(null);
   const collisionRef = useRef(null);
@@ -35,7 +37,8 @@ export default function Game() {
 
   const checkCollision = () => {
     const stackBounds = stackRef.current.getBoundingClientRect();
-    const garbageCollectorBounds = garbageCollectorRef.current.getBoundingClientRect();
+    const garbageCollectorBounds =
+      garbageCollectorRef.current.getBoundingClientRect();
     const recyclingBinBounds = recyclingBinRef.current.getBoundingClientRect();
 
     if (
@@ -44,7 +47,9 @@ export default function Game() {
       garbageCollectorBounds.bottom >= stackBounds.top &&
       garbageCollectorBounds.top <= stackBounds.bottom
     ) {
-      console.log("GarbageCollector intersects Stack");
+      setCanMoveLeft(false);
+    } else {
+      setCanMoveLeft(true);
     }
 
     if (
@@ -53,16 +58,22 @@ export default function Game() {
       garbageCollectorBounds.bottom >= recyclingBinBounds.top &&
       garbageCollectorBounds.top <= recyclingBinBounds.bottom
     ) {
-      console.log("GarbageCollector intersects RecyclingBin");
+      setCanMoveRight(false);
+    } else {
+      setCanMoveRight(true);
     }
-  }
+  };
 
   return (
     <main className="main-game">
       <div className="timer">{convertSecondsToMinutes(timer)}</div>
       <article className="game">
         <Stack ref={stackRef} />
-        <GarbageCollector ref={garbageCollectorRef} />
+        <GarbageCollector
+          canMoveLeft={canMoveLeft}
+          canMoveRight={canMoveRight}
+          ref={garbageCollectorRef}
+        />
         <RecyclingBin ref={recyclingBinRef} />
       </article>
     </main>
