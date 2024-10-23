@@ -12,20 +12,21 @@ export default function Game() {
   const recyclingBinRef = useRef(null);
 
   useEffect(() => {
-    if (!intervalRef.current) {
-      intervalRef.current = setInterval(() => {
-        setTimer((prevSeconds) => prevSeconds + 1);
-      }, 1000);
-    } else if (intervalRef.current) {
+    const intervalId = setInterval(() => {
+      setTimer((prevTime) => prevTime + 1);
+    }, 1000);
+
+    intervalRef.current = intervalId;
+
+    return () => {
       clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
+    };
   }, []);
 
   return (
     <main className="main-game">
-      <div className="timer">{convertSecondsToMinutes(timer)}</div>
-      <article className="game">
+      <div className="timer" key={"timer"}>{convertSecondsToMinutes(timer)}</div>
+      <article className="game" key={"game"}>
         <Stack ref={stackRef} />
         <GarbageCollector ref={garbageCollectorRef} />
         <RecyclingBin ref={recyclingBinRef} />
