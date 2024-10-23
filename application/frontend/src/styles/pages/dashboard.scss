@@ -1,0 +1,17 @@
+.main-dashboard {
+    display: grid;
+    grid-template-columns: repeat(24, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    grid-auto-flow: column;
+
+    .store-container {
+        grid-column-start: 17;
+        grid-column-end: 24;
+        grid-row-start: 2;
+        grid-row-end: 6;
+        display: flex;
+        flex-flow: column nowrap;
+        gap: 20px;
+        overflow-y: hidden;
+    }
+}
