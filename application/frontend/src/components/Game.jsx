@@ -21,7 +21,7 @@ export default function Game() {
   }, [playingGame]);
 
   useEffect(() => {
-    if (timer > 10) {
+    if (timer > 30) {
       setPlayingGame(false);
       setTimer(-1)
     }
