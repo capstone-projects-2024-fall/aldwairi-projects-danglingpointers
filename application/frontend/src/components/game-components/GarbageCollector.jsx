@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 
-const GarbageCollector = forwardRef((props, ref) => {
+const GarbageCollector = forwardRef((_, ref) => {
   const [styleLeft, setStyleLeft] = useState("1px");
 
   useEffect(() => {
