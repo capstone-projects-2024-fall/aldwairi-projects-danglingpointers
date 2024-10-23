@@ -1,8 +1,19 @@
+.main-game {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .game {
     display: flex;
     flex-flow: row nowrap;
     align-items: flex-end;
     justify-content: space-between;
+    min-width: 1200px;
+    width: 1200px;
+    max-width: 1200px;
+    margin-bottom: 20px;
 }
 
 .stack {
