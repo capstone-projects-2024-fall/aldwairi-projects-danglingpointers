@@ -8,7 +8,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<DefaultLayout />}>
-        <Route index element={<Game />} />
+        <Route path="/game" element={<Game />} />
         {/*
          * All Routes use the DefaultLayout
          * <Route index element={<Home />} />

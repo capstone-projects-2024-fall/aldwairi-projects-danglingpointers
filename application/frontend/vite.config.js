@@ -4,14 +4,18 @@ import sass from "vite-plugin-sass";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: "modern-compiler",
+      },
+    },
+  },
   plugins: [
     sass({
-
-      includePaths: ['src/styles'],
-      api: 'modern-compiler', // removes Legacy JS API deprecation warning
-  }),
-    react()
-
+      includePaths: ["src/styles"],
+    }),
+    react(),
   ],
   server: {
     // override default port 5173
