@@ -1,4 +1,3 @@
-
 import "./App.css";
 import "./styles/App.scss";
 import { Routes, Route } from "react-router-dom";
@@ -10,12 +9,8 @@ import HomePage from './components/HomePage';
 import DefaultLayout from "./layouts/DefaultLayout";
 import Game from "./components/Game";
 
-
-
 export default function App() {
   return (
-    
-
     <Routes>
       {/* Routes using DefaultLayout */}
       <Route element={<DefaultLayout />}>
@@ -48,5 +43,4 @@ export default function App() {
       </Route>
     </Routes>
   );
-
 }
