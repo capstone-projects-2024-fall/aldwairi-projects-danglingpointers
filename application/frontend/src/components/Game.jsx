@@ -25,8 +25,8 @@ export default function Game() {
 
   return (
     <main className="main-game">
-      <div className="timer" key={"timer"}>{convertSecondsToMinutes(timer)}</div>
-      <article className="game" key={"game"}>
+      <div className="timer">{convertSecondsToMinutes(timer)}</div>
+      <article className="game">
         <Stack ref={stackRef} />
         <GarbageCollector ref={garbageCollectorRef} />
         <RecyclingBin ref={recyclingBinRef} />

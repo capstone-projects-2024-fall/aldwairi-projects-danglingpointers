@@ -5,6 +5,7 @@ const GarbageCollector = forwardRef((_, ref) => {
 
   useEffect(() => {
     const handleKeyDown = (event) => {
+      console.log(event);
       if (event.key === "ArrowLeft") {
         setStyleLeft((prevLeft) => {
           if (parseInt(prevLeft) >= -340) return parseInt(prevLeft) - 10 + "px";

@@ -71,9 +71,6 @@
     position: relative;
     bottom: 15px;
 }
-.pointer-container {
-    display: none;
-}
 
 .pointer {
     width: 25px;
@@ -81,7 +78,7 @@
     border-radius: 50%;
     border: 1px solid black;
     position: absolute;
-    top: 75px;
+    top: 330px;
 }
 
 .recycling-bin {
