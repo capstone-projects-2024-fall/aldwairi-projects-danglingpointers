@@ -1,0 +1,52 @@
+[
+    {
+        "model": "api.Item",
+        "pk":"0",
+        "fields": {
+            "name" : "Item1",
+            "description" : "Generic Description of Item 1",
+            "cost" : "10"
+        }
+
+    },
+    {
+        "model": "api.Item",
+        "pk":"1",
+        "fields": {
+            "name" : "Item2",
+            "description" : "Generic Description of Item 2",
+            "cost" : "12"
+        }
+
+    },
+    {
+        "model": "api.Item",
+        "pk":"2",
+        "fields": {
+            "name" : "Item3",
+            "description" : "Generic Description of Item 3",
+            "cost" : "8"
+        }
+
+    },
+    {
+        "model": "api.Item",
+        "pk":"3",
+        "fields": {
+            "name" : "Item4",
+            "description" : "Generic Description of Item 4",
+            "cost" : "20"
+        }
+
+    },
+    {
+        "model": "api.Item",
+        "pk":"4",
+        "fields": {
+            "name" : "Item5",
+            "description" : "Generic Description of Item 5",
+            "cost" : "15"
+        }
+
+    }
+]
