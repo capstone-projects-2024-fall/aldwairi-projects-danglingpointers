@@ -1,22 +1,40 @@
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Button from './Button'; //update in future
+import Button from './Button'; // Custom Button component
+import Search from './Search'; // Import Search component
+import Login from './Login'; // Import Login component
 
 export default function Navigation() {
+  const [showSearch, setShowSearch] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+
   return (
     <nav className="navigation">
       <ul>
         <li>
           <Link to="/">
-            <Button>Home</Button> {/* Using the custom Button */}
+            <Button text="Home" />
           </Link>
         </li>
         <li>
           <Link to="/game">
-            <Button>Game</Button> {/* Using the custom Button */}
+            <Button text="Game" />
           </Link>
         </li>
-        {/* Add more links as needed (login, signup, etc.)*/}
+        <li>
+          <Link to="/dashboard">
+            <Button text="Dashboard" />
+          </Link>
+        </li>
       </ul>
+
+      {/* Button to toggle Search visibility */}
+      <Button text="Search" onClick={() => setShowSearch(!showSearch)} />
+      {showSearch && <Search />}
+
+      {/* Button to toggle Login visibility */}
+      <Button text="Login" onClick={() => setShowLogin(!showLogin)} />
+      {showLogin && <Login />}
     </nav>
   );
 }
