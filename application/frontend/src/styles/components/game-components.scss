@@ -87,7 +87,10 @@
   height: 25px;
   border-radius: 50%;
   border: 1px solid black;
+  font-size: 10px;
   position: absolute;
+  display: grid;
+  place-items: center;
   top: 235px;
 }
 

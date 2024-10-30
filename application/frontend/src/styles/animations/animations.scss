@@ -8,7 +8,7 @@
 
 @keyframes parabolic-down {
   0% {
-    transform: translate(4px, 1px);
+    transform: translate(4px, 4px);
   }
   10% {
     transform: translate(8px, 4px);
@@ -38,7 +38,7 @@
     transform: translate(80px, 324px);
   }
   100% {
-    transform: translate(0, 0);
+    transform: translate(88px, 400px);
   }
 }
 
