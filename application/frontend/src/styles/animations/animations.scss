@@ -1,0 +1,110 @@
+.animation-down {
+    animation: parabolic-down 5s linear infinite;
+}
+
+.animation {
+    animation: parabolic 10s linear infinite;
+}
+
+@keyframes parabolic-down {
+  0% {
+    transform: translate(4px, 1px);
+  }
+  10% {
+    transform: translate(8px, 4px);
+  }
+  20% {
+    transform: translate(16px, 16px);
+  }
+  30% {
+    transform: translate(24px, 36px);
+  }
+  40% {
+    transform: translate(36px, 64px);
+  }
+  50% {
+    transform: translate(48px, 100px);
+  }
+  60% {
+    transform: translate(56px, 144px);
+  }
+  70% {
+    transform: translate(64px, 196px);
+  }
+  80% {
+    transform: translate(72px, 256px);
+  }
+  90% {
+    transform: translate(80px, 324px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes parabolic {
+  0% {
+    transform: translate(4px, 1px);
+  }
+  5% {
+    transform: translate(8px, 4px);
+  }
+  10% {
+    transform: translate(16px, 16px);
+  }
+  15% {
+    transform: translate(24px, 36px);
+  }
+  20% {
+    transform: translate(36px, 64px);
+  }
+  25% {
+    transform: translate(48px, 100px);
+  }
+  30% {
+    transform: translate(56px, 144px);
+  }
+  35% {
+    transform: translate(64px, 196px);
+  }
+  40% {
+    transform: translate(72px, 256px);
+  }
+  45% {
+    transform: translate(80px, 324px);
+  }
+  50% {
+    transform: translate(0, 0);
+  }
+  55% {
+    transform: translate(4px, 1px);
+  }
+  60% {
+    transform: translate(8px, 4px);
+  }
+  65% {
+    transform: translate(16px, 16px);
+  }
+  70% {
+    transform: translate(24px, 36px);
+  }
+  75% {
+    transform: translate(36px, 64px);
+  }
+  80% {
+    transform: translate(48px, 100px);
+  }
+  85% {
+    transform: translate(56px, 144px);
+  }
+  90% {
+    transform: translate(64px, 196px);
+  }
+  95% {
+    transform: translate(72px, 256px);
+  }
+  100% {
+    transform: translate(80px, 324px);
+  }
+}
+

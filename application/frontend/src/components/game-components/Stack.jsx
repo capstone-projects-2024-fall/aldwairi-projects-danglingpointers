@@ -1,71 +1,53 @@
 import { forwardRef, useEffect, useState } from "react";
+import Pointer from "./Pointer";
 
 const Stack = forwardRef((_, ref) => {
   const [pointerCounter, setPointerCounter] = useState(0);
-
-  function getRandomColor() {
-    const letters = "0123456789ABCDEF";
-    let color = "#";
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
+  const [pointers, setPointers] = useState([]);
 
   useEffect(() => {
     const updateStack = () => {
-      if (pointerCounter < 5) {
-        const newDiv = document.createElement("div");
-        newDiv.className = `pointer pointer-${pointerCounter}`;
-        newDiv.style.backgroundColor = getRandomColor();
-        newDiv.style.left = "270px";
+      const pointerContainer = ref.current.querySelector(".pointer-container");
+      const newPointer = (
+        <Pointer
+          key={pointerCounter}
+          id={pointerCounter}
+          onAnimationIteration={() => {
+            pointerContainer.removeChild(
+              pointerContainer.querySelector(`.pointer-${pointerCounter}`)
+            );
+            // setPointerCounter((prevCounter) => prevCounter - 1);
+          }}
+        />
+      );
 
-        const pointerContainer =
-          ref.current.querySelector(".pointer-container");
+      setPointers([...pointers, newPointer]);
+      setPointerCounter((prevCounter) => prevCounter + 1);
 
-        newDiv.addEventListener("animationiteration", () => {
-          pointerContainer.removeChild(newDiv);
-          setPointerCounter((prevCounter) => prevCounter - 1);
-        });
+      const container = ref.current.querySelector(".stack");
+      const firstChild = container.firstChild;
 
-        pointerContainer.appendChild(newDiv);
-        setPointerCounter((prevCounter) => prevCounter + 1);
-
-        const container = ref.current.querySelector(".stack");
-        const firstChild = container.firstChild;
-
-        container.removeChild(firstChild);
-        container.appendChild(firstChild);
-      }
+      container.removeChild(firstChild);
+      container.appendChild(firstChild);
     };
 
-    const intervalId = setInterval(updateStack, 3000);
+    const intervalId = setInterval(updateStack, 5000);
 
     return () => clearInterval(intervalId);
-  }, [pointerCounter, ref]);
+  }, [pointers, pointerCounter, ref]);
 
   return (
     <div ref={ref}>
-      <section className="pointer-container" />
+      <section className="pointer-container">{pointers}</section>
       <section className="stack" id="stack">
-        <div className="memory1" id="memory">
-          1
-        </div>
-        <div className="memory2" id="memory">
-          2
-        </div>
-        <div className="memory3" id="memory">
-          3
-        </div>
-        <div className="memory4" id="memory">
-          4
-        </div>
-        <div className="memory5" id="memory">
-          5
-        </div>
-        <div className="memory6" id="memory">
-          6
-        </div>
+        <div className="memory memory1">1</div>
+        <div className="memory memory2">2</div>
+        <div className="memory memory3">3</div>
+        <div className="memory memory4">4</div>
+        <div className="memory memory5">5</div>
+        <div className="memory memory6">6</div>
+        <div className="memory memory7">7</div>
+        <div className="memory memory8">8</div>
       </section>
     </div>
   );
