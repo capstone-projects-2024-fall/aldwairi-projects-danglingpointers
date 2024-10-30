@@ -1,10 +1,12 @@
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useContext, useEffect, useState } from "react";
 import Pointer from "./Pointer";
+import GameContext from "../../context/GameContext";
 
-const Stack = forwardRef((props, ref) => {
+const Stack = forwardRef((_, ref) => {
   const [totalPointerCounter, setTotalPointerCounter] = useState(0);
   const [currentPointerCounter, setCurrentPointerCounter] = useState(0);
   const [pointers, setPointers] = useState([]);
+  const { setUserScore, setUserLives } = useContext(GameContext);
 
   useEffect(() => {
     const updateStack = () => {
@@ -19,8 +21,14 @@ const Stack = forwardRef((props, ref) => {
             );
 
             if (thisPointer.classList.contains("animation-four"))
-              props.setUserScore((currentScore) => currentScore + 1);
-
+              setUserScore((score) => score + 1);
+            else
+              setUserLives((lives) => {
+                let newLives = [...lives];
+                newLives.pop();
+                if (newLives.length) return newLives;
+                else return ["💀"];
+              });
             pointerContainer.removeChild(thisPointer);
 
             setCurrentPointerCounter((prevCounter) => prevCounter - 1);
@@ -42,7 +50,7 @@ const Stack = forwardRef((props, ref) => {
     const intervalId = setInterval(updateStack, 2250);
 
     return () => clearInterval(intervalId);
-  }, [pointers, totalPointerCounter, ref, props]);
+  }, [pointers, totalPointerCounter, ref]);
 
   return (
     <div ref={ref}>

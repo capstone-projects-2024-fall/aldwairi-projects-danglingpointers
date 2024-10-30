@@ -4,13 +4,14 @@ import { Routes, Route } from "react-router-dom";
 import DefaultLayout from "./layouts/DefaultLayout";
 import Game from "./components/Game";
 import Dashboard from "./components/Dashboard";
+import { GameProvider } from "./context/GameContext";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<DefaultLayout />}>
         <Route index element={<Dashboard />} />
-        <Route path="/game" element={<Game />} />
+        <Route path="/game" element={<GameProvider><Game /></GameProvider>} />
         {/*
          * All Routes use the DefaultLayout
          * <Route index element={<Home />} />

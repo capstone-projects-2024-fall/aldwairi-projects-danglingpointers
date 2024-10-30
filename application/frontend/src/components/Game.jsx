@@ -2,13 +2,18 @@ import GarbageCollector from "./game-components/GarbageCollector";
 import RecyclingBin from "./game-components/RecyclingBin";
 import Stack from "./game-components/Stack";
 import convertSecondsToMinutes from "../scripts/convert-seconds-to-minutes";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useContext } from "react";
+import GameContext from "../context/GameContext";
 
 export default function Game() {
-  const [timer, setTimer] = useState(0);
-  const [gameMode, setGameMode] = useState("");
-  const [userScore, setUserScore] = useState(0);
-  const [userLives, setUserLives] = useState(['❤️', '❤️', '❤️']);
+  const {
+    timer,
+    setTimer,
+    gameMode,
+    setGameMode,
+    userScore,
+    userLives,
+  } = useContext(GameContext);
 
   const intervalRef = useRef(null);
   const stackRef = useRef(null);
@@ -26,11 +31,11 @@ export default function Game() {
     return () => {
       clearInterval(intervalRef.current);
     };
-  }, []);
+  }, [setTimer]);
 
   useEffect(() => {
     setGameMode("solo");
-  }, []);
+  }, [setGameMode]);
 
   return (
     <main className="main-game">
@@ -46,7 +51,7 @@ export default function Game() {
         ) : null}
       </div>
       <article className="game">
-        <Stack ref={stackRef} userLives={userLives} setUserLives={setUserLives} setUserScore={setUserScore}/>
+        <Stack ref={stackRef} />
         <GarbageCollector ref={garbageCollectorRef} />
         <RecyclingBin ref={recyclingBinRef} />
       </article>
