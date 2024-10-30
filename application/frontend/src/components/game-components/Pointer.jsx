@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import getRandomColor from "../../scripts/get-random-color";
-import checkForCollision from "../../scripts/check-for-collision"
+import checkForCollision from "../../scripts/check-for-collision";
 
 export default function Pointer({ id, onAnimationIteration }) {
   const pointerRef = useRef(null);
@@ -26,7 +26,36 @@ export default function Pointer({ id, onAnimationIteration }) {
         const pointerRect = pointer.getBoundingClientRect();
         const garbageCollectorRect = garbageCollector.getBoundingClientRect();
 
-        checkForCollision(pointerRect, garbageCollectorRect);
+        if (
+          checkForCollision(pointerRect, garbageCollectorRect) &&
+          pointer.classList.contains("animation-four")
+        ) {
+          pointer.classList.remove("animation-four");
+        }
+        
+        if (
+          checkForCollision(pointerRect, garbageCollectorRect) &&
+          pointer.classList.contains("animation-three")
+        ) {
+          pointer.classList.remove("animation-three");
+          pointer.classList.add("animation-four");
+        }
+        
+        if (
+          checkForCollision(pointerRect, garbageCollectorRect) &&
+          pointer.classList.contains("animation-two")
+        ) {
+          pointer.classList.remove("animation-two");
+          pointer.classList.add("animation-three");
+        }
+        
+        if (
+          checkForCollision(pointerRect, garbageCollectorRect) &&
+          pointer.classList.contains("animation-one")
+        ) {
+          pointer.classList.remove("animation-one");
+          pointer.classList.add("animation-two");
+        }
       }
     }, 100);
 
@@ -37,7 +66,7 @@ export default function Pointer({ id, onAnimationIteration }) {
     <>
       <div
         ref={pointerRef}
-        className={`pointer pointer-${id} animation-down`}
+        className={`pointer pointer-${id} animation-one`}
         style={{ backgroundColor: getRandomColor, left: "265px" }}
       >
         {id}
