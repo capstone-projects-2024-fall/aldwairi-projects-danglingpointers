@@ -1,0 +1,192 @@
+[
+    {
+        "model": "api.Game",
+        "pk":"0",
+        "fields": {
+            "mode" : "solo",
+            "player_one" : 11,
+            "player_two" : null,
+            "public" : true,
+            "date" : "10-9-2024",
+            "link" : null,
+            "status" : "Complete",
+            "game_length" : 470,
+            "player_one_score" : 65784,
+            "player_two_score" : null,
+            "winner" : null,
+            "trajectories" : null
+        }
+
+    },
+    {
+        "model": "api.Game",
+        "pk":"1",
+        "fields": {
+            "mode" : "versus",
+            "player_one" : 12,
+            "player_two" : 13,
+            "public" : true,
+            "date" : "10-9-2024",
+            "link" : null,
+            "status" : "Complete",
+            "game_length" : 785,
+            "player_one_score" : 84675,
+            "player_two_score" : 45789,
+            "winner" : 12,
+            "trajectories" : null
+        }
+    },
+    
+    {
+        "model": "api.Game",
+        "pk":"2",
+        "fields": {
+            "mode" : "solo",
+            "player_one" : 12,
+            "player_two" : null,
+            "public" : true,
+            "date" : "10-10-2024",
+            "link" : null,
+            "status" : "In Progress",
+            "game_length" : 1027,
+            "player_one_score" : 112789,
+            "player_two_score" : null,
+            "winner" : null,
+            "trajectories" : null
+
+        }
+    },
+    {
+        "model": "api.Game",
+        "pk":"3",
+        "fields": {
+            "mode" : "versus",
+            "player_one" : 14,
+            "player_two" : 13,
+            "public" : true,
+            "date" : "10-10-2024",
+            "link" : null,
+            "status" : "Complete",
+            "game_length" : 659,
+            "player_one_score" : 74693,
+            "player_two_score" : 88967,
+            "winner" : 13,
+            "trajectories" : null
+
+        }
+    },
+    {
+        "model": "api.Game",
+        "pk":"4",
+        "fields": {
+            "mode" : "solo",
+            "player_one" : 13,
+            "player_two" : null,
+            "public" : true,
+            "date" : "10-10-2024",
+            "link" : null,
+            "status" : "Complete",
+            "game_length" : 136,
+            "player_one_score" : 34526,
+            "player_two_score" : null,
+            "winner" : null,
+            "trajectories" : null
+
+        }
+    },
+    {
+        "model": "api.Game",
+        "pk":"5",
+        "fields": {
+            "mode" : "versus",
+            "player_one" : 21,
+            "player_two" : 22,
+            "public" : true,
+            "date" : "10-12-2024",
+            "link" : null,
+            "status" : "In Progress",
+            "game_length" : 1678,
+            "player_one_score" : 126748,
+            "player_two_score" : 114526,
+            "winner" : 21,
+            "trajectories" : null
+
+        }
+    },
+    {
+        "model": "api.Game",
+        "pk":"6",
+        "fields": {
+            "mode" : "solo",
+            "player_one" : 23,
+            "player_two" : null,
+            "public" : false,
+            "date" : "10-12-2024",
+            "link" : null,
+            "status" : "In Progress",
+            "game_length" : 354,
+            "player_one_score" : 44274,
+            "player_two_score" : null,
+            "winner" : null,
+            "trajectories" : null
+        }
+    },
+    {
+        "model": "api.Game",
+        "pk":"7",
+        "fields": {
+            "mode" : "solo",
+            "player_one" : 24,
+            "player_two" : null,
+            "public" : false,
+            "date" : "10-1-2024",
+            "link" : null,
+            "status" : "Complete",
+            "game_length" : 2356,
+            "player_one_score" : 212356,
+            "player_two_score" : null,
+            "winner" : null,
+            "trajectories" : null
+
+        }
+    },
+    {
+        "model": "api.Game",
+        "pk":"8",
+        "fields": {
+            "mode" : "verus",
+            "player_one" : 12,
+            "player_two" : 11,
+            "public" : true,
+            "date" : "9-24-2024",
+            "link" : null,
+            "status" : "Complete",
+            "game_length" : 869,
+            "player_one_score" : 95674,
+            "player_two_score" : 107846,
+            "winner" : 11,
+            "trajectories" : null
+
+        }
+    },
+    {
+        "model": "api.Game",
+        "pk":"9",
+        "fields": {
+            "mode" : "solo",
+            "player_one" : 21,
+            "player_two" : null,
+            "public" : false,
+            "date" : "10-9-2024",
+            "link" : null,
+            "status" : "Complete",
+            "game_length" : 521,
+            "player_one_score" : 89654,
+            "player_two_score" : null,
+            "winner" : null,
+            "trajectories" : null
+
+        }
+    }
+        
+]

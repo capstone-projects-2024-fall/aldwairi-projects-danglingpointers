@@ -12,6 +12,7 @@ export default function App() {
       <Route path="/" element={<DefaultLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="/game" element={<GameProvider><Game /></GameProvider>} />
+        <Route path="dashboard" element={<Dashboard />} />
         {/*
          * All Routes use the DefaultLayout
          * <Route index element={<Home />} />
