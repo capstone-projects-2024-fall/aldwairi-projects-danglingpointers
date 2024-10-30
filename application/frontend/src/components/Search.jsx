@@ -1,47 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const Search = () => {
-  //replace in future with actual list of usernames
-  const [usernames] = useState([
-    'Alice',
-    'Bob',
-    'Charlie',
-    'David',
-    'Eve',
-    'Frank'
-  ]);
-  
-  // State for the input value and filtered results
   const [inputValue, setInputValue] = useState('');
   const [filteredUsernames, setFilteredUsernames] = useState([]);
 
-  // Method to handle input changes and filter the list
+  // Fetch usernames from the backend as user types
+  const fetchUsernames = async (searchTerm) => {
+    try {
+      const response = await axios.get(`/api/users/?username=${searchTerm}`);
+      setFilteredUsernames(response.data);
+    } catch (error) {
+      console.error("Error fetching usernames:", error);
+    }
+  };
+
   const handleInputChange = (event) => {
     const value = event.target.value;
     setInputValue(value);
-
-    // Filter usernames based on input value
-    const filtered = usernames.filter(username =>
-      username.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredUsernames(filtered);
+    
+    // Call API only if input is not empty
+    if (value) {
+      fetchUsernames(value);
+    } else {
+      setFilteredUsernames([]);
+    }
   };
 
   return (
     <div>
-      {/* Input for username */}
       <input
         type="text"
         placeholder="Search by username"
         value={inputValue}
         onChange={handleInputChange}
       />
-      
-      {/* Display filtered usernames */}
       {inputValue && (
         <ul>
-          {filteredUsernames.map((username, index) => (
-            <li key={index}>{username}</li>
+          {filteredUsernames.map((user, index) => (
+            <li key={index}>{user.username}</li>
           ))}
         </ul>
       )}
