@@ -83,22 +83,23 @@
 }
 
 .pointer {
-  width: 25px;
-  height: 25px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   border: 1px solid black;
   font-size: 10px;
   position: absolute;
   display: grid;
   place-items: center;
-  top: 235px;
+  bottom: 430px;
 }
 
 .recycling-bin {
   height: 100px;
-  width: 300px;
+  width: 150px;
   background: purple;
 }
+
 .button-primary {
   background-color: #3498db;
   color: white;

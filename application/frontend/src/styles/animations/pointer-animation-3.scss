@@ -1,66 +1,65 @@
-@keyframes animation-3 {
-    0% {
-      transform: translate(256px, 324px);
-    }
-    5% {
-      transform: translate(264px, 256px);
-    }
-    10% {
-      transform: translate(272px, 196px);
-    }
-    15% {
-      transform: translate(280px, 144px);
-    }
-    20% {
-      transform: translate(288px, 100px);
-    }
-    25% {
-      transform: translate(296px, 64px);
-    }
-    30% {
-      transform: translate(304px, 36px);
-    }
-    35% {
-      transform: translate(312px, 16px);
-    }
-    40% {
-      transform: translate(320px, 4px);
-    }
-    45% {
-      transform: translate(328px, 1px);
-    }
-    50% {
-      transform: translate(336px, 0);
-    }
-    55% {
-      transform: translate(344px, 4px);
-    }
-    60% {
-      transform: translate(352px, 16px);
-    }
-    65% {
-      transform: translate(360px, 36px);
-    }
-    70% {
-      transform: translate(368px, 64px);
-    }
-    75% {
-      transform: translate(376px, 100px);
-    }
-    80% {
-      transform: translate(384px, 144px);
-    }
-    85% {
-      transform: translate(392px, 196px);
-    }
-    90% {
-      transform: translate(400px, 256px);
-    }
-    95% {
-      transform: translate(408px, 324px);
-    }
-    100% {
-      transform: translate(416px, 400px);
-    }
+@keyframes animation3 {
+  0% {
+    transform: translate(440px, 370px);
   }
-  
+  5% {
+    transform: translate(455px, 305px);
+  }
+  10% {
+    transform: translate(470px, 245px);
+  }
+  15% {
+    transform: translate(485px, 190px);
+  }
+  20% {
+    transform: translate(500px, 140px);
+  }
+  25% {
+    transform: translate(515px, 95px);
+  }
+  30% {
+    transform: translate(530px, 60px);
+  }
+  35% {
+    transform: translate(545px, 35px);
+  }
+  40% {
+    transform: translate(560px, 25px);
+  }
+  45% {
+    transform: translate(575px, 24px);
+  }
+  50% {
+    transform: translate(590px, 25px);
+  }
+  55% {
+    transform: translate(605px, 35px);
+  }
+  60% {
+    transform: translate(620px, 45px);
+  }
+  65% {
+    transform: translate(635px, 70px);
+  }
+  70% {
+    transform: translate(650px, 100px);
+  }
+  75% {
+    transform: translate(665px, 135px);
+  }
+  80% {
+    transform: translate(680px, 175px);
+  }
+  85% {
+    transform: translate(695px, 220px);
+  }
+  90% {
+    transform: translate(710px, 270px);
+  }
+  95% {
+    transform: translate(725px, 335px);
+  }
+  100% {
+    transform: translate(740px, 405px);
+  }
+}

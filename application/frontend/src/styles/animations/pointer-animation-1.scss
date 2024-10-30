@@ -1,35 +1,35 @@
-@keyframes animation-1 {
+@keyframes animation1 {
   0% {
-    transform: translate(4px, 4px);
+    transform: translate(0, 10px);
   }
   10% {
-    transform: translate(8px, 4px);
+    transform: translate(15px, 25px);
   }
   20% {
-    transform: translate(16px, 16px);
+    transform: translate(30px, 45px);
   }
   30% {
-    transform: translate(24px, 36px);
+    transform: translate(45px, 70px);
   }
   40% {
-    transform: translate(36px, 64px);
+    transform: translate(60px, 100px);
   }
   50% {
-    transform: translate(48px, 100px);
+    transform: translate(75px, 135px);
   }
   60% {
-    transform: translate(56px, 144px);
+    transform: translate(90px, 175px);
   }
   70% {
-    transform: translate(64px, 196px);
+    transform: translate(105px, 220px);
   }
   80% {
-    transform: translate(72px, 256px);
+    transform: translate(120px, 270px);
   }
   90% {
-    transform: translate(80px, 324px);
+    transform: translate(135px, 335px);
   }
   100% {
-    transform: translate(88px, 400px);
+    transform: translate(150px, 405px);
   }
 }
