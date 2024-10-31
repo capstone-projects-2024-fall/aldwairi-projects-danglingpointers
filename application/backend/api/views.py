@@ -125,6 +125,27 @@ class GameViewSet(viewsets.ModelViewSet):
     def list(self, request):
         queryset = self.get_queryset()
         return Response(queryset)
+    
+class GameViewSet(viewsets.ModelViewSet):
+    queryset = Game.objects.all()
+
+    def get_queryset(self):
+        query_params = self.request.query_params
+
+        # Query for recently played games on the profile
+        if 'recent_games' in query_params:
+            user_id = query_params.get('user_id')
+            # Ensure the recent games query is in an expected array format for the frontend
+            return Game.objects.filter(player_one__id=user_id).order_by('-date').values(
+                'mode', 'player_one_score', 'player_two_score', 'status', 'date', 'link', 
+                'winner__username'  # Returns winner's username instead of full object
+            )
+
+        return super().get_queryset()
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        return Response(queryset)
 
 # Viewset for Items
 class ItemViewSet(viewsets.ModelViewSet):

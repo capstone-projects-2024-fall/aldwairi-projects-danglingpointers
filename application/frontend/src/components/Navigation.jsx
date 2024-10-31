@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Button from './Button'; // Custom Button component
 import Search from './Search'; // Import Search component
@@ -24,6 +24,11 @@ export default function Navigation() {
         <li>
           <Link to="/dashboard">
             <Button text="Dashboard" />
+          </Link>
+        </li>
+        <li>
+          <Link to="/profile">
+            <Button text="Profile" /> {/* Direct link to Profile page */}
           </Link>
         </li>
       </ul>
