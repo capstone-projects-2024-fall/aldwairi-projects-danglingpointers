@@ -13,6 +13,7 @@ export default function Game() {
     setGameMode,
     userScore,
     userLives,
+    userLivesCount,
   } = useContext(GameContext);
 
   const intervalRef = useRef(null);
@@ -22,16 +23,18 @@ export default function Game() {
 
   // Game Timer
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setTimer((prevTime) => prevTime + 1);
-    }, 1000);
+    if (userLivesCount > 0) {
+      const intervalId = setInterval(() => {
+        setTimer((prevTime) => prevTime + 1);
+      }, 1000);
 
-    intervalRef.current = intervalId;
+      intervalRef.current = intervalId;
 
-    return () => {
-      clearInterval(intervalRef.current);
-    };
-  }, [setTimer]);
+      return () => {
+        clearInterval(intervalRef.current);
+      };
+    }
+  }, [setTimer, userLivesCount]);
 
   useEffect(() => {
     setGameMode("solo");
