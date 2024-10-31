@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 const RecyclingBin = forwardRef((_, ref) => {
   return (
     <>
-      <section className="recycling-bin" ref={ref}></section>
+      <section className="recycling-bin" ref={ref}>♻️</section>
     </>
   );
 });

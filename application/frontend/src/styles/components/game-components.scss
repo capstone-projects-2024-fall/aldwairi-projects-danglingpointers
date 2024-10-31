@@ -3,6 +3,7 @@
   flex-flow: column nowrap;
   justify-content: space-between;
   align-items: center;
+  height: calc(100vh - 25px);
 }
 
 .game {
@@ -19,6 +20,13 @@
   margin-bottom: 20px;
   border: 2px black solid;
   border-radius: 5px;
+}
+
+.game-details {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 20px;
+  justify-content: space-between;
 }
 
 .stack {
@@ -97,7 +105,10 @@
 .recycling-bin {
   height: 100px;
   width: 150px;
-  background: purple;
+  font-size: 48px;
+  background-color: lightgray;
+  display: grid;
+  place-items: center;
 }
 
 .button-primary {
