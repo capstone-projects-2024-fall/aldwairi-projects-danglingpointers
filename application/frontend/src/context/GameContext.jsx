@@ -7,6 +7,7 @@ export const GameProvider = ({ children }) => {
   const [gameMode, setGameMode] = useState("");
   const [userScore, setUserScore] = useState(0);
   const [userLives, setUserLives] = useState(["❤️", "❤️", "❤️"]);
+  const [userLivesCount, setUserLivesCount] = useState(3);
 
   return (
     <GameContext.Provider
@@ -19,6 +20,8 @@ export const GameProvider = ({ children }) => {
         setUserScore,
         userLives,
         setUserLives,
+        userLivesCount,
+        setUserLivesCount,
       }}
     >
       {children}

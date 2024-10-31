@@ -6,10 +6,12 @@ const Stack = forwardRef((_, ref) => {
   const [totalPointerCounter, setTotalPointerCounter] = useState(0);
   const [currentPointerCounter, setCurrentPointerCounter] = useState(0);
   const [pointers, setPointers] = useState([]);
-  const { setUserScore, setUserLives } = useContext(GameContext);
+  const { setUserScore, setUserLives, userLivesCount, setUserLivesCount } =
+    useContext(GameContext);
 
   useEffect(() => {
     const updateStack = () => {
+      if (userLivesCount === 0) return;
       const pointerContainer = ref.current.querySelector(".pointer-container");
       const newPointer = (
         <Pointer
@@ -26,6 +28,7 @@ const Stack = forwardRef((_, ref) => {
               setUserLives((lives) => {
                 let newLives = [...lives];
                 newLives.pop();
+                setUserLivesCount(newLives.length);
                 if (newLives.length) return newLives;
                 else return ["💀"];
               });
@@ -50,7 +53,15 @@ const Stack = forwardRef((_, ref) => {
     const intervalId = setInterval(updateStack, 2250);
 
     return () => clearInterval(intervalId);
-  }, [pointers, totalPointerCounter, ref]);
+  }, [
+    pointers,
+    ref,
+    setUserLives,
+    setUserLivesCount,
+    setUserScore,
+    totalPointerCounter,
+    userLivesCount,
+  ]);
 
   return (
     <div ref={ref}>
