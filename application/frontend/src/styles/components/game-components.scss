@@ -1,86 +1,136 @@
+.main-game {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  align-items: center;
+  height: calc(100vh - 25px);
+}
+
 .game {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: flex-end;
-    justify-content: space-between;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  min-width: 1200px;
+  width: 1200px;
+  max-width: 1200px;
+  min-height: 500px;
+  height: 500px;
+  max-height: 500px;
+  margin-bottom: 20px;
+  border: 2px black solid;
+  border-radius: 5px;
+}
+
+.game-details {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 20px;
+  justify-content: space-between;
 }
 
 .stack {
-    height: 306px;
-    width: 100px;
-    background-color: white;
-    padding: 1px;
+  height: 408px;
+  width: 100px;
+  background-color: white;
+  padding: 1px;
 }
 
-#memory {
-    height: 49px;
-    width: 98px;
-    margin: 1px 0 2px 1px;
-    font-size: 24px;
-    opacity: 0.5;
+.memory {
+  height: 49px;
+  width: 98px;
+  margin: 1px 0 2px 1px;
+  font-size: 24px;
+  opacity: 0.5;
 }
 
 .memory1 {
-    color: white;
-    background-color: red;
+  color: white;
+  background-color: red;
 }
 
 .memory2 {
-    background-color: orange;
+  background-color: orange;
 }
 
 .memory3 {
-    background-color: yellow;
+  background-color: yellow;
 }
 
 .memory4 {
-    color: white;
-    background-color: green;
+  color: white;
+  background-color: green;
 }
 
 .memory5 {
-    color: white;
-    background-color: blue;
+  color: white;
+  background-color: blue;
 }
 
 .memory6 {
-    color: white;
-    background-color: purple;
+  color: white;
+  background-color: purple;
+}
+
+.memory7 {
+  color: black;
+  background-color: white;
+}
+
+.memory8 {
+  color: white;
+  background-color: black;
 }
 
 .garbage-collector {
-    height: 25px;
-    width: 75px;
-    background: green;
-    position: relative;
-    bottom: 15px;
+  height: 25px;
+  width: 75px;
+  background: green;
+  position: relative;
+  bottom: 15px;
+}
+
+.pointer {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 1px solid black;
+  font-size: 10px;
+  position: absolute;
+  display: grid;
+  place-items: center;
+  bottom: 430px;
 }
 
 .recycling-bin {
-    height: 100px;
-    width: 300px;
-    background: purple;
+  height: 100px;
+  width: 150px;
+  font-size: 48px;
+  background-color: lightgray;
+  display: grid;
+  place-items: center;
 }
+
 .button-primary {
-    background-color: #3498db;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    margin-right: 10px;
-    cursor: pointer;
+  background-color: #3498db;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  cursor: pointer;
 }
 
 .button-secondary {
-    background-color: #2ecc71;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  background-color: #2ecc71;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .button-primary:hover,
 .button-secondary:hover {
-    opacity: 0.8;
+  opacity: 0.8;
 }

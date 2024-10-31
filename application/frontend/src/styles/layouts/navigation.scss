@@ -1,0 +1,16 @@
+.navigation {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 10px;
+    height: 25px;
+
+    ul {
+        display: flex;
+        flex-flow: row nowrap;
+        gap: 10px;
+
+        li {
+            list-style: none;
+        }
+    }
+}

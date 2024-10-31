@@ -1,7 +1,12 @@
-export default function RecyclingBin() {
-    return (
-        <>
-            <div className="recycling-bin"></div>
-        </>
-    )
-};
+import { forwardRef } from "react";
+
+const RecyclingBin = forwardRef((_, ref) => {
+  return (
+    <>
+      <section className="recycling-bin" ref={ref}>♻️</section>
+    </>
+  );
+});
+
+RecyclingBin.displayName = "RecyclingBin";
+export default RecyclingBin;
