@@ -5,6 +5,7 @@ import DefaultLayout from "./layouts/DefaultLayout";
 import Game from "./components/Game";
 import Dashboard from "./components/Dashboard";
 import Profile from "./components/Profile";
+import Home from "./components/Home";
 import { GameProvider } from "./context/GameContext";
 
 export default function App() {
@@ -12,7 +13,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<DefaultLayout />}>
-        <Route index element={<Dashboard />} />
+        <Route index element={<Home />} />
         <Route path="/game" element={<GameProvider><Game /></GameProvider>} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile userId={userId} />} />

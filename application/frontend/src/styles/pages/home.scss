@@ -1,0 +1,24 @@
+.main-home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+}
+
+.lobby-preview-placeholder {
+    width: 100%;
+    height: 200px;
+    background-color: #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.watch-preview-placeholder {
+    width: 100%;
+    height: 200px;
+    background-color: #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
