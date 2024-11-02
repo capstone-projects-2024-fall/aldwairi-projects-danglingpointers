@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types';
-
 const Button = ({ text, href, onClick }) => {
     return href ? (
         <a href={href} className="button">
@@ -10,17 +8,6 @@ const Button = ({ text, href, onClick }) => {
             {text}
         </button>
     );
-};
-
-Button.defaultProps = {
-    href: null,
-    onClick: null,
-};
-
-Button.propTypes = {
-    text: PropTypes.string.isRequired,
-    href: PropTypes.string,
-    onClick: PropTypes.func,
 };
 
 export default Button;

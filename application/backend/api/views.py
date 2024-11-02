@@ -52,13 +52,13 @@ class UserViewSet(viewsets.ModelViewSet):
         queryset = self.queryset
         user_id = self.request.query_params.get('user_id')
         if user_id:
-            queryset = queryset.filter(user_id=user_id)
-        
+            queryset = queryset.filter(id=user_id)
+
         username = self.request.query_params.get('username')
 
         # Query only usernames for autocomplete search
         if username:
-            queryset = queryset.filter(username=username)
+            queryset = queryset.filter(username__contains=username)
 
         return queryset
 
@@ -69,27 +69,32 @@ class UserMetaDataViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
-        
-        user_id = self.request.query_params.get('user_id')
-        if user_id:
-            queryset = queryset.filter(user__id=user_id)
-        
+
         username = self.request.query_params.get('username')
         if username:
             queryset = queryset.filter(username=username)
-        
+
+        user_id = self.request.query_params.get('user_id')
+        if user_id:
+            queryset = queryset.filter(user__id=user_id)
+            
         solo_games_played = self.request.query_params.get('solo_games_played')
         if solo_games_played:
-            queryset = queryset.filter(solo_games_played__gte=solo_games_played)
-            
-        versus_games_played = self.request.query_params.get('versus_games_played')
+            queryset = queryset.filter(
+                solo_games_played__gte=solo_games_played)
+
+        versus_games_played = self.request.query_params.get(
+            'versus_games_played')
         if versus_games_played:
-            queryset = queryset.filter(versus_games_played__gte=versus_games_played)
-            
-        total_games_played = self.request.query_params.get('total_games_played')
+            queryset = queryset.filter(
+                versus_games_played__gte=versus_games_played)
+
+        total_games_played = self.request.query_params.get(
+            'total_games_played')
         if total_games_played:
-            queryset = queryset.filter(total_games_played__gte=total_games_played)
-            
+            queryset = queryset.filter(
+                total_games_played__gte=total_games_played)
+
         solo_high_score = self.request.query_params.get('solo_high_score')
         if solo_high_score:
             queryset = queryset.filter(solo_high_score__gte=solo_high_score)
@@ -100,9 +105,10 @@ class UserMetaDataViewSet(viewsets.ModelViewSet):
 
         versus_high_score = self.request.query_params.get('versus_high_score')
         if versus_high_score:
-            queryset = queryset.filter(versus_high_score__gte=versus_high_score)
+            queryset = queryset.filter(
+                versus_high_score__gte=versus_high_score)
 
-        versus_high_time = self.request.query_params.get('versus_high_time') 
+        versus_high_time = self.request.query_params.get('versus_high_time')
         if versus_high_time:
             queryset = queryset.filter(versus_high_time__gte=versus_high_time)
 
@@ -117,11 +123,11 @@ class UserMetaDataViewSet(viewsets.ModelViewSet):
         success_rate = self.request.query_params.get('success_rate')
         if success_rate:
             queryset = queryset.filter(success_rate__gte=success_rate)
-        
+
         failure_rate = self.request.query_params.get('failure_rate')
         if failure_rate:
             queryset = queryset.filter(failure_rate__gte=failure_rate)
-            
+
         return queryset
 
 
@@ -140,10 +146,10 @@ class GameViewSet(viewsets.ModelViewSet):
         # Query for lobby
         if 'lobby' in query_params:
             return queryset.filter(mode='Versus', status='Pending', player_two__isnull=True)
-        
+
         if 'leaderboards_solo' in query_params:
             return queryset.filter(mode='Solo', status='Complete').order_by('-player_one_score')[:10]
-        
+
         if 'leaderboards_versus' in query_params:
             return queryset.filter(mode='Versus', status='Complete').order_by('-player_one_score', '-player_two_score')[:10]
 

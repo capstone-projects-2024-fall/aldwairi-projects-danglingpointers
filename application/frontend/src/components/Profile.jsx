@@ -1,5 +1,5 @@
 // Profile.jsx
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const Profile = ({ userId }) => {
@@ -7,13 +7,13 @@ const Profile = ({ userId }) => {
   const [recentGames, setRecentGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userNotFound, setUserNotFound] = useState(false);
+  const HOST_PATH = "http://localhost:8000/api"
 
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const profileResponse = await axios.get(`/api/users/?profile=true&user_id=${userId}`);
-        const statsResponse = await axios.get(`/api/user_metadata/?profile_stats=true&user_id=${userId}`);
-        const gamesResponse = await axios.get(`/api/games/?recent_games=true&user_id=${userId}`);
+        const profileResponse = await axios.get(`${HOST_PATH}/users?user_id=${userId}`);
+        const gamesResponse = await axios.get(`${HOST_PATH}/games?recent_games=true&user_id=${userId}`);
 
         if (!profileResponse.data.length) {
           setUserNotFound(true);
@@ -24,7 +24,6 @@ const Profile = ({ userId }) => {
         setProfileData({
           username: profileResponse.data[0]?.username,
           dateJoined: profileResponse.data[0]?.date_joined,
-          stats: statsResponse.data[0],
         });
         setRecentGames(Array.isArray(gamesResponse.data) ? gamesResponse.data : []);
         setLoading(false);
@@ -47,7 +46,6 @@ const Profile = ({ userId }) => {
       <div className="profile-info">
         <div><strong>Username:</strong> {profileData.username || "N/A"}</div>
         <div><strong>Date Joined:</strong> {profileData.dateJoined || "N/A"}</div>
-        <div><strong>Solo Games Played:</strong> {profileData.stats?.solo_games_played}</div>
         <div className="recent-games">
           <h2>Recent Games</h2>
           {recentGames.length > 0 ? (

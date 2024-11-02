@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import { useState } from "react";
+import axios from "axios";
 
 const Search = () => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [filteredUsernames, setFilteredUsernames] = useState([]);
   const [error, setError] = useState(null);
+  const HOST_PATH = "http://localhost:8000/api";
 
   // Fetch usernames from the backend as user types
   const fetchUsernames = async (searchTerm) => {
     try {
       setError(null); // Reset error state before fetching
-      const response = await axios.get(`/api/users/?username=${searchTerm}`);
+      const response = await axios.get(
+        `${HOST_PATH}/users/?username=${searchTerm}`
+      );
 
       // Check if response data is an array, else set an empty array
       if (Array.isArray(response.data)) {
@@ -29,7 +32,7 @@ const Search = () => {
   const handleInputChange = (event) => {
     const value = event.target.value;
     setInputValue(value);
-    
+
     // Call API only if input is not empty
     if (value) {
       fetchUsernames(value);
@@ -40,16 +43,18 @@ const Search = () => {
 
   return (
     <div>
-      <input
-        type="text"
-        placeholder="Search by username"
-        value={inputValue}
-        onChange={handleInputChange}
-      />
+      <span className="username-search">
+        <input
+          type="text"
+          placeholder="Search"
+          value={inputValue}
+          onChange={handleInputChange}
+        />
+      </span>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {/* Only display <ul> if there are usernames to show */}
       {inputValue && filteredUsernames.length > 0 && (
-        <ul>
+        <ul className="username-search-results">
           {filteredUsernames.map((user, index) => (
             <li key={index}>{user.username}</li>
           ))}

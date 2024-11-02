@@ -14,9 +14,9 @@ export default function App() {
     <Routes>
       <Route path="/" element={<DefaultLayout />}>
         <Route index element={<Home />} />
-        <Route path="/game" element={<GameProvider><Game /></GameProvider>} />
+        <Route path="game" element={<GameProvider><Game /></GameProvider>} />
         <Route path="dashboard" element={<Dashboard />} />
-        <Route path="/profile" element={<Profile userId={userId} />} />
+        <Route path="profile" element={<Profile userId={userId} />} />
         {/*
          * All Routes use the DefaultLayout
          * <Route index element={<Home />} />

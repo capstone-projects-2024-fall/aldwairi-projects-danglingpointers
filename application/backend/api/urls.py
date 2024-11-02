@@ -5,7 +5,7 @@ from .views import UserViewSet, UserMetaDataViewSet, GameViewSet, ItemViewSet, C
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
-router.register(r'user-meta-data', UserMetaDataViewSet)
+router.register(r'user-metadata', UserMetaDataViewSet)
 router.register(r'games', GameViewSet)
 router.register(r'items', ItemViewSet)
 
