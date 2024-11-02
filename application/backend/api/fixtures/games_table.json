@@ -3,8 +3,8 @@
         "model": "api.Game",
         "pk":"0",
         "fields": {
-            "mode" : "solo",
-            "player_one" : 11,
+            "mode" : "Solo",
+            "player_one" : 1,
             "player_two" : null,
             "public" : true,
             "date" : "2024-10-9",
@@ -22,9 +22,9 @@
         "model": "api.Game",
         "pk":"1",
         "fields": {
-            "mode" : "versus",
-            "player_one" : 12,
-            "player_two" : 13,
+            "mode" : "Versus",
+            "player_one" : 2,
+            "player_two" : 3,
             "public" : true,
             "date" : "2024-10-9",
             "link" : null,
@@ -32,7 +32,7 @@
             "game_length" : 785,
             "player_one_score" : 84675,
             "player_two_score" : 45789,
-            "winner" : 12,
+            "winner" : 2,
             "trajectories" : null
         }
     },
@@ -41,8 +41,8 @@
         "model": "api.Game",
         "pk":"2",
         "fields": {
-            "mode" : "solo",
-            "player_one" : 12,
+            "mode" : "Solo",
+            "player_one" : 2,
             "player_two" : null,
             "public" : true,
             "date" : "2024-10-9",
@@ -60,9 +60,9 @@
         "model": "api.Game",
         "pk":"3",
         "fields": {
-            "mode" : "versus",
-            "player_one" : 14,
-            "player_two" : 13,
+            "mode" : "Versus",
+            "player_one" : 1,
+            "player_two" : 3,
             "public" : true,
             "date" : "2024-10-9",
             "link" : null,
@@ -70,7 +70,7 @@
             "game_length" : 659,
             "player_one_score" : 74693,
             "player_two_score" : 88967,
-            "winner" : 13,
+            "winner" : 3,
             "trajectories" : null
 
         }
@@ -79,8 +79,8 @@
         "model": "api.Game",
         "pk":"4",
         "fields": {
-            "mode" : "solo",
-            "player_one" : 13,
+            "mode" : "Solo",
+            "player_one" : 3,
             "player_two" : null,
             "public" : true,
             "date" : "2024-10-9",
@@ -98,9 +98,9 @@
         "model": "api.Game",
         "pk":"5",
         "fields": {
-            "mode" : "versus",
-            "player_one" : 21,
-            "player_two" : 22,
+            "mode" : "Versus",
+            "player_one" : 1,
+            "player_two" : 2,
             "public" : true,
             "date" : "2024-10-10",
             "link" : null,
@@ -108,7 +108,7 @@
             "game_length" : 1678,
             "player_one_score" : 126748,
             "player_two_score" : 114526,
-            "winner" : 21,
+            "winner" : 1,
             "trajectories" : null
 
         }
@@ -117,8 +117,8 @@
         "model": "api.Game",
         "pk":"6",
         "fields": {
-            "mode" : "solo",
-            "player_one" : 23,
+            "mode" : "Solo",
+            "player_one" : 3,
             "player_two" : null,
             "public" : false,
             "date" : "2024-10-10",
@@ -135,8 +135,8 @@
         "model": "api.Game",
         "pk":"7",
         "fields": {
-            "mode" : "solo",
-            "player_one" : 24,
+            "mode" : "Solo",
+            "player_one" : 2,
             "player_two" : null,
             "public" : false,
             "date" : "2024-10-10",
@@ -154,9 +154,9 @@
         "model": "api.Game",
         "pk":"8",
         "fields": {
-            "mode" : "verus",
-            "player_one" : 12,
-            "player_two" : 11,
+            "mode" : "Versus",
+            "player_one" : 2,
+            "player_two" : 1,
             "public" : true,
             "date" : "2024-10-12",
             "link" : null,
@@ -164,7 +164,7 @@
             "game_length" : 869,
             "player_one_score" : 95674,
             "player_two_score" : 107846,
-            "winner" : 11,
+            "winner" : 1,
             "trajectories" : null
 
         }
@@ -173,8 +173,8 @@
         "model": "api.Game",
         "pk":"9",
         "fields": {
-            "mode" : "solo",
-            "player_one" : 21,
+            "mode" : "Solo",
+            "player_one" : 1,
             "player_two" : null,
             "public" : false,
             "date" : "2024-10-12",
