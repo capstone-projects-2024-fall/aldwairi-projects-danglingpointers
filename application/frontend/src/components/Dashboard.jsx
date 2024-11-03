@@ -1,14 +1,20 @@
 import Store from "./dashboard-components/Store";
+import Settings from "./dashboard-components/Settings";
+import UserPreviousGames from "./dashboard-components/UserPreviousGames";
+import UserLeaderboards from "./dashboard-components/UserLeaderboards";
+import UserStats from "./dashboard-components/UserStats";
 
 export default function Dashboard() {
   return (
     <main className="main-dashboard">
-      <div className="inbox-placeholder"></div>
+      <div key="inbox" className="inbox">
+        Inbox
+      </div>
       <Store />
-      <div className="game-history-placeholder"></div>
-      <div className="best-history-placeholder"></div>
-      <div className="settings-placeholder"></div>
-      <div className="stats-placeholder"></div>
+      <Settings />
+      <UserLeaderboards />
+      <UserPreviousGames />
+      <UserStats />
     </main>
   );
 }

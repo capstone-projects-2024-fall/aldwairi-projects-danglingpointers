@@ -17,8 +17,8 @@ class UserMetaData(models.Model):
     versus_wins = models.IntegerField(default=0)
     versus_losses = models.IntegerField(default=0)
     items = models.ManyToManyField('Item')
-    item_history = models.JSONField()
-    settings = models.JSONField()
+    item_history = models.JSONField(null=True, blank=True)
+    settings = models.JSONField(null=True, blank=True)
     user_points = models.IntegerField(default=0)
 
     @property

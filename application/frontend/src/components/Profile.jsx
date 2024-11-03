@@ -1,13 +1,13 @@
 // Profile.jsx
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { HOST_PATH } from "../scripts/constants";
 
 const Profile = ({ userId }) => {
-    const [profileData, setProfileData] = useState(null);
-    const [recentGames, setRecentGames] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [userNotFound, setUserNotFound] = useState(false);
-    const HOST_PATH = 'http://localhost:8000/api';
+  const [profileData, setProfileData] = useState(null);
+  const [recentGames, setRecentGames] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [userNotFound, setUserNotFound] = useState(false);
 
     useEffect(() => {
         const fetchProfileData = async () => {

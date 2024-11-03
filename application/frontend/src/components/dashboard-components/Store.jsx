@@ -11,7 +11,7 @@ export default function Store() {
   }
 
   return (
-    <div className="store-container">
+    <div className="store-container mb-def">
       <div>
         <h1 className="store-title">Store</h1>
         <p className="store-description">Buy an item from the list above!</p>

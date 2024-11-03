@@ -1,0 +1,1 @@
+export const HOST_PATH = "localhost:8000/api"

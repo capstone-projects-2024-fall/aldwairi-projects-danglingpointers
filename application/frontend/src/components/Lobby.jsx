@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { HOST_PATH } from "../scripts/constants";
 
 export default function Lobby() {
   const [lobbyGames, setLobbyGames] = useState([]);
-  const HOST_PATH = "http://localhost:8000/api";
 
   useEffect(() => {
     const fetchGames = async () => {
