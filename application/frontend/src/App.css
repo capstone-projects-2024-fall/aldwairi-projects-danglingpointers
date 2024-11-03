@@ -5,4 +5,13 @@ p {
 ul {
     margin: 0;
     padding: 0;
+
+    li {
+        list-style: none;
+    }
+
+    /** @see https://www.tempertemper.net/blog/accessibility-issues-when-removing-list-markers */
+    li:before {
+        content: "\200B";
+    }
 }

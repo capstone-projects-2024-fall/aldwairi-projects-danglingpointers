@@ -1,7 +1,7 @@
 // Profile.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { HOST_PATH } from "../scripts/constants";
+import { HOST_PATH } from "../../scripts/constants";
 
 const Profile = ({ userId }) => {
   const [profileData, setProfileData] = useState(null);

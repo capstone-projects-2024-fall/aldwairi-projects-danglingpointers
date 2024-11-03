@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { HOST_PATH } from "../scripts/constants";
+import { HOST_PATH } from "../../scripts/constants";
 
 export default function Watch() {
   const [watchGames, setWatchGames] = useState([]);
@@ -20,7 +20,7 @@ export default function Watch() {
   }, []);
 
   return (
-    <main className="main-watch">
+    <main className="main-default main-watch">
       <article className="watch-games">
         <h2>Watch</h2>
         {watchGames.length > 0 ? (

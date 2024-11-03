@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { HOST_PATH } from "../scripts/constants";
+import { HOST_PATH } from "../../scripts/constants";
 
 export default function Leaderboards() {
   const [leaderboardsSolo, setLeaderboardsSolo] = useState([]);
@@ -23,7 +23,7 @@ export default function Leaderboards() {
   }, []);
 
   return (
-    <main className="main-leaderboards">
+    <main className="main-default main-leaderboards">
       <article className="leaderboards-solo">
         <h2>Leaderboards</h2>
         {leaderboardsSolo.length > 0 ? (

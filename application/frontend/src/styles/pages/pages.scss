@@ -1,0 +1,5 @@
+@use "../constants/constants";
+
+.main-default {
+    margin: 0 constants.$default-margin
+}

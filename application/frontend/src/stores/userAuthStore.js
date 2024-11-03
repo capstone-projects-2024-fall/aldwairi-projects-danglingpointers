@@ -19,7 +19,7 @@ const useUserAuthStore = create(
           accessToken: response.data.accessToken,
           refreshToken: response.data.refreshToken,
           userId: response.data.user_id,
-          username: response.data.user_id,
+          username: response.data.username,
         }));
       },
       logout: async () => {
