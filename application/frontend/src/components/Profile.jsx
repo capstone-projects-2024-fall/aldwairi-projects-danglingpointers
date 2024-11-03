@@ -45,11 +45,11 @@ const Profile = ({ userId }) => {
     fetchProfileData();
   }, [userId]);
 
-  if (loading) return <p>Loading profile...</p>;
-  if (userNotFound) return <p>User not found in the database.</p>;
+  if (loading) return <p className="mr-def">Loading profile...</p>;
+  if (userNotFound) return <p className="mr-def">User not found in the database.</p>;
 
   return (
-    <div className="profile-page">
+    <main className="main-profile">
       <h1>User Profile</h1>
       <div className="profile-info">
         <div>
@@ -74,7 +74,7 @@ const Profile = ({ userId }) => {
           )}
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

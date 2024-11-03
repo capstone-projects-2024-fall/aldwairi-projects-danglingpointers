@@ -1,24 +1,18 @@
-// src/styles/Profile.scss
+@use "../constants/constants";
 
-.profile-container {
-  max-width: 600px;
-  margin: auto;
-  padding: 20px;
-  text-align: center;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.main-profile {
+  margin: 0 constants.$default-margin;
 }
 
 .profile-info {
-  margin-top: 20px;
+  margin-top: constants.$default-margin;
 }
 
 .username,
 .profile-picture,
 .recent-games,
 .additional-info {
-  margin-bottom: 20px;
+  margin-bottom: constants.$default-margin;
 }
 
 .profile-picture img {
@@ -34,4 +28,8 @@
 
 .recent-games li {
   margin-bottom: 10px;
+}
+
+.mr-def {
+  margin-left: constants.$default-margin;
 }

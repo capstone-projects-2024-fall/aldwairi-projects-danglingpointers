@@ -24,7 +24,7 @@
     margin: 0;
   }
 
-  ul {
+  .ul-default {
     display: flex;
     flex-flow: row nowrap;
     align-items: flex-end;
@@ -34,6 +34,12 @@
     margin-bottom: constants.$small-margin;
     li {
       list-style: none;
+    }
+
+    .username-search-results {
+      position: absolute;
+      top: 39px;
+      width: 187px;
     }
 
 
