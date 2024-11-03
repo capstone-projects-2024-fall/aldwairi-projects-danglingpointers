@@ -3,14 +3,9 @@ import Button from "./Button"; // Custom Button component
 import Search from "./Search"; // Import Search component
 import Login from "./Login"; // Import Login component
 import useUserAuthStore from "../stores/userAuthStore";
-import { useEffect } from "react";
 
 export default function Navigation() {
   const { isLoggedIn, logout } = useUserAuthStore();
-
-  useEffect(() => {
-    console.log(isLoggedIn);
-  }, [isLoggedIn]);
 
   return (
     <nav className="navigation">

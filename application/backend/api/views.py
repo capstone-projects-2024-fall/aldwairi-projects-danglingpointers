@@ -49,6 +49,11 @@ class CreateOrLoginView(generics.GenericAPIView):
         return user_login(user)
 
 
+class CreateUserMetaDataView(generics.GenericAPIView):
+    def post(self, request):
+        pass
+
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer

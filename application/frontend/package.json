@@ -19,6 +19,7 @@
     "react-select": "^5.8.1",
     "react-tabs": "^6.0.2",
     "selenium-webdriver": "^4.25.0",
+    "socket.io-client": "^4.8.1",
     "use-image": "^1.1.1",
     "vite-plugin-sass": "^0.1.0",
     "zustand": "^5.0.0-rc.2"

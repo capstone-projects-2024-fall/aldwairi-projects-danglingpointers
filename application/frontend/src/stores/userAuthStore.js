@@ -12,7 +12,6 @@ const useUserAuthStore = create(
       login: async (formData) => {
         const HOST_PATH = "http://localhost:8000/api/login/";
         const response = await axios.post(HOST_PATH, formData);
-        console.log(response.data);
 
         set(() => ({
           isLoggedIn: true,

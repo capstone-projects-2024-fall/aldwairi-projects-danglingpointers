@@ -1,24 +1,31 @@
-// components/Login.js
 import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AuthContext from "../auth/AuthContext";
 
 function Login() {
   const { login } = useContext(AuthContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!username) return;
     if (!password) return;
-    
+
     const formData = {
       username: username,
       password: password,
     };
 
-    login(formData);
+    try {
+      await login(formData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      navigate("/dashboard");
+    }
   };
 
   return (

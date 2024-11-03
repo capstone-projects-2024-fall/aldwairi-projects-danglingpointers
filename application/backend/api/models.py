@@ -1,10 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class SecurityQuestion(models.Model):
+    question = models.CharField(max_length=255)
 
 class UserMetaData(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    security_question = models.CharField(max_length=255)
+    security_question = models.ForeignKey(SecurityQuestion, on_delete=models.CASCADE)
     security_answer = models.CharField(max_length=255)
     solo_games_played = models.IntegerField(default=0)
     solo_high_score = models.IntegerField(default=0)
