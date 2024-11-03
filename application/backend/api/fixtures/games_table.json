@@ -187,6 +187,44 @@
             "trajectories" : null
 
         }
+    },
+    {
+        "model": "api.Game",
+        "pk":"10",
+        "fields": {
+            "mode" : "Versus",
+            "player_one" : 1,
+            "player_two" : null,
+            "public" : true,
+            "date" : "2024-11-3",
+            "link" : null,
+            "status" : "Pending",
+            "game_length" : 0,
+            "player_one_score" : 0,
+            "player_two_score" : null,
+            "winner" : null,
+            "trajectories" : null
+
+        }
+    },
+    {
+        "model": "api.Game",
+        "pk":"11",
+        "fields": {
+            "mode" : "Versus",
+            "player_one" : 2,
+            "player_two" : null,
+            "public" : true,
+            "date" : "2024-11-3",
+            "link" : null,
+            "status" : "Pending",
+            "game_length" : 0,
+            "player_one_score" : 0,
+            "player_two_score" : null,
+            "winner" : null,
+            "trajectories" : null
+
+        }
     }
         
 ]
