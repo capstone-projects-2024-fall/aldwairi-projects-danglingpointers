@@ -12,8 +12,6 @@ export default function Home() {
         const lobbyResponse = await axios.get(`${HOST_PATH}/games?lobby=true`);
         const watchResponse = await axios.get(`${HOST_PATH}/games?watch=true`);
 
-        console.log(lobbyResponse);
-
         setLobbyGames(lobbyResponse.data ? lobbyResponse.data : []);
         setWatchGames(watchResponse.data ? watchResponse.data : []);
       } catch (error) {
