@@ -1,56 +1,84 @@
+@use "../constants/_constants";
+
 .navigation {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: constants.$small-flex-gap;
+  height: constants.$navigation-height;
+  margin: 0 constants.$default-margin;
+  
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+    text-decoration-color: red;
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin: 0;
+  }
+
+  ul {
     display: flex;
     flex-flow: row nowrap;
-    gap: 10px;
-    height: 25px;
+    align-items: flex-end;
+    justify-content: flex-end;
+    flex-grow: 1;
+    gap: constants.$small-flex-gap;
+    margin-bottom: constants.$small-margin;
+    li {
+      list-style: none;
+    }
 
-    ul {
+
+    .li-row {
+      display: flex;
+      flex-flow: row nowrap;
+      gap: constants.$small-flex-gap;
+    }
+
+    .search-container {
+      display: flex;
+      flex-flow: column nowrap;
+    }
+
+    input {
+        padding: 2.5px;
+    }
+
+    .username-search input {
+      padding-left: constants.$input-search-padding;
+    }
+
+    .username-search::before {
+      content: "🔍";
+      position: absolute;
+      top: 15px;
+    }
+
+    .username-search-results {
+      display: flex;
+      flex-flow: column nowrap;
+      padding: 3px;
+      background-color: black;
+      color: white;
+      z-index: 100000;
+    }
+
+    .login-container {
+      display: flex;
+      align-items: flex-end;
+      form {
         display: flex;
         flex-flow: row nowrap;
         gap: 10px;
-
-        li {
-            list-style: none;
-        }
-
-        .li-row {
-            display: flex;
-            flex-flow: row nowrap;
-            gap: 10px;
-        }
-
-        .search-container {
-            display: flex;
-            flex-flow: column nowrap;
-        }
-
-        .username-search input {
-            margin-left: 25px;
-        }
-
-        .username-search::before {
-            content: "🔍";
-            position: absolute;
-        }
-
-        .username-search-results {
-            display: flex;
-            flex-flow: column nowrap;
-            margin-left: 25px;
-            padding: 3px;
-            background-color: black;
-            color: white;
-        }
-
-        .login-container { 
-            display: flex;
-            align-items: flex-end;
-            form {
-                display: flex;
-                flex-flow: row nowrap;
-                gap: 10px;
-            }
-        }
+      }
     }
+  }
 }
-

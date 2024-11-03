@@ -9,11 +9,11 @@ export default function Navigation() {
 
   return (
     <nav className="navigation">
+      <Link to="/" text="Dangling Pointers">
+        <h1>Dangling Pointers</h1>
+      </Link>
       <ul>
-        <li>
-          <Link to="/">
-            <Button text="Home" />
-          </Link>
+        <li className="li-home">
         </li>
         <li>
           <Link to="/game">

@@ -26,7 +26,6 @@ export default function Home() {
 
   return (
     <main className="main-home">
-      <h1>Home Page</h1>
       <div className="preview-container">
         <article className="preview-placeholder">
           <h2>Lobby Preview</h2>
