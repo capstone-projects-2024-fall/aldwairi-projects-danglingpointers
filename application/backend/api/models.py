@@ -45,8 +45,8 @@ class UserMetaData(models.Model):
 
 class Game(models.Model):
     mode = models.CharField(max_length=50, choices=(
-        ('SOLO', 'Solo'),
-        ('VERSUS', 'Versus'),
+        ('Solo', 'Solo'),
+        ('Versus', 'Versus'),
     ))
     player_one = models.ForeignKey(
         User, related_name='player_one', on_delete=models.CASCADE)
@@ -56,9 +56,9 @@ class Game(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     link = models.URLField(max_length=200, blank=True, null=True)
     status = models.CharField(max_length=50, choices=(
-        ('ACTIVE', 'Active'),
-        ('PENDING', 'Pending'),
-        ('COMPLETE', 'Complete'),
+        ('Active', 'Active'),
+        ('Pending', 'Pending'),
+        ('Complete', 'Complete'),
     ))
     game_length = models.IntegerField()
     player_one_score = models.IntegerField()

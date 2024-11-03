@@ -42,7 +42,7 @@ const Search = () => {
   };
 
   return (
-    <>
+    <div className="search-container">
       <span className="username-search">
         <input
           type="text"
@@ -60,7 +60,7 @@ const Search = () => {
           ))}
         </ul>
       )}
-    </>
+    </div>
   );
 };
 
