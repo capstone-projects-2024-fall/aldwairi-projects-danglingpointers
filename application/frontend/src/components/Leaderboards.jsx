@@ -23,7 +23,7 @@ export default function Leaderboards() {
   }, []);
 
   return (
-    <main className="leaderboards-home">
+    <main className="main-leaderboards">
       <article className="leaderboards-solo">
         <h2>Leaderboards</h2>
         {leaderboardsSolo.length > 0 ? (
