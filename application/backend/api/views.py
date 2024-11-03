@@ -30,7 +30,8 @@ class CreateOrLoginView(generics.GenericAPIView):
                 {
                     'accessToken': access_token,
                     'refreshToken': refresh_token,
-                    'user_id': user.id
+                    'user_id': user.id,
+                    'username': user.username
                 },
                 status=status.HTTP_200_OK)
 
