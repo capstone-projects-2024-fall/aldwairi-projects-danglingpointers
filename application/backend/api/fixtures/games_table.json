@@ -225,6 +225,25 @@
             "trajectories" : null
 
         }
+    },
+    {
+        "model": "api.Game",
+        "pk":"12",
+        "fields": {
+            "mode" : "Solo",
+            "player_one" : 1,
+            "player_two" : null,
+            "public" : true,
+            "date" : "2024-11-3",
+            "link" : null,
+            "status" : "Active",
+            "game_length" : 123,
+            "player_one_score" : 0,
+            "player_two_score" : null,
+            "winner" : null,
+            "trajectories" : null
+
+        }
     }
         
 ]
