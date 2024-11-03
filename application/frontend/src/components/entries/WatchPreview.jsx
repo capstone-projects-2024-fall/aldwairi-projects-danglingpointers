@@ -1,6 +1,4 @@
-import React from 'react';
 import GameEntry from './GameEntry';
-import '.../styles/watch-entry.scss';
 
 export default function WatchPreview({users, status, gameLink,videoDescription}){
     return(

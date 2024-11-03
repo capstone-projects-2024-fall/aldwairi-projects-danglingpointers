@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { HOST_PATH } from "../scripts/constants";
 
 export default function Leaderboards() {
   const [leaderboardsSolo, setLeaderboardsSolo] = useState([]);
   const [leaderboardsVersus, setLeaderboardsVersus] = useState([]);
-  const HOST_PATH = "http://localhost:8000/api";
 
   useEffect(() => {
     const fetchGames = async () => {

@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import WatchPreview from "../entries/WatchPreview";
-import "../styles/WatchList.scss";
 
-export default function WatchList() {
+export default function UserPreviousGames() {
   const [watchPreviews, setWatchPreviews] = useState([]);
 
   useEffect(() => {
@@ -19,12 +18,12 @@ export default function WatchList() {
   }, []);
 
   return (
-    <div className="watchlist-container">
-      <div>
+    <article className="watchlist-container user-previous-games">
+      <section>
         <h1 className="watchtitle">Game Replays</h1>
         <p className="watchlist-description">View previous games!</p>
-      </div>
-      <article className="watchlist">
+      </section>
+      <section className="watchlist">
         {watchPreviews.map((preview, index) => (
           <WatchPreview
             key={index}
@@ -34,7 +33,7 @@ export default function WatchList() {
             additionalInfo={preview.additionalInfo}
           />
         ))}
-      </article>
-    </div>
+      </section>
+    </article>
   );
 }

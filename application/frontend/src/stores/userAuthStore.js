@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import axios from "axios";
+import { HOST_PATH } from "../scripts/constants";
 
 const useUserAuthStore = create(
   persist(
@@ -11,8 +12,7 @@ const useUserAuthStore = create(
       userId: null,
       username: null,
       login: async (formData) => {
-        const HOST_PATH = "http://localhost:8000/api/login/";
-        const response = await axios.post(HOST_PATH, formData);
+        const response = await axios.post(`${HOST_PATH}/login/`, formData);
 
         set(() => ({
           isLoggedIn: true,
