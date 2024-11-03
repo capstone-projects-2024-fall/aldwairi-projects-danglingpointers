@@ -51,6 +51,7 @@ $ docker-compose exec api bash
 $ python manage.py makemigrations
 $ python manage.py migrate
 $ python manage.py createsuperuser
+$ python manage.py loaddata items_table games_table security_questions
 ```
 
 **ALWAYS RUN `docker-compose down` WHEN FINISHED DEVELOPING**
