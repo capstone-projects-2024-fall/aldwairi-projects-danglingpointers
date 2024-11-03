@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function Watch() {
-  const [watchGames, setWatchGames] = useState([]);
+export default function Lobby() {
+  const [lobbyGames, setLobbyGames] = useState([]);
   const HOST_PATH = "http://localhost:8000/api";
 
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const watchResponse = await axios.get(`${HOST_PATH}/games?watch=true`);
+        const lobbyResponse = await axios.get(`${HOST_PATH}/games?lobby=true`);
 
-        setWatchGames(watchResponse.data ? watchResponse.data : []);
+        setLobbyGames(lobbyResponse.data ? lobbyResponse.data : []);
       } catch (error) {
         console.error("Error fetching games data:", error);
       }
@@ -20,12 +20,12 @@ export default function Watch() {
   }, []);
 
   return (
-    <main className="main-watch">
-      <article className="watch-games">
-        <h2>Watch</h2>
-        {watchGames.length > 0 ? (
+    <main className="main-lobby">
+      <article className="lobby-article">
+        <h2>Lobby</h2>
+        {lobbyGames.length > 0 ? (
           <ul>
-            {watchGames.map((game, index) => (
+            {lobbyGames.map((game, index) => (
               <li key={index}>
                 Mode: {game.mode}, Score: {game.player_one_score} vs{" "}
                 {game.player_two_score || "N/A"}
@@ -33,7 +33,7 @@ export default function Watch() {
             ))}
           </ul>
         ) : (
-          <p>No active games available.</p>
+          <p>No pending games available.</p>
         )}
       </article>
     </main>

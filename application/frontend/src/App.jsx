@@ -7,6 +7,7 @@ import Dashboard from "./components/Dashboard";
 import Profile from "./components/Profile";
 import Home from "./components/Home";
 import Watch from "./components/Watch";
+import Lobby from "./components/Lobby";
 import Leaderboards from "./components/Leaderboards";
 import { GameProvider } from "./context/GameContext";
 import useUserAuthStore from "./stores/userAuthStore";
@@ -38,6 +39,7 @@ export default function App() {
           element={isLoggedIn ? <Dashboard /> : <Navigate to="/" replace />}
         />
         <Route path="watch" element={<Watch />} />
+        <Route path="lobby" element={<Lobby />} />
         <Route path="leaderboards" element={<Leaderboards />} />
       </Route>
     </Routes>

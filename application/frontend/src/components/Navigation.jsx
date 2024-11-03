@@ -21,13 +21,18 @@ export default function Navigation() {
           </Link>
         </li>
         <li>
-          <Link to="/leaderboards">
-            <Button text="Leaderboards" />
+          <Link to="/watch">
+            <Button text="Watch" />
           </Link>
         </li>
         <li>
-          <Link to="/watch">
-            <Button text="Watch" />
+          <Link to="/lobby">
+            <Button text="Lobby" />
+          </Link>
+        </li>
+        <li>
+          <Link to="/leaderboards">
+            <Button text="Leaderboards" />
           </Link>
         </li>
         <li className="li-row">
