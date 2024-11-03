@@ -1,6 +1,6 @@
 import "./App.css";
 import "./styles/App.scss";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import DefaultLayout from "./layouts/DefaultLayout";
 import Game from "./components/Game";
 import Dashboard from "./components/Dashboard";
@@ -24,7 +24,7 @@ export default function App() {
           }
         />
         <Route path="profile" element={<Profile userId={userId} />} />
-        {isLoggedIn ? <Route path="dashboard" element={<Dashboard />} /> : null}
+        <Route path="dashboard" element={ isLoggedIn ? <Dashboard /> : <Navigate to="/" replace />} />
         {/*
          * All Routes use the DefaultLayout
          * <Route index element={<Home />} />
