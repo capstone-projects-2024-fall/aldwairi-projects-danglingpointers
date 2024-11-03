@@ -12,5 +12,40 @@
         li {
             list-style: none;
         }
+
+        .li-row {
+            display: flex;
+            flex-flow: row nowrap;
+            gap: 10px;
+        }
+
+        .username-search input {
+            margin-left: 25px;
+        }
+
+        .username-search::before {
+            content: "🔍";
+            position: absolute;
+        }
+
+        .username-search-results {
+            display: flex;
+            flex-flow: column nowrap;
+            margin-left: 25px;
+            padding: 3px;
+            background-color: black;
+            color: white;
+        }
+
+        .login-container { 
+            display: flex;
+            align-items: flex-end;
+            form {
+                display: flex;
+                flex-flow: row nowrap;
+                gap: 10px;
+            }
+        }
     }
 }
+

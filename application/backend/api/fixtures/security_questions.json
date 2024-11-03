@@ -1,0 +1,42 @@
+[
+    {
+        "model": "api.SecurityQuestion",
+        "pk":"0",
+        "fields": {
+            "question" : "What was the name of the street of your first home?"
+        }
+
+    },
+    {
+        "model": "api.SecurityQuestion",
+        "pk":"1",
+        "fields": {
+            "question" : "What was the name of your favorite childhood teacher?"
+        }
+
+    },
+    {
+        "model": "api.SecurityQuestion",
+        "pk":"2",
+        "fields": {
+            "question" : "What was the name of the first pet you owned?"
+        }
+
+    },
+    {
+        "model": "api.SecurityQuestion",
+        "pk":"3",
+        "fields": {
+            "question" : "What was the name of your favorite book?"
+        }
+
+    },
+    {
+        "model": "api.SecurityQuestion",
+        "pk":"4",
+        "fields": {
+            "question" : "What was title of the first job you ever had?"
+        }
+
+    }
+]
