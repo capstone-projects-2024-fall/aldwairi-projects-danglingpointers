@@ -10,7 +10,10 @@ export default function Lobby() {
       try {
         const lobbyResponse = await axios.get(`${HOST_PATH}/games?lobby=true`);
 
-        setLobbyGames(lobbyResponse.data ? lobbyResponse.data : []);
+        // Filter the games to include only those with a "Pending" status
+        const pendingGames = lobbyResponse.data.filter(game => game.status === "Pending");
+
+        setLobbyGames(pendingGames);
       } catch (error) {
         console.error("Error fetching games data:", error);
       }
