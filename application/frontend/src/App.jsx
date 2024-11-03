@@ -7,16 +7,24 @@ import Dashboard from "./components/Dashboard";
 import Profile from "./components/Profile";
 import Home from "./components/Home";
 import { GameProvider } from "./context/GameContext";
+import useUserAuthStore from "./stores/userAuthStore";
 
 export default function App() {
-  const userId = 1; //REPLACE IN FUTURE
+  const { isLoggedIn, userId } = useUserAuthStore();
   return (
     <Routes>
       <Route path="/" element={<DefaultLayout />}>
         <Route index element={<Home />} />
-        <Route path="game" element={<GameProvider><Game /></GameProvider>} />
-        <Route path="dashboard" element={<Dashboard />} />
+        <Route
+          path="game"
+          element={
+            <GameProvider>
+              <Game />
+            </GameProvider>
+          }
+        />
         <Route path="profile" element={<Profile userId={userId} />} />
+        {isLoggedIn ? <Route path="dashboard" element={<Dashboard />} /> : null}
         {/*
          * All Routes use the DefaultLayout
          * <Route index element={<Home />} />

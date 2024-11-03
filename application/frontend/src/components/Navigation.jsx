@@ -1,12 +1,16 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "./Button"; // Custom Button component
 import Search from "./Search"; // Import Search component
 import Login from "./Login"; // Import Login component
+import useUserAuthStore from "../stores/userAuthStore";
+import { useEffect } from "react";
 
 export default function Navigation() {
-  const [showSearch, setShowSearch] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
+  const { isLoggedIn, logout } = useUserAuthStore();
+
+  useEffect(() => {
+    console.log(isLoggedIn);
+  }, [isLoggedIn]);
 
   return (
     <nav className="navigation">
@@ -29,16 +33,22 @@ export default function Navigation() {
         <li className="li-row">
           <Search />
         </li>
-        <li>
-          <Link to="/dashboard">
-            <Button text="Dashboard" />
-          </Link>
-        </li>
-        <li className="li-row">
-          {/* Button to toggle Login visibility */}
-          <Button text="Login" onClick={() => setShowLogin(!showLogin)} />
-          {showLogin && <Login />}
-        </li>
+        {isLoggedIn ? (
+          <>
+            <li>
+              <Link to="/dashboard">
+                <Button text="Dashboard" />
+              </Link>
+            </li>
+            <li>
+              <Button text="Logout" onClick={logout} />
+            </li>
+          </>
+        ) : (
+          <li className="li-row">
+            <Login />
+          </li>
+        )}
       </ul>
     </nav>
   );

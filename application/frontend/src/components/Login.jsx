@@ -1,23 +1,24 @@
 // components/Login.js
-import React, { useState } from 'react';
-import Button from './Button'; // Import your Button component
+import { useContext, useState } from "react";
+import AuthContext from "../auth/AuthContext";
 
 function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const { login } = useContext(AuthContext);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Simulate a response object
-    const response = { username, authenticated: true };
+    if (!username) return;
+    if (!password) return;
+    
+    const formData = {
+      username: username,
+      password: password,
+    };
 
-    // Save response to session storage
-    sessionStorage.setItem('user', JSON.stringify(response));
-
-    // Reset form fields (optional)
-    setUsername('');
-    setPassword('');
+    login(formData);
   };
 
   return (
@@ -28,16 +29,14 @@ function Login() {
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          required
         />
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          required
         />
-        <Button text="Login" onClick={handleSubmit} /> {/* Use Button component */}
+        <button type="submit">Login</button>
       </form>
     </div>
   );

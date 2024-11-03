@@ -36,6 +36,16 @@
             background-color: black;
             color: white;
         }
+
+        .login-container { 
+            display: flex;
+            align-items: flex-end;
+            form {
+                display: flex;
+                flex-flow: row nowrap;
+                gap: 10px;
+            }
+        }
     }
 }
 
