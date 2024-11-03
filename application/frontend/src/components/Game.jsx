@@ -14,6 +14,10 @@ export default function Game() {
     userScore,
     userLives,
     userLivesCount,
+    hasGameStarted,
+    isGameOver,
+    startGame,
+    endGame,
   } = useContext(GameContext);
 
   const intervalRef = useRef(null);
@@ -21,9 +25,15 @@ export default function Game() {
   const garbageCollectorRef = useRef(null);
   const recyclingBinRef = useRef(null);
 
-  // Game Timer
+  // Initialize round (reset game state)
+  const initializeRound = () => {
+    startGame();
+    setGameMode("solo");
+  };
+
+  // Game Timer - Only runs if the game has started and is not over
   useEffect(() => {
-    if (userLivesCount > 0) {
+    if (hasGameStarted && userLivesCount > 0) {
       const intervalId = setInterval(() => {
         setTimer((prevTime) => prevTime + 1);
       }, 1000);
@@ -34,30 +44,48 @@ export default function Game() {
         clearInterval(intervalRef.current);
       };
     }
-  }, [setTimer, userLivesCount]);
+  }, [hasGameStarted, setTimer, userLivesCount]);
 
+  // End game when lives reach zero
   useEffect(() => {
-    setGameMode("solo");
-  }, [setGameMode]);
+    if (userLivesCount <= 0) {
+      endGame();
+    }
+  }, [userLivesCount, endGame]);
 
   return (
     <main className="main-game">
-      <div className="game-details">
-        <div className="timer">Timer: {convertSecondsToMinutes(timer)}</div>
-        <div className="score">Score: {userScore}</div>
-        <div className="lives-remaining">Lives: {userLives}</div>
-        {gameMode === "versus" ? (
-          <>
-            <div className="opponent-score">Opponent Score: </div>
-            <div className="opponent-lives">Opponent Lives: </div>
-          </>
-        ) : null}
-      </div>
-      <article className="game">
-        <Stack ref={stackRef} />
-        <GarbageCollector ref={garbageCollectorRef} />
-        <RecyclingBin ref={recyclingBinRef} />
-      </article>
+      {isGameOver ? (
+        <div className="game-over-message">
+          Game Over!
+          <button onClick={initializeRound} className="start-button">
+            Start Game
+          </button>
+        </div>
+      ) : hasGameStarted ? (
+        <>
+          <div className="game-details">
+            <div className="timer">Timer: {convertSecondsToMinutes(timer)}</div>
+            <div className="score">Score: {userScore}</div>
+            <div className="lives-remaining">Lives: {userLives}</div>
+            {gameMode === "versus" ? (
+              <>
+                <div className="opponent-score">Opponent Score: </div>
+                <div className="opponent-lives">Opponent Lives: </div>
+              </>
+            ) : null}
+          </div>
+          <article className="game">
+            <Stack ref={stackRef} />
+            <GarbageCollector ref={garbageCollectorRef} />
+            <RecyclingBin ref={recyclingBinRef} />
+          </article>
+        </>
+      ) : (
+        <button onClick={initializeRound} className="start-button">
+          Start Game
+        </button>
+      )}
     </main>
   );
 }
