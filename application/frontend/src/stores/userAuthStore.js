@@ -9,6 +9,7 @@ const useUserAuthStore = create(
       accessToken: "",
       refreshToken: "",
       userId: null,
+      username: null,
       login: async (formData) => {
         const HOST_PATH = "http://localhost:8000/api/login/";
         const response = await axios.post(HOST_PATH, formData);
@@ -18,6 +19,7 @@ const useUserAuthStore = create(
           accessToken: response.data.accessToken,
           refreshToken: response.data.refreshToken,
           userId: response.data.user_id,
+          username: response.data.user_id,
         }));
       },
       logout: async () => {
@@ -26,6 +28,7 @@ const useUserAuthStore = create(
           accessToken: "",
           refreshToken: "",
           userId: null,
+          username: null,
         }));
       },
     }),

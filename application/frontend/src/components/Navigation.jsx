@@ -17,7 +17,17 @@ export default function Navigation() {
         </li>
         <li>
           <Link to="/game">
-            <Button text="Game" />
+            <Button text="Practice" />
+          </Link>
+        </li>
+        <li>
+          <Link to="/leaderboards">
+            <Button text="Leaderboards" />
+          </Link>
+        </li>
+        <li>
+          <Link to="/watch">
+            <Button text="Watch" />
           </Link>
         </li>
         <li className="li-row">

@@ -6,6 +6,8 @@ import Game from "./components/Game";
 import Dashboard from "./components/Dashboard";
 import Profile from "./components/Profile";
 import Home from "./components/Home";
+import Watch from "./components/Watch";
+import Leaderboards from "./components/Leaderboards";
 import { GameProvider } from "./context/GameContext";
 import useUserAuthStore from "./stores/userAuthStore";
 import useUserProfileStore from "./stores/userProfileStore";
@@ -25,19 +27,18 @@ export default function App() {
             </GameProvider>
           }
         />
-        <Route path="profile" element={<Profile userId={profileId ? profileId : userId ? userId : 1} />} />
-        <Route path="dashboard" element={ isLoggedIn ? <Dashboard /> : <Navigate to="/" replace />} />
-        {/*
-         * All Routes use the DefaultLayout
-         * <Route index element={<Home />} />
-         * <Route path="lobby" element={<Lobby />} />
-         * path="watch"
-         * path="leaderboards"
-         * path="profile"
-         * path="dashboard"
-         * path="game/practice"
-         * path="game/[id]"
-         */}
+        <Route
+          path="profile"
+          element={
+            <Profile userId={profileId ? profileId : userId ? userId : 1} />
+          }
+        />
+        <Route
+          path="dashboard"
+          element={isLoggedIn ? <Dashboard /> : <Navigate to="/" replace />}
+        />
+        <Route path="watch" element={<Watch />} />
+        <Route path="leaderboards" element={<Leaderboards />} />
       </Route>
     </Routes>
   );
