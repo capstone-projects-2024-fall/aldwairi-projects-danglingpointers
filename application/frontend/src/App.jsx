@@ -8,9 +8,11 @@ import Profile from "./components/Profile";
 import Home from "./components/Home";
 import { GameProvider } from "./context/GameContext";
 import useUserAuthStore from "./stores/userAuthStore";
+import useUserProfileStore from "./stores/userProfileStore";
 
 export default function App() {
   const { isLoggedIn, userId } = useUserAuthStore();
+  const { profileId } = useUserProfileStore();
   return (
     <Routes>
       <Route path="/" element={<DefaultLayout />}>
@@ -23,7 +25,7 @@ export default function App() {
             </GameProvider>
           }
         />
-        <Route path="profile" element={<Profile userId={userId} />} />
+        <Route path="profile" element={<Profile userId={profileId ? profileId : userId ? userId : 1} />} />
         <Route path="dashboard" element={ isLoggedIn ? <Dashboard /> : <Navigate to="/" replace />} />
         {/*
          * All Routes use the DefaultLayout

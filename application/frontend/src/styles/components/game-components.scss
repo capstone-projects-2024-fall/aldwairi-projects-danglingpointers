@@ -1,9 +1,11 @@
+@use "../constants/_constants";
+
 .main-game {
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
   align-items: center;
-  height: calc(100vh - 25px);
+  height: calc(100vh - constants.$navigation-height);
 }
 
 .game {
@@ -109,6 +111,10 @@
   background-color: lightgray;
   display: grid;
   place-items: center;
+}
+
+.button {
+  padding: 2.5px 5px;
 }
 
 .button-primary {

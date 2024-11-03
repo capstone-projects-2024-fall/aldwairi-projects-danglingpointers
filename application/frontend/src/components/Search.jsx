@@ -1,11 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import useUserProfileStore from "../stores/userProfileStore";
 import axios from "axios";
 
 const Search = () => {
   const [inputValue, setInputValue] = useState("");
   const [filteredUsernames, setFilteredUsernames] = useState([]);
   const [error, setError] = useState(null);
+  const { setProfileId } = useUserProfileStore();
   const HOST_PATH = "http://localhost:8000/api";
+  const navigate = useNavigate();
 
   // Fetch usernames from the backend as user types
   const fetchUsernames = async (searchTerm) => {
@@ -41,8 +45,15 @@ const Search = () => {
     }
   };
 
+  const handleUserClick = (userId) => {
+    setProfileId(userId);
+    setInputValue("");
+    setFilteredUsernames([]);
+    navigate("/profile");
+  };
+
   return (
-    <>
+    <div className="search-container">
       <span className="username-search">
         <input
           type="text"
@@ -56,11 +67,15 @@ const Search = () => {
       {inputValue && filteredUsernames.length > 0 && (
         <ul className="username-search-results">
           {filteredUsernames.map((user, index) => (
-            <li key={index}>{user.username}</li>
+            <li key={index}>
+              <button onClick={() => handleUserClick(user.id)}>
+                {user.username}
+              </button>
+            </li>
           ))}
         </ul>
       )}
-    </>
+    </div>
   );
 };
 

@@ -9,20 +9,15 @@ export default function Navigation() {
 
   return (
     <nav className="navigation">
-      <ul>
-        <li>
-          <Link to="/">
-            <Button text="Home" />
-          </Link>
+      <Link to="/" text="Dangling Pointers">
+        <h1>Dangling Pointers</h1>
+      </Link>
+      <ul className="ul-default">
+        <li className="li-home">
         </li>
         <li>
           <Link to="/game">
             <Button text="Game" />
-          </Link>
-        </li>
-        <li>
-          <Link to="/profile">
-            <Button text="Profile" />
           </Link>
         </li>
         <li className="li-row">

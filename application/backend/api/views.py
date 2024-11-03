@@ -149,13 +149,11 @@ class GameViewSet(viewsets.ModelViewSet):
         queryset = self.queryset
         query_params = self.request.query_params
 
-        # Query for top active public games 'PATH/api/games?watch=true'
         if 'watch' in query_params:
-            return queryset.filter(status='Active').order_by('-date')[:10]
+            return queryset.filter(status='Active').order_by('-date');
 
-        # Query for lobby
         if 'lobby' in query_params:
-            return queryset.filter(mode='Versus', status='Pending', player_two__isnull=True)
+            return queryset.filter(mode='Versus', status='Pending').order_by('-date')
 
         if 'leaderboards_solo' in query_params:
             return queryset.filter(mode='Solo', status='Complete').order_by('-player_one_score')[:10]
@@ -167,6 +165,7 @@ class GameViewSet(viewsets.ModelViewSet):
         if 'recent_games' in query_params:
             return queryset.filter(player_one__id=query_params.get('user_id')).order_by('-date')
 
+        return queryset
 
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all()
