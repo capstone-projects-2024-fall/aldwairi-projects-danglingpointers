@@ -1,7 +1,9 @@
 from .models import UserMetaData, Game, Item, SecurityQuestion
 from .serializers import UserSerializer, UserMetaDataSerializer, GameSerializer, ItemSerializer, SecurityQuestionSerializer
+from cryptography.fernet import Fernet
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+import os
 from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -58,6 +60,7 @@ class CreateUserMetaDataView(generics.GenericAPIView):
         credentials passed from the frontend. This method responds with JSON
         objects with user settings, items, and points to be stored in sessionStorage.
         '''
+               
         user_id = request.data.get('user_id')
         security_question_id = request.data.get('security_question')
         security_question = SecurityQuestion.objects.get(
