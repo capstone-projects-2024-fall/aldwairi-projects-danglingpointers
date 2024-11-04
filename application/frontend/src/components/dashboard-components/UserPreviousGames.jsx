@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import WatchPreview from "../entries/WatchPreview";
+import WatchPreview from "../previews/WatchPreview";
 
 export default function UserPreviousGames() {
   const [watchPreviews, setWatchPreviews] = useState([]);

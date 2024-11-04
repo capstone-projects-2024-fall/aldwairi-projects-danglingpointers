@@ -1,4 +1,4 @@
-import GameEntry from './GameEntry';
+import GameEntry from '../entries/GameEntry';
 
 export default function WatchPreview({users, status, gameLink,videoDescription}){
     return(
