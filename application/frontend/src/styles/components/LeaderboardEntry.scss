@@ -1,0 +1,26 @@
+.leaderboard-entry {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+
+    .leaderboard-user,
+    .leaderboard-score,
+    .leaderboard-time,
+    .leaderboard-date {
+        margin: 5px 0;
+        font-size: 0.9em;
+    }
+
+    .leaderboard-link {
+        display: inline-block;
+        margin-top: 10px;
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
