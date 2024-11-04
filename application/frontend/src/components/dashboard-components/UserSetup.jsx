@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { HOST_PATH } from "../../scripts/constants";
-import { useNavigate } from "react-router-dom";
 import useUserMetaDataStore from "../../stores/userMetaDataStore";
 import useUserAuthStore from "../../stores/userAuthStore";
 
@@ -11,7 +10,6 @@ export default function UserSetup({ setUserNeedsMetaData }) {
   const [securityAnswer, setSecurityAnswer] = useState("");
   const { createUserMetaData } = useUserMetaDataStore();
   const { userId } = useUserAuthStore();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSecurityQuestions = async () => {
