@@ -1,13 +1,13 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Dashboard from './components/pages/Dashboard';
-import TestLeaderboardEntry from './components/pages/entries/TestLeaderboardEntry';
+import TestLeaderboardEntry from './components/entries/TestLeaderboardEntry';
 import Game from './components/pages/Game';
 import Home from './components/pages/Home';
 import Leaderboards from './components/pages/Leaderboards';
 import Lobby from './components/pages/Lobby';
 import Profile from './components/pages/Profile';
-import Watch from './components/Watch';
+import Watch from './components/pages/Watch';
 import { GameProvider } from './context/GameContext';
 import DefaultLayout from './layouts/DefaultLayout';
 import useUserAuthStore from './stores/userAuthStore';
@@ -22,7 +22,7 @@ export default function App() {
             <Route path="/" element={<DefaultLayout />}>
                 <Route index element={<Home />} />
                 <Route
-                    path="game"
+                    path="practice"
                     element={
                         <GameProvider>
                             <Game />
