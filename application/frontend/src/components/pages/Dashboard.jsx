@@ -34,7 +34,7 @@ export default function Dashboard() {
   }
   return (
     <main className="main-dashboard">
-      <div key="inbox" className="inbox">
+      <div key="inbox" className="inbox" style={{ background: "lightgray"}}>
         Inbox
       </div>
       <Store />

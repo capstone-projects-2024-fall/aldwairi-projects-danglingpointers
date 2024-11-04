@@ -9,9 +9,4 @@ ul {
     li {
         list-style: none;
     }
-
-    /** @see https://www.tempertemper.net/blog/accessibility-issues-when-removing-list-markers */
-    li:before {
-        content: "\200B";
-    }
 }
