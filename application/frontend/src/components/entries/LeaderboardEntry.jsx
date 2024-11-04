@@ -1,6 +1,4 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import '../../styles/components/LeaderboardEntry.scss';
 
 export default function LeaderboardEntry({ user, score, timePlayed, date, gameLink }) {
     const formatDate = (dateString) => {
