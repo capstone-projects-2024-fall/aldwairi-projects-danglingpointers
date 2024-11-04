@@ -2,13 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useUserProfileStore from "../stores/userProfileStore";
 import axios from "axios";
+import { HOST_PATH } from "../scripts/constants";
 
 const Search = () => {
   const [inputValue, setInputValue] = useState("");
   const [filteredUsernames, setFilteredUsernames] = useState([]);
   const [error, setError] = useState(null);
   const { setProfileId } = useUserProfileStore();
-  const HOST_PATH = "http://localhost:8000/api";
   const navigate = useNavigate();
 
   // Fetch usernames from the backend as user types
@@ -67,10 +67,8 @@ const Search = () => {
       {inputValue && filteredUsernames.length > 0 && (
         <ul className="username-search-results">
           {filteredUsernames.map((user, index) => (
-            <li key={index}>
-              <button onClick={() => handleUserClick(user.id)}>
-                {user.username}
-              </button>
+            <li key={index} onClick={() => handleUserClick(user.id)}>
+              {user.username}
             </li>
           ))}
         </ul>

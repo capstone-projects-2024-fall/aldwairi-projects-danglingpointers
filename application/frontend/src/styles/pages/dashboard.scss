@@ -1,17 +1,100 @@
-.main-dashboard {
-    display: grid;
-    grid-template-columns: repeat(24, 1fr);
-    grid-template-rows: repeat(6, 1fr);
-    grid-auto-flow: column;
+@use "../constants/constants";
 
-    .store-container {
-        grid-column-start: 17;
-        grid-column-end: 24;
-        grid-row-start: 2;
-        grid-row-end: 6;
-        display: flex;
-        flex-flow: column nowrap;
-        gap: 20px;
-        overflow-y: hidden;
+.main-user-setup {
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - constants.$navigation-height);
+  max-height: calc(100vh - constants.$navigation-height);
+
+  form {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    gap: 20px;
+
+    .user-setup-label-container {
+      display: flex;
+      flex-flow: column nowrap;
+      width: 100%;
     }
+
+    input,
+    select {
+      padding: 5px;
+    }
+
+    button {
+      padding: 5px;
+      width: 60px;
+    }
+  }
+}
+
+.main-dashboard {
+  min-height: calc(100vh - constants.$navigation-height);
+  max-height: calc(100vh - constants.$navigation-height);
+  display: grid;
+  grid-template-columns: repeat(10, 10%);
+  grid-template-rows: repeat(10, 10%);
+  grid-auto-flow: column;
+  margin: 0 constants.$default-margin 0 0;
+
+  .inbox {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: -1;
+  }
+
+  .settings {
+    grid-column-start: 8;
+    grid-column-end: -1;
+    grid-row-start: 1;
+    grid-row-end: 4;
+  }
+
+  .store-container {
+    grid-column-start: 8;
+    grid-column-end: -1;
+    grid-row-start: 4;
+    grid-row-end: -1;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 20px;
+    overflow-y: hidden;
+
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: white;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: maroon;
+      border-radius: 10px;
+    }
+  }
+
+  .user-previous-games {
+    grid-column-start: 4;
+    grid-column-end: 8;
+    grid-row-start: 4;
+    grid-row-end: -1;
+  }
+}
+
+.li-setting {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 10px;
+
+  input {
+    padding: 5px;
+  }
+}
+
+.mb-def {
+  margin-bottom: constants.$default-margin;
 }

@@ -11,6 +11,7 @@
 @forward "./animations/animations.scss";
 
 // Pages
+@forward "./pages/pages.scss";
 @forward "./pages/dashboard.scss";
 @forward "./pages/profile.scss";
 @forward "./pages/home.scss";
@@ -18,6 +19,7 @@
 // Components
 @forward "./components/entry-components.scss";
 @forward "./components/game-components.scss";
-@forward "./components/store.scss";
+@forward "./components/game-entry.scss";
 @forward "./components/message.scss";
 @forward "./components/messagethread.scss";
+@forward "./components/store.scss";

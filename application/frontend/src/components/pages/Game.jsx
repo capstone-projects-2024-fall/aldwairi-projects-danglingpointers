@@ -1,9 +1,9 @@
-import GarbageCollector from "./game-components/GarbageCollector";
-import RecyclingBin from "./game-components/RecyclingBin";
-import Stack from "./game-components/Stack";
-import convertSecondsToMinutes from "../scripts/convert-seconds-to-minutes";
+import GarbageCollector from "../game-components/GarbageCollector";
+import RecyclingBin from "../game-components/RecyclingBin";
+import Stack from "../game-components/Stack";
+import convertSecondsToMinutes from "../../scripts/convert-seconds-to-minutes";
 import { useEffect, useRef, useContext } from "react";
-import GameContext from "../context/GameContext";
+import GameContext from "../../context/GameContext";
 
 export default function Game() {
   const {

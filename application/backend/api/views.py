@@ -1,7 +1,9 @@
-from .models import UserMetaData, Game, Item
-from .serializers import UserSerializer, UserMetaDataSerializer, GameSerializer, ItemSerializer
+from .models import UserMetaData, Game, Item, SecurityQuestion
+from .serializers import UserSerializer, UserMetaDataSerializer, GameSerializer, ItemSerializer, SecurityQuestionSerializer
+from cryptography.fernet import Fernet
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+import os
 from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -30,7 +32,8 @@ class CreateOrLoginView(generics.GenericAPIView):
                 {
                     'accessToken': access_token,
                     'refreshToken': refresh_token,
-                    'user_id': user.id
+                    'user_id': user.id,
+                    'username': user.username
                 },
                 status=status.HTTP_200_OK)
 
@@ -51,7 +54,41 @@ class CreateOrLoginView(generics.GenericAPIView):
 
 class CreateUserMetaDataView(generics.GenericAPIView):
     def post(self, request):
-        pass
+        '''
+        This method handles requests POSTed to this view by creating a new
+        UserMetaData entry with the user id, and security question and answer
+        credentials passed from the frontend. This method responds with JSON
+        objects with user settings, items, and points to be stored in sessionStorage.
+        '''
+               
+        user_id = request.data.get('user_id')
+        security_question_id = request.data.get('security_question')
+        security_question = SecurityQuestion.objects.get(
+            id=security_question_id)
+        security_answer = request.data.get('security_answer')
+
+        user = User.objects.get(id=user_id)
+        items = Item.objects.all()
+        item_history = {}
+        settings = {
+            "garbageCollectorColor": "blue"
+        }
+
+        userMetaData = UserMetaData.objects.create(
+            user=user,
+            security_question=security_question,
+            security_answer=security_answer,
+            item_history=item_history,
+            settings=settings,
+        )
+        userMetaData.items.add(*items)
+        userMetaData.save()
+
+        return Response(
+            {
+                'settings': settings,
+            },
+            status=status.HTTP_200_OK)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -150,7 +187,7 @@ class GameViewSet(viewsets.ModelViewSet):
         query_params = self.request.query_params
 
         if 'watch' in query_params:
-            return queryset.filter(status='Active').order_by('-date');
+            return queryset.filter(status='Active').order_by('-date')
 
         if 'lobby' in query_params:
             return queryset.filter(mode='Versus', status='Pending').order_by('-date')
@@ -167,6 +204,12 @@ class GameViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
+
+
+class SecurityQuestionViewSet(viewsets.ModelViewSet):
+    queryset = SecurityQuestion.objects.all()
+    serializer_class = SecurityQuestionSerializer

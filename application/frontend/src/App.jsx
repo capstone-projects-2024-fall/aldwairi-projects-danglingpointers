@@ -2,13 +2,13 @@ import "./App.css";
 import "./styles/App.scss";
 import { Routes, Route, Navigate } from "react-router-dom";
 import DefaultLayout from "./layouts/DefaultLayout";
-import Game from "./components/Game";
-import Dashboard from "./components/Dashboard";
-import Profile from "./components/Profile";
-import Home from "./components/Home";
-import Watch from "./components/Watch";
-import Lobby from "./components/Lobby";
-import Leaderboards from "./components/Leaderboards";
+import Game from "./components/pages/Game";
+import Dashboard from "./components/pages/Dashboard";
+import Profile from "./components/pages/Profile";
+import Home from "./components/pages/Home";
+import Watch from "./components/pages/Watch";
+import Lobby from "./components/pages/Lobby";
+import Leaderboards from "./components/pages/Leaderboards";
 import { GameProvider } from "./context/GameContext";
 import useUserAuthStore from "./stores/userAuthStore";
 import useUserProfileStore from "./stores/userProfileStore";
@@ -21,7 +21,7 @@ export default function App() {
       <Route path="/" element={<DefaultLayout />}>
         <Route index element={<Home />} />
         <Route
-          path="game"
+          path="practice"
           element={
             <GameProvider>
               <Game />

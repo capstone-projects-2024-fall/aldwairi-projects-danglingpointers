@@ -11,8 +11,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!username) return;
-    if (!password) return;
+    if (!username || !password) return;
 
     const formData = {
       username: username,

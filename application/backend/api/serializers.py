@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Game, Item, UserMetaData
+from .models import Game, Item, UserMetaData, SecurityQuestion
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -24,4 +24,9 @@ class GameSerializer(serializers.ModelSerializer):
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
+        fields = '__all__'
+
+class SecurityQuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SecurityQuestion
         fields = '__all__'

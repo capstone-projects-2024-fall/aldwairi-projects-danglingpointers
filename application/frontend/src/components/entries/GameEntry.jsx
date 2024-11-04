@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/game-entry.scss'; 
 
 export default function GameEntry({ users, status, gameLink }) {
   const [btnColor, setBtnColor] = useState('blue');

@@ -1,4 +1,10 @@
-import { forwardRef, useEffect, useRef, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   checkLeftBoundary,
   checkRightBoundary,
@@ -6,7 +12,18 @@ import {
 
 const GarbageCollector = forwardRef((_, ref) => {
   const [styleLeft, setStyleLeft] = useState("1px");
+  const [garbageCollectorColor, setGarbageCollectorColor] = useState("");
   const intervalRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+    const color = store.state.settings.garbageCollectorColor;
+    if (color)
+      setGarbageCollectorColor(color);
+    else 
+      setGarbageCollectorColor("green");
+  }, []);
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "ArrowLeft") {
@@ -68,7 +85,7 @@ const GarbageCollector = forwardRef((_, ref) => {
       <section
         className="garbage-collector"
         ref={ref}
-        style={{ left: styleLeft }}
+        style={{ left: styleLeft, background: garbageCollectorColor }}
       ></section>
     </>
   );

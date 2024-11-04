@@ -16,7 +16,7 @@ export default function Navigation() {
         <li className="li-home">
         </li>
         <li>
-          <Link to="/game">
+          <Link to="/practice">
             <Button text="Practice" />
           </Link>
         </li>
