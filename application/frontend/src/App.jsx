@@ -22,7 +22,7 @@ export default function App() {
             <Route path="/" element={<DefaultLayout />}>
                 <Route index element={<Home />} />
                 <Route
-                    path="game"
+                    path="practice"
                     element={
                         <GameProvider>
                             <Game />
