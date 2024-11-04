@@ -11,8 +11,6 @@ const Search = () => {
   const { setProfileId } = useUserProfileStore();
   const navigate = useNavigate();
 
-  console.log(HOST_PATH);
-
   // Fetch usernames from the backend as user types
   const fetchUsernames = async (searchTerm) => {
     try {
