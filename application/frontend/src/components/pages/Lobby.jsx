@@ -24,10 +24,10 @@ export default function Lobby() {
 
   return (
     <main className="main-default main-lobby">
-      <article className="lobby-article">
+      <article className="lobby-article default-scrollbar">
         <h2>Lobby</h2>
         {lobbyGames.length > 0 ? (
-          <ul>
+          <ul className="max-height">
             {lobbyGames.map((game, index) => (
               <li key={index}>
                 Mode: {game.mode}, Score: {game.player_one_score} vs{" "}
