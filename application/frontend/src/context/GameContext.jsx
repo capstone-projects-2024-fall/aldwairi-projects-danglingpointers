@@ -1,3 +1,4 @@
+// GameContext.js
 import { createContext, useState } from "react";
 
 const GameContext = createContext({});
@@ -8,6 +9,8 @@ export const GameProvider = ({ children }) => {
   const [userScore, setUserScore] = useState(0);
   const [userLives, setUserLives] = useState(["❤️", "❤️", "❤️"]);
   const [userLivesCount, setUserLivesCount] = useState(3);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [pointersCleared, setPointersCleared] = useState(true); // Track pointers cleared
 
   return (
     <GameContext.Provider
@@ -22,6 +25,10 @@ export const GameProvider = ({ children }) => {
         setUserLives,
         userLivesCount,
         setUserLivesCount,
+        gameStarted,
+        setGameStarted,
+        pointersCleared,
+        setPointersCleared, // Expose pointersCleared and setPointersCleared
       }}
     >
       {children}
