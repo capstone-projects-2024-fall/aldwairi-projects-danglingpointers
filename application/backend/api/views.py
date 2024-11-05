@@ -208,6 +208,16 @@ class GameViewSet(viewsets.ModelViewSet):
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
+    
+    def get_queryset(self):
+        queryset = self.queryset
+        
+        user_id = self.request.query_params.get('user_id')
+        if user_id:
+            queryset = queryset.filter(id=user_id)
+            
+        return queryset
+    
 
 
 class SecurityQuestionViewSet(viewsets.ModelViewSet):

@@ -4,6 +4,9 @@ import Stack from "../game-components/Stack";
 import convertSecondsToMinutes from "../../scripts/convert-seconds-to-minutes";
 import { useEffect, useRef, useContext } from "react";
 import GameContext from "../../context/GameContext";
+import axios from "axios";
+import { HOST_PATH } from "../../scripts/constants";
+import useUserAuthStore from "../../stores/userAuthStore";
 
 export default function Game() {
   const {
@@ -15,6 +18,8 @@ export default function Game() {
     userLives,
     userLivesCount,
   } = useContext(GameContext);
+
+  const { userId } = useUserAuthStore();
 
   const intervalRef = useRef(null);
   const stackRef = useRef(null);
@@ -39,6 +44,20 @@ export default function Game() {
   useEffect(() => {
     setGameMode("solo");
   }, [setGameMode]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${HOST_PATH}/user-metadata?user_id=${userId}`
+        );
+        console.log(response.data)
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, [userId]);
 
   return (
     <main className="main-game">
