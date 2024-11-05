@@ -3,8 +3,9 @@
         "model": "api.Item",
         "pk":"0",
         "fields": {
-            "name" : "Item1",
-            "description" : "Generic Description of Item 1",
+            "name" : "Slow Down",
+            "description" : "Pointers are released slower than the default value.",
+            "icon": "🐢",
             "cost" : "10"
         }
 
@@ -13,9 +14,10 @@
         "model": "api.Item",
         "pk":"1",
         "fields": {
-            "name" : "Item2",
-            "description" : "Generic Description of Item 2",
-            "cost" : "12"
+            "name" : "Speed Up",
+            "description" : "Your garbage collector moves faster than the default value.",
+            "icon": "🐆",
+            "cost" : "8"
         }
 
     },
@@ -23,9 +25,10 @@
         "model": "api.Item",
         "pk":"2",
         "fields": {
-            "name" : "Item3",
-            "description" : "Generic Description of Item 3",
-            "cost" : "8"
+            "name" : "Extra Life",
+            "description" : "Add 1 life to your current round.",
+            "icon": "💓",
+            "cost" : "20"
         }
 
     },
@@ -33,9 +36,10 @@
         "model": "api.Item",
         "pk":"3",
         "fields": {
-            "name" : "Item4",
-            "description" : "Generic Description of Item 4",
-            "cost" : "20"
+            "name" : "No Drops",
+            "description" : "Drops don't subtract from your lives.",
+            "icon": "🔮",
+            "cost" : "15"
         }
 
     },
@@ -43,9 +47,10 @@
         "model": "api.Item",
         "pk":"4",
         "fields": {
-            "name" : "Item5",
-            "description" : "Generic Description of Item 5",
-            "cost" : "15"
+            "name" : "Double Score",
+            "description" : "Your score increases by double the default amount.",
+            "icon": "🤑",
+            "cost" : "12"
         }
 
     }

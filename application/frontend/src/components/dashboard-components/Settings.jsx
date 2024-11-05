@@ -27,7 +27,15 @@ export default function Settings() {
         {values.map((value, index) => (
           <li key={index} className="li-setting">
             <p>{formatKey(keys[index])}: </p>
-            <input type="text" value={value} />
+            <input
+              type="text"
+              value={value}
+              onChange={(e) => {
+                const updatedValues = [...values];
+                updatedValues[index] = e.target.value;
+                setValues(updatedValues);
+              }}
+            />
           </li>
         ))}
       </ul>

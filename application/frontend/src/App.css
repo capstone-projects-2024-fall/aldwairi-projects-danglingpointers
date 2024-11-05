@@ -10,3 +10,13 @@ ul {
         list-style: none;
     }
 }
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+    text-decoration-color: red;
+}

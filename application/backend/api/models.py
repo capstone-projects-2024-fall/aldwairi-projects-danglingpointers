@@ -74,6 +74,7 @@ class Game(models.Model):
 class Item(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
+    icon = models.CharField(max_length=1, null=True, blank=True)
     cost = models.IntegerField()
 
     def __str__(self):
