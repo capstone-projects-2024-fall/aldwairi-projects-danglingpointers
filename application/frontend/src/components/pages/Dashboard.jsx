@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Inbox from "../dashboard-components/Inbox"
 import Store from "../dashboard-components/Store";
 import Settings from "../dashboard-components/Settings";
 import UserLeaderboards from "../dashboard-components/UserLeaderboards";
@@ -34,9 +35,7 @@ export default function Dashboard() {
   }
   return (
     <main className="main-dashboard">
-      <div key="inbox" className="inbox" style={{ background: "lightgray"}}>
-        Inbox
-      </div>
+      <Inbox />
       <Store />
       <Settings />
       <UserLeaderboards />
