@@ -122,31 +122,46 @@ export default function Game() {
 
   return (
     <main className="main-game">
-      <article className="details-container">
-        <div className="game-details">
-          <div className="timer">Timer: {convertSecondsToMinutes(timer)}</div>
-          <div className="score">Score: {userScore}</div>
-          <div className="lives-remaining">Lives: {userLives}</div>
-          {gameMode === "versus" ? (
-            <>
-              <div className="opponent-score">Opponent Score: </div>
-              <div className="opponent-lives">Opponent Lives: </div>
-            </>
-          ) : null}
+    <article className="details-container">
+      <div className="game-details">
+        <div className="timer">Timer: {convertSecondsToMinutes(timer)}</div>
+        <div className="score">Score: {userScore}</div>
+        <div className="lives-remaining">Lives: {userLives}</div>
+        {gameMode === "versus" ? (
+          <>
+            <div className="opponent-score">Opponent Score: </div>
+            <div className="opponent-lives">Opponent Lives: </div>
+          </>
+        ) : null}
+      </div>
+  
+      {/* Item Box Section */}
+      <div className="user-items">
+        <div className="selected-item">
+          {userItems.length > 0 ? (
+            <span className="item-icon">{userItems[selectedIndex].icon}</span>
+          ) : (
+            <span>No items available</span> // Fallback if no items are found
+          )}
         </div>
-        <button
-          onClick={initializeRound}
-          className="start-round-button"
-          disabled={gameStarted} 
-        >
-          Start New Round
-        </button>
-      </article>
-      <article className="game">
-        <Stack ref={stackRef} />
-        <GarbageCollector ref={garbageCollectorRef} />
-        <RecyclingBin ref={recyclingBinRef} />
-      </article>
-    </main>
+      </div>
+  
+      {/* Start Round Button */}
+      <button
+        onClick={initializeRound}
+        className="start-round-button"
+        disabled={gameStarted}
+      >
+        Start New Round
+      </button>
+    </article>
+    
+    <article className="game">
+      <Stack ref={stackRef} />
+      <GarbageCollector ref={garbageCollectorRef} />
+      <RecyclingBin ref={recyclingBinRef} />
+    </article>
+  </main>
+  
   );
 }
