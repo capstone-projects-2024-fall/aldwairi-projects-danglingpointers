@@ -1,5 +1,24 @@
 @use "../constants/constants";
 
 .main-default {
-    margin: 0 constants.$default-margin
+  margin: 0 constants.$default-margin;
+  max-height: calc(100vh - constants.$navigation-height);
+
+  article {
+    width: 250px;
+  }
+}
+
+.max-height {
+  max-height: calc(75vh - constants.$navigation-height);
+  padding-right: 20px;
+  overflow-y: auto;
+}
+
+.line {
+  list-style-type: none;
+  height: 2px;
+  background-color: black;
+  margin: 0;
+  padding: 0;
 }

@@ -21,10 +21,10 @@ export default function Watch() {
 
   return (
     <main className="main-default main-watch">
-      <article className="watch-games">
+      <article className="watch-games default-scrollbar">
         <h2>Watch</h2>
         {watchGames.length > 0 ? (
-          <ul>
+          <ul className="max-height">
             {watchGames.map((game, index) => (
               <li key={index}>
                 Mode: {game.mode}, Score: {game.player_one_score} vs{" "}

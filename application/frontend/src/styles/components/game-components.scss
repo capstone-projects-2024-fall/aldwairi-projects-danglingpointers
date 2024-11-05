@@ -6,6 +6,27 @@
   justify-content: space-between;
   align-items: center;
   height: calc(100vh - constants.$navigation-height);
+  .details-container {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 10px;
+    .user-items {
+      .selected-item {
+        align-items: center;
+        display: flex;
+        flex-flow: column nowrap;
+        gap: 5px;
+        height: 70px;
+        justify-content: flex-start;
+        background-color: whitesmoke;
+        border: 1px black solid;
+        padding: 5px;
+        .item-icon {
+          font-size: 36px;
+        }
+      }
+    }
+  }
 }
 
 .game {

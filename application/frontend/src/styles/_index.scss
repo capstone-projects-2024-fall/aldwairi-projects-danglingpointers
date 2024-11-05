@@ -4,14 +4,16 @@
 * https://sass-lang.com/documentation/at-rules/import
 */
 
-// Layouts
-@forward "./layouts/navigation.scss";
-
 // Animations
 @forward "./animations/animations.scss";
 
+// Layouts
+@forward "./layouts/navigation.scss";
+@forward "./layouts/scrollbar.scss";
+
 // Pages
 @forward "./pages/pages.scss";
+@forward "./pages/leaderboards.scss";
 @forward "./pages/dashboard.scss";
 @forward "./pages/profile.scss";
 @forward "./pages/home.scss";
