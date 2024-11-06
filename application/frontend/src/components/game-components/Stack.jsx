@@ -1,6 +1,7 @@
 import { forwardRef, useContext, useEffect, useState } from "react";
 import Pointer from "./Pointer";
 import GameContext from "../../context/GameContext";
+import getStackInterval from "../../scripts/get-stack-interval";
 
 const Stack = forwardRef((_, ref) => {
   const [totalPointerCounter, setTotalPointerCounter] = useState(0);
@@ -68,8 +69,8 @@ const Stack = forwardRef((_, ref) => {
         container.appendChild(firstChild);
       }
     };
-
-    const intervalId = setInterval(updateStack, 2250); // Interval for updating pointers
+    const random = getStackInterval(3250, 75);
+    const intervalId = setInterval(updateStack, random);
 
     return () => clearInterval(intervalId);
   }, [

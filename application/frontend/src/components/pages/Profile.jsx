@@ -2,8 +2,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { HOST_PATH } from "../../scripts/constants";
+import GameEntry from "../entries/GameEntry";
 
-const Profile = ({ userId }) => {
+const Profile = ({ userId, username, dateJoined, lastLogin }) => {
   const [profileData, setProfileData] = useState(null);
   const [recentGames, setRecentGames] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,28 +13,20 @@ const Profile = ({ userId }) => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const profileResponse = await axios.get(
-          `${HOST_PATH}/users?user_id=${userId}`
-        );
         const gamesResponse = await axios.get(
           `${HOST_PATH}/games?recent_games=true&user_id=${userId}`
         );
-        const response = await axios.get(`${HOST_PATH}/games/`);
-        console.log(response);
-
-        if (!profileResponse.data.length) {
-          setUserNotFound(true);
-          setLoading(false);
-          return;
-        }
 
         setProfileData({
-          username: profileResponse.data[0]?.username,
-          dateJoined: profileResponse.data[0]?.date_joined,
+          username: username,
+          dateJoined: dateJoined,
+          lastLogin: lastLogin,
         });
+
         setRecentGames(
-          Array.isArray(gamesResponse.data) ? gamesResponse.data : []
+          gamesResponse.data.filter((game) => game.status === "Complete") || []
         );
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -43,30 +36,42 @@ const Profile = ({ userId }) => {
     };
 
     fetchProfileData();
-  }, [userId]);
+  }, [userId, username, dateJoined, lastLogin]);
 
   if (loading) return <p className="mr-def">Loading profile...</p>;
-  if (userNotFound) return <p className="mr-def">User not found in the database.</p>;
+  if (userNotFound)
+    return <p className="mr-def">User not found in the database.</p>;
 
   return (
     <main className="main-profile">
-      <h1>User Profile</h1>
       <div className="profile-info">
         <div>
-          <strong>Username:</strong> {profileData.username || "N/A"}
-        </div>
-        <div>
-          <strong>Date Joined:</strong> {profileData.dateJoined || "N/A"}
+          <h1>User Profile</h1>
+          <div>
+            <strong>Username:</strong> {profileData.username}
+          </div>
+          <div>
+            <strong>Date Joined:</strong> {profileData.dateJoined}
+          </div>
+          <div>
+            <strong>Last Login:</strong>{" "}
+            {profileData.lastLogin || profileData.dateJoined}
+          </div>
         </div>
         <div className="recent-games">
           <h2>Recent Games</h2>
           {recentGames.length > 0 ? (
             <ul>
               {recentGames.map((game, index) => (
-                <li key={index}>
-                  Mode: {game.mode}, Score: {game.player_one_score} vs{" "}
-                  {game.player_two_score || "N/A"}
-                </li>
+                <GameEntry
+                  key={index}
+                  users={[
+                    { id: game.player_one, name: "" },
+                    { id: game.player_two, name: "" },
+                  ]}
+                  status={game.status}
+                  scores={[game.player_one_score, game.player_two_score]}
+                />
               ))}
             </ul>
           ) : (

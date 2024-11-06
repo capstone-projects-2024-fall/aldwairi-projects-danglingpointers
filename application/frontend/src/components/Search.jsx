@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useUserProfileStore from "../stores/userProfileStore";
 import axios from "axios";
 import { HOST_PATH } from "../scripts/constants";
 
@@ -8,7 +7,6 @@ const Search = () => {
   const [inputValue, setInputValue] = useState("");
   const [filteredUsernames, setFilteredUsernames] = useState([]);
   const [error, setError] = useState(null);
-  const { setProfileId } = useUserProfileStore();
   const navigate = useNavigate();
 
   // Fetch usernames from the backend as user types
@@ -29,7 +27,7 @@ const Search = () => {
     } catch (error) {
       console.error("Error fetching usernames:", error);
       setFilteredUsernames([]);
-      setError("Failed to fetch usernames. Please try again.");
+      setError("Failed to fetch usernames.");
     }
   };
 
@@ -45,15 +43,14 @@ const Search = () => {
     }
   };
 
-  const handleUserClick = (userId) => {
-    setProfileId(userId);
+  const handleUserClick = (username) => {
     setInputValue("");
     setFilteredUsernames([]);
-    navigate("/profile");
+    navigate(`/profile/${username}`);
   };
 
   return (
-    <div className="search-container">
+    <div className="search-container small-scrollbar">
       <span className="username-search">
         <input
           type="text"
@@ -62,17 +59,18 @@ const Search = () => {
           onChange={handleInputChange}
         />
       </span>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {/* Only display <ul> if there are usernames to show */}
-      {inputValue && filteredUsernames.length > 0 && (
+      <div className="username-search-results-container">
         <ul className="username-search-results">
-          {filteredUsernames.map((user, index) => (
-            <li key={index} onClick={() => handleUserClick(user.id)}>
-              {user.username}
-            </li>
-          ))}
+          {error && <li className="search-error">{error}</li>}
+          {inputValue &&
+            filteredUsernames.length > 0 &&
+            filteredUsernames.map((user, index) => (
+              <li key={index} onClick={() => handleUserClick(user.username)}>
+                {user.username}
+              </li>
+            ))}
         </ul>
-      )}
+      </div>
     </div>
   );
 };

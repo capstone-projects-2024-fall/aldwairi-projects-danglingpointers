@@ -5,7 +5,8 @@ import datetime
 
 def generate_game_entry(pk):
     mode = random.choice(["Solo", "Versus"])
-    player_two = random.choice([True, False])
+    status = random.choice(["Complete", "Active", "Pending"]) if mode == "Versus" else random.choice(["Complete", "Active"])
+    player_two = True if mode == "Versus" and status != "Pending" else False
     return {
         "model": "api.Game",
         "pk": str(pk),
@@ -16,7 +17,7 @@ def generate_game_entry(pk):
             "public": random.choice([True, False]),
             "date": datetime.datetime.now().strftime("%Y-%m-%d"),
             "link": None,
-            "status": random.choice(["Complete", "Active", "Pending"]) if mode == "Versus" else random.choice(["Complete", "Active"]),
+            "status": status,
             "game_length": random.randint(10, 5000),
             "player_one_score": random.randint(0, 1000),
             "player_two_score": random.randint(0, 1000) if player_two else None,

@@ -1,32 +1,45 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
 
-export default function GameEntry({ users, status, gameLink, mode=null, scores=[] }) {
-  const [btnColor, setBtnColor] = useState('blue');
-  const navigate = useNavigate();
+export default function GameEntry({
+  users,
+  status,
+  scores = [],
+}) {
+  const [btnColor, setBtnColor] = useState("blue");
 
   useEffect(() => {
-    status === 'Complete' ? setBtnColor('green') : setBtnColor('blue');
+    status === "Complete"
+      ? setBtnColor("green")
+      : status === "Pending"
+      ? setBtnColor("orange")
+      : setBtnColor("blue");
   }, [status]);
 
   return (
     <section className="base-entry game-entry">
       <div className="game-users">
-        {users.map((user, index) => <p key={user.id}>User {index + 1}: {user.id ?? "N/A" /*user.name*/}</p>)}
+        {users.map((user, index) =>
+          user.id ? (
+            <p key={index}>
+              User {user.id}
+            </p>
+          ) : null
+        )}
       </div>
-      {mode &&
-      <div>
-        Mode: {mode}
-      </div>}
-      <div>
-        {scores.map((score, index) => <p key={index}>User {index + 1} Score: {score ?? "N/A"}</p>)}
+      <div className="game-scores">
+        {scores.map((score, index) =>
+          score ? (
+            <p key={index}>
+              Score: {score}
+            </p>
+          ) : null
+        )}
       </div>
       <div className="game-status">
-        Status: 
-        <button className={`btn-status ${btnColor}`}>{status}</button>
-      </div>
-      <div className="game-link">
-        <a href={gameLink} onClick={(e) => { e.preventDefault(); navigate(gameLink); }}>More…</a>
+        Status:
+        <button className={`btn-status`} style={{ background: btnColor }}>
+          {status}
+        </button>
       </div>
     </section>
   );

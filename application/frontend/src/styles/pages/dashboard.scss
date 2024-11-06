@@ -34,27 +34,27 @@
   min-height: calc(100vh - constants.$navigation-height);
   max-height: calc(100vh - constants.$navigation-height);
   display: grid;
-  grid-template-columns: repeat(10, 10%);
+  grid-template-columns: repeat(20, 5%);
   grid-template-rows: repeat(10, 10%);
   grid-auto-flow: column;
   margin: 0 constants.$default-margin 0 0;
 
   .inbox {
     grid-column-start: 1;
-    grid-column-end: 2;
+    grid-column-end: 4;
     grid-row-start: 1;
     grid-row-end: -1;
   }
 
   .settings {
-    grid-column-start: 8;
+    grid-column-start: 15;
     grid-column-end: -1;
     grid-row-start: 1;
     grid-row-end: 4;
   }
 
   .store-container {
-    grid-column-start: 8;
+    grid-column-start: 15;
     grid-column-end: -1;
     grid-row-start: 4;
     grid-row-end: -1;
@@ -65,9 +65,9 @@
   }
 
   .user-previous-games {
-    grid-column-start: 4;
-    grid-column-end: 8;
-    grid-row-start: 4;
+    grid-column-start: 5;
+    grid-column-end: 14;
+    grid-row-start: 1;
     grid-row-end: -1;
   }
 }

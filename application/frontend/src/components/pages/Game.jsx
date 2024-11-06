@@ -31,6 +31,7 @@ export default function Game() {
   const [userItems, setUserItems] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const intervalRef = useRef(null);
+  const gameRef = useRef(null);
   const stackRef = useRef(null);
   const garbageCollectorRef = useRef(null);
   const recyclingBinRef = useRef(null);
@@ -125,29 +126,48 @@ export default function Game() {
     fetchUserItems();
   }, [userId]);
 
+  // Use Items Event Listener
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      event.preventDefault();
+      if (event.key === "Tab") {
+        const newIndex =
+          (selectedIndex + (event.shiftKey ? -1 : 1) + userItems.length) %
+          userItems.length;
+        setSelectedIndex(newIndex);
+      } else if (event.key === "Enter") {
+        console.log(userItems[selectedIndex].icon);
+      }
+    };
+
+    const mainGame = gameRef.current;
+    mainGame.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      mainGame.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedIndex, userItems]);
+
   return (
-    <main className="main-game">
-    <article className="details-container">
-      <div className="game-details">
-        <div className="timer">Timer: {convertSecondsToMinutes(timer)}</div>
-        <div className="score">Score: {userScore}</div>
-        <div className="lives-remaining">Lives: {userLives}</div>
-        {gameMode === "versus" ? (
-          <>
-            <div className="opponent-score">Opponent Score: </div>
-            <div className="opponent-lives">Opponent Lives: </div>
-          </>
-        ) : null}
-      </div>
-  
-      {/* Item Box Section */}
-      <div className="user-items">
-        <div className="selected-item">
-          {userItems.length > 0 ? (
-            <span className="item-icon">{userItems[selectedIndex].icon}</span>
-          ) : (
-            <span>No items available</span> // Fallback if no items are found
-          )}
+    <main className="main-game" ref={gameRef}>
+      <article className="details-container">
+        <div className="game-details">
+          <div className="timer">Timer: {convertSecondsToMinutes(timer)}</div>
+          <div className="score">Score: {userScore}</div>
+          <div className="lives-remaining">Lives: {userLives}</div>
+          {gameMode === "versus" ? (
+            <>
+              <div className="opponent-score">Opponent Score: </div>
+              <div className="opponent-lives">Opponent Lives: </div>
+            </>
+          ) : null}
+        </div>
+        <div className="user-items">
+          <div className="selected-item">
+            {userItems.length > 0 ? (
+              <span className="item-icon">{userItems[selectedIndex].icon}</span>
+            ) : null}
+          </div>
         </div>
       </div>
   
