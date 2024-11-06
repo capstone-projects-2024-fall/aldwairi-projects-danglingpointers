@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import Inbox from "../dashboard-components/Inbox"
 import Store from "../dashboard-components/Store";
 import Settings from "../dashboard-components/Settings";
-import UserLeaderboards from "../dashboard-components/UserLeaderboards";
+// import UserLeaderboards from "../dashboard-components/UserLeaderboards";
 import UserPreviousGames from "../dashboard-components/UserPreviousGames";
 import UserSetup from "../dashboard-components/UserSetup";
-import UserStats from "../dashboard-components/UserStats";
+// import UserStats from "../dashboard-components/UserStats";
 import { HOST_PATH } from "../../scripts/constants";
 import useUserAuthStore from "../../stores/userAuthStore";
 
@@ -38,9 +38,9 @@ export default function Dashboard() {
       <Inbox />
       <Store />
       <Settings />
-      <UserLeaderboards />
+      {/* <UserLeaderboards /> */}
       <UserPreviousGames />
-      <UserStats />
+      {/* <UserStats /> */}
     </main>
   );
 }

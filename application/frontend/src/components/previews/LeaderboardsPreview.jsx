@@ -74,8 +74,6 @@ export default function LeaderboardsPreview() {
                   { id: game.player_two, name: "" },
                 ]}
                 status={game.status}
-                gameLink={game.link}
-                mode={game.mode}
                 scores={[game.player_one_score, game.player_two_score]}
               />
             ))}

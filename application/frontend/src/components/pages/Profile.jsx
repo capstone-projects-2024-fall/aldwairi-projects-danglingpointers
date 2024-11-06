@@ -23,7 +23,7 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
         });
 
         setRecentGames(
-          Array.isArray(gamesResponse.data) ? gamesResponse.data : []
+          gamesResponse.data.filter((game) => game.status === "Complete") || []
         );
 
         setLoading(false);

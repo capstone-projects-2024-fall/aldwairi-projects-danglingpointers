@@ -1,54 +1,44 @@
 import { useState, useEffect } from "react";
-import WatchPreview from "../previews/WatchPreview";
+import axios from "axios";
+import { HOST_PATH } from "../../scripts/constants";
+import useUserAuthStore from "../../stores/userAuthStore";
+import GameEntry from "../entries/GameEntry";
 
 export default function UserPreviousGames() {
   const [watchPreviews, setWatchPreviews] = useState([]);
+  const { userId } = useUserAuthStore();
 
   useEffect(() => {
     // Simulate fetching data
-    const fetchData = () => {
-      const data = [
-        {
-          users: [
-            { id: 1, name: "User1" },
-            { id: 2, name: "User2" },
-          ],
-          status: "Complete",
-          gameLink: "/game/1",
-          additionalInfo: "Exciting gameplay and close calls!",
-        },
-        {
-          users: [
-            { id: 3, name: "User3" },
-            { id: 4, name: "User4" },
-          ],
-          status: "Complete",
-          gameLink: "/game/2",
-          additionalInfo: "A thrilling finish to the match!",
-        },
-      ];
-      setWatchPreviews(data);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${HOST_PATH}/games?recent_games=true&user_id=${userId}`);
+        setWatchPreviews(response.data.filter((game) => game.status === "Complete"));
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchData();
-  }, []);
+  }, [userId]);
 
   return (
     <div className="user-previous-games">
       <h1 className="watchtitle">Game Replays</h1>
-      <p className="watchlist-description">View previous games!</p>
       <article className="watchlist-container">
         <section></section>
         <section className="watchlist">
-          {watchPreviews.map((preview, index) => (
-            <WatchPreview
-              key={index}
-              users={preview.users}
-              status={preview.status}
-              gameLink={preview.gameLink}
-              additionalInfo={preview.additionalInfo}
-            />
-          ))}
+        {watchPreviews.map((game, index) => (
+              <GameEntry
+                key={index}
+                users={[
+                  { id: game.player_one, name: "" },
+                  { id: game.player_two, name: "" },
+                ]}
+                status={game.status}
+                scores={[game.player_one_score, game.player_two_score]}
+              />
+            ))}
         </section>
       </article>
     </div>
