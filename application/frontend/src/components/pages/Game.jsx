@@ -23,13 +23,13 @@ export default function Game() {
     gameStarted,
     setGameStarted,
     pointersCleared, // Listen for pointersCleared state
-    setPointersCleared 
-
+    setPointersCleared,
   } = useContext(GameContext);
 
   const { userId } = useUserAuthStore();
   const [userItems, setUserItems] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [finalTimer, setFinalTimer] = useState(0);
   const intervalRef = useRef(null);
   const gameRef = useRef(null);
   const stackRef = useRef(null);
@@ -46,30 +46,11 @@ export default function Game() {
     setGameMode("Solo");
     setGameStarted(true);
     setPointersCleared(false); // Reset pointers cleared state when starting a new round
-
-  };
-
-  // Function to post game data to the backend after the round ends
-  const postGameData = async () => {
-    if (userId) {
-      try {
-        const response = await axios.post(`${HOST_PATH}/games/`, {
-          player_one: userId,
-          player_one_score: userScore,
-          game_length: timer,
-          mode: gameMode,
-          status: "Complete"
-        });
-        console.log("Game data posted successfully:", response.data);
-      } catch (error) {
-        console.error("Error posting game data:", error);
-      }
-    }
   };
 
   // Game Timer
   useEffect(() => {
-    if (gameStarted && userLivesCount > 0) { 
+    if (gameStarted && userLivesCount > 0) {
       const intervalId = setInterval(() => {
         setTimer((prevTime) => prevTime + 1);
       }, 1000);
@@ -79,20 +60,45 @@ export default function Game() {
       return () => {
         clearInterval(intervalRef.current);
       };
-    } else if (!gameStarted || userLivesCount <= 0) {
+    } else if (!gameStarted || userLivesCount <= 0 || finalTimer == 0) {
       clearInterval(intervalRef.current);
-      
+      setFinalTimer(timer);
     }
-  }, [gameStarted, setTimer, userLivesCount]);
+  }, [gameStarted, finalTimer, timer, setTimer, userLivesCount]);
 
   // End game after all pointers are off-screen
   useEffect(() => {
+    // Function to post game data to the backend after the round ends
+    const postGameData = async () => {
+      if (userId) {
+        try {
+          const response = await axios.post(`${HOST_PATH}/games/`, {
+            player_one: userId,
+            player_one_score: userScore,
+            game_length: finalTimer,
+            mode: gameMode,
+            status: "Complete",
+          });
+          console.log("Game data posted successfully:", response.data);
+        } catch (error) {
+          console.error("Error posting game data:", error);
+        }
+      }
+    };
+
     if (pointersCleared && userLivesCount === 0) {
       postGameData();
       setGameStarted(false); // End game once all pointers are cleared and lives are zero
-      
     }
-  }, [pointersCleared, userLivesCount]);
+  }, [
+    pointersCleared,
+    setGameStarted,
+    userLivesCount,
+    gameMode,
+    finalTimer,
+    userId,
+    userScore,
+  ]);
 
   // Fetch Items
   useEffect(() => {
@@ -169,24 +175,22 @@ export default function Game() {
             ) : null}
           </div>
         </div>
-      </div>
-  
-      {/* Start Round Button */}
-      <button
-        onClick={initializeRound}
-        className="start-round-button"
-        disabled={gameStarted}
-      >
-        Start New Round
-      </button>
-    </article>
-    
-    <article className="game">
-      <Stack ref={stackRef} />
-      <GarbageCollector ref={garbageCollectorRef} />
-      <RecyclingBin ref={recyclingBinRef} />
-    </article>
-  </main>
-  
+
+        {/* Start Round Button */}
+        <button
+          onClick={initializeRound}
+          className="start-round-button"
+          disabled={gameStarted}
+        >
+          Start New Round
+        </button>
+      </article>
+
+      <article className="game">
+        <Stack ref={stackRef} />
+        <GarbageCollector ref={garbageCollectorRef} />
+        <RecyclingBin ref={recyclingBinRef} />
+      </article>
+    </main>
   );
 }
