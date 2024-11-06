@@ -40,7 +40,7 @@ export default function Game() {
     setUserScore(0);
     setUserLives(["❤️", "❤️", "❤️"]);
     setUserLivesCount(3);
-    setGameMode("solo");
+    setGameMode("Solo");
     setGameStarted(true);
   };
 
@@ -48,11 +48,12 @@ export default function Game() {
   const postGameData = async () => {
     if (userId) {
       try {
-        const response = await axios.post(`${HOST_PATH}/games`, {
-          user_id: userId,
-          score: userScore,
-          time: timer,
+        const response = await axios.post(`${HOST_PATH}/games/`, {
+          player_one: userId,
+          player_one_score: userScore,
+          game_length: timer,
           mode: gameMode,
+          status: "Complete"
         });
         console.log("Game data posted successfully:", response.data);
       } catch (error) {
@@ -75,16 +76,16 @@ export default function Game() {
       };
     } else if (!gameStarted || userLivesCount <= 0) {
       clearInterval(intervalRef.current);
-      if (userLivesCount <= 0) {
-        postGameData(); // Post data when the game ends
-      }
+      
     }
   }, [gameStarted, setTimer, userLivesCount]);
 
   // End game after all pointers are off-screen
   useEffect(() => {
     if (pointersCleared && userLivesCount === 0) {
+      postGameData();
       setGameStarted(false); // End game once all pointers are cleared and lives are zero
+      
     }
   }, [pointersCleared, userLivesCount]);
 
