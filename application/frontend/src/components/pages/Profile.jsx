@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { HOST_PATH } from "../../scripts/constants";
+import GameEntry from "../entries/GameEntry";
 
 const Profile = ({ userId, username, dateJoined, lastLogin }) => {
   const [profileData, setProfileData] = useState(null);
@@ -43,27 +44,34 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
 
   return (
     <main className="main-profile">
-      <h1>User Profile</h1>
       <div className="profile-info">
         <div>
-          <strong>Username:</strong> {profileData.username}
-        </div>
-        <div>
-          <strong>Date Joined:</strong> {profileData.dateJoined}
-        </div>
-        <div>
-          <strong>Last Login:</strong>{" "}
-          {profileData.lastLogin || profileData.dateJoined}
+          <h1>User Profile</h1>
+          <div>
+            <strong>Username:</strong> {profileData.username}
+          </div>
+          <div>
+            <strong>Date Joined:</strong> {profileData.dateJoined}
+          </div>
+          <div>
+            <strong>Last Login:</strong>{" "}
+            {profileData.lastLogin || profileData.dateJoined}
+          </div>
         </div>
         <div className="recent-games">
           <h2>Recent Games</h2>
           {recentGames.length > 0 ? (
             <ul>
               {recentGames.map((game, index) => (
-                <li key={index}>
-                  Mode: {game.mode}, Score: {game.player_one_score} vs{" "}
-                  {game.player_two_score || "N/A"}
-                </li>
+                <GameEntry
+                  key={index}
+                  users={[
+                    { id: game.player_one, name: "" },
+                    { id: game.player_two, name: "" },
+                  ]}
+                  status={game.status}
+                  scores={[game.player_one_score, game.player_two_score]}
+                />
               ))}
             </ul>
           ) : (
