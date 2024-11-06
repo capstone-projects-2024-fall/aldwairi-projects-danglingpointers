@@ -6,13 +6,20 @@ const Stack = forwardRef((_, ref) => {
   const [totalPointerCounter, setTotalPointerCounter] = useState(0);
   const [currentPointerCounter, setCurrentPointerCounter] = useState(0);
   const [pointers, setPointers] = useState([]);
-  const { setUserScore, setUserLives, userLivesCount, setUserLivesCount } =
+  const { setUserScore, setUserLives, userLivesCount, setUserLivesCount, gameStarted, setPointersCleared } =
     useContext(GameContext);
 
   useEffect(() => {
+    if (!gameStarted || userLivesCount === 0) return;
+
+    // Reset pointers cleared state when the game starts
+    setPointersCleared(false);
+
+    const pointerContainer = ref.current.querySelector(".pointer-container");
+
     const updateStack = () => {
       if (userLivesCount === 0) return;
-      const pointerContainer = ref.current.querySelector(".pointer-container");
+
       const newPointer = (
         <Pointer
           key={totalPointerCounter}
@@ -22,45 +29,58 @@ const Stack = forwardRef((_, ref) => {
               `.pointer-${totalPointerCounter}`
             );
 
-            if (thisPointer.classList.contains("animation-four"))
+            if (thisPointer.classList.contains("animation-four")) {
               setUserScore((score) => score + 1);
-            else
+            } else {
               setUserLives((lives) => {
                 let newLives = [...lives];
                 newLives.pop();
                 setUserLivesCount(newLives.length);
-                if (newLives.length) return newLives;
-                else return ["💀"];
+                return newLives.length ? newLives : ["💀"];
               });
-            pointerContainer.removeChild(thisPointer);
+            }
 
-            setCurrentPointerCounter((prevCounter) => prevCounter - 1);
+            pointerContainer.removeChild(thisPointer);
+            setCurrentPointerCounter((prevCounter) => {
+              const newCounter = prevCounter - 1;
+              // Check if all pointers are removed
+              if (newCounter === 0) {
+                setTimeout(() => setPointersCleared(true), 0);   //queue this as to not console log error
+              }
+              return newCounter;
+            });
           }}
         />
       );
 
-      setPointers([...pointers, newPointer]);
+      // Add new pointer to the stack
+      setPointers((prevPointers) => [...prevPointers, newPointer]);
       setCurrentPointerCounter((prevCounter) => prevCounter + 1);
       setTotalPointerCounter((prevCounter) => prevCounter + 1);
 
+      // Move the stack immediately after adding a new pointer
       const container = ref.current.querySelector(".stack");
       const firstChild = container.firstChild;
 
-      container.removeChild(firstChild);
-      container.appendChild(firstChild);
+      // Change the color of the first child (or any other logic for changing colors)
+      if (firstChild) {
+        container.removeChild(firstChild);
+        container.appendChild(firstChild);
+      }
     };
-    //! updateStack(); //! uncomment at your own risk
-    const intervalId = setInterval(updateStack, 2250);
+
+    const intervalId = setInterval(updateStack, 2250); // Interval for updating pointers
 
     return () => clearInterval(intervalId);
   }, [
-    pointers,
     ref,
     setUserLives,
     setUserLivesCount,
     setUserScore,
-    totalPointerCounter,
     userLivesCount,
+    gameStarted,
+    setPointersCleared,
+    totalPointerCounter,
   ]);
 
   return (
