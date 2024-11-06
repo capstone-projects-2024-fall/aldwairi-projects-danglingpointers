@@ -12,12 +12,13 @@ const Stack = forwardRef((_, ref) => {
   useEffect(() => {
     if (!gameStarted || userLivesCount === 0) return;
 
-    setPointersCleared(false); // Reset to false when the game starts
+    // Reset pointers cleared state when the game starts
+    setPointersCleared(false);
+
+    const pointerContainer = ref.current.querySelector(".pointer-container");
 
     const updateStack = () => {
       if (userLivesCount === 0) return;
-
-      const pointerContainer = ref.current.querySelector(".pointer-container");
 
       const newPointer = (
         <Pointer
@@ -42,8 +43,9 @@ const Stack = forwardRef((_, ref) => {
             pointerContainer.removeChild(thisPointer);
             setCurrentPointerCounter((prevCounter) => {
               const newCounter = prevCounter - 1;
+              // Check if all pointers are removed
               if (newCounter === 0) {
-                setPointersCleared(true); // Set pointersCleared to true when all pointers are removed
+                setTimeout(() => setPointersCleared(true), 0);   //queue this as to not console log error
               }
               return newCounter;
             });
@@ -51,12 +53,24 @@ const Stack = forwardRef((_, ref) => {
         />
       );
 
+      // Add new pointer to the stack
       setPointers((prevPointers) => [...prevPointers, newPointer]);
       setCurrentPointerCounter((prevCounter) => prevCounter + 1);
       setTotalPointerCounter((prevCounter) => prevCounter + 1);
+
+      // Move the stack immediately after adding a new pointer
+      const container = ref.current.querySelector(".stack");
+      const firstChild = container.firstChild;
+
+      // Change the color of the first child (or any other logic for changing colors)
+      if (firstChild) {
+        firstChild.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`; // Random color
+        container.removeChild(firstChild);
+        container.appendChild(firstChild);
+      }
     };
 
-    const intervalId = setInterval(updateStack, 2250);
+    const intervalId = setInterval(updateStack, 2250); // Interval for updating pointers
 
     return () => clearInterval(intervalId);
   }, [

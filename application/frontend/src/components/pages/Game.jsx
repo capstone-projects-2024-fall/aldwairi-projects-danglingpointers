@@ -23,6 +23,8 @@ export default function Game() {
     gameStarted,
     setGameStarted,
     pointersCleared, // Listen for pointersCleared state
+    setPointersCleared 
+
   } = useContext(GameContext);
 
   const { userId } = useUserAuthStore();
@@ -42,6 +44,8 @@ export default function Game() {
     setUserLivesCount(3);
     setGameMode("Solo");
     setGameStarted(true);
+    setPointersCleared(false); // Reset pointers cleared state when starting a new round
+
   };
 
   // Function to post game data to the backend after the round ends

@@ -10,7 +10,7 @@ export const GameProvider = ({ children }) => {
   const [userLives, setUserLives] = useState(["❤️", "❤️", "❤️"]);
   const [userLivesCount, setUserLivesCount] = useState(3);
   const [gameStarted, setGameStarted] = useState(false);
-  const [pointersCleared, setPointersCleared] = useState(true); // Track pointers cleared
+  const [pointersCleared, setPointersCleared] = useState(false); // Track pointers cleared
 
   return (
     <GameContext.Provider
