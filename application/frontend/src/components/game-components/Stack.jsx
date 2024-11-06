@@ -1,13 +1,18 @@
 import { forwardRef, useContext, useEffect, useState } from "react";
 import Pointer from "./Pointer";
 import GameContext from "../../context/GameContext";
+import getStackInterval from "../../scripts/get-stack-interval";
 
 const Stack = forwardRef((_, ref) => {
   const [totalPointerCounter, setTotalPointerCounter] = useState(0);
   const [currentPointerCounter, setCurrentPointerCounter] = useState(0);
   const [pointers, setPointers] = useState([]);
-  const { setUserScore, setUserLives, userLivesCount, setUserLivesCount } =
-    useContext(GameContext);
+  const {
+    setUserScore,
+    setUserLives,
+    userLivesCount,
+    setUserLivesCount,
+  } = useContext(GameContext);
 
   useEffect(() => {
     const updateStack = () => {
@@ -49,8 +54,8 @@ const Stack = forwardRef((_, ref) => {
       container.removeChild(firstChild);
       container.appendChild(firstChild);
     };
-    //! updateStack(); //! uncomment at your own risk
-    const intervalId = setInterval(updateStack, 2250);
+    const random = getStackInterval(3250, 75);
+    const intervalId = setInterval(updateStack, random);
 
     return () => clearInterval(intervalId);
   }, [
@@ -60,7 +65,7 @@ const Stack = forwardRef((_, ref) => {
     setUserLivesCount,
     setUserScore,
     totalPointerCounter,
-    userLivesCount,
+    userLivesCount, 
   ]);
 
   return (

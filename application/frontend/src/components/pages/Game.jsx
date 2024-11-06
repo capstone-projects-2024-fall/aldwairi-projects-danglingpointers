@@ -23,6 +23,7 @@ export default function Game() {
   const [userItems, setUserItems] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const intervalRef = useRef(null);
+  const gameRef = useRef(null);
   const stackRef = useRef(null);
   const garbageCollectorRef = useRef(null);
   const recyclingBinRef = useRef(null);
@@ -93,15 +94,16 @@ export default function Game() {
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
+    const mainGame = gameRef.current;
+    mainGame.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      mainGame.removeEventListener("keydown", handleKeyDown);
     };
   }, [selectedIndex, userItems]);
 
   return (
-    <main className="main-game">
+    <main className="main-game" ref={gameRef}>
       <article className="details-container">
         <div className="game-details">
           <div className="timer">Timer: {convertSecondsToMinutes(timer)}</div>

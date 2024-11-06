@@ -16,13 +16,8 @@ export default function Navigation() {
         <li className="li-home">
         </li>
         <li>
-          <Link to="/practice">
-            <Button text="Practice" />
-          </Link>
-        </li>
-        <li>
-          <Link to="/watch">
-            <Button text="Watch" />
+          <Link to="/leaderboards">
+            <Button text="Leaderboards" />
           </Link>
         </li>
         <li>
@@ -31,8 +26,13 @@ export default function Navigation() {
           </Link>
         </li>
         <li>
-          <Link to="/leaderboards">
-            <Button text="Leaderboards" />
+          <Link to="/practice">
+            <Button text="Practice" />
+          </Link>
+        </li>
+        <li>
+          <Link to="/watch">
+            <Button text="Watch" />
           </Link>
         </li>
         <li className="li-row">

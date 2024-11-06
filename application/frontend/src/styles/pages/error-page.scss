@@ -1,0 +1,23 @@
+@use "../constants/constants";
+
+.main-error-page {
+    display: grid;
+    place-items: center;
+    height: calc(100vh - constants.$default-margin);
+
+    article {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 20rem;
+        margin: 0;
+    }
+
+    p {
+        font-size: 2rem;
+    }
+}

@@ -1,28 +1,27 @@
 .base-entry {
-    border: 1px solid #ddd;
-    padding: 10px;
-    margin-bottom: 10px;
-  }
-  
-  .game-users p, .game-status p {
-    margin: 0;
-  }
-  
-  .btn-status {
-    margin-top: 5px;
-    padding: 5px;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .btn-status.blue {
-    background-color: blue;
-    color: white;
-  }
-  
-  .btn-status.green {
-    background-color: green;
-    color: white;
-  }
+  background: rgb(61, 51, 54);
+  border: 1px solid #ddd;
+  color: whitesmoke;
+  padding: 10px;
+  margin-bottom: 10px;
+}
 
-  //very rough
+.game-users, .game-scores {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.game-users p,
+.game-status p {
+  margin: 0;
+}
+
+.btn-status {
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  margin-left: 10px;
+  padding: 5px;
+  text-shadow: 0 1px 1px black;
+}
