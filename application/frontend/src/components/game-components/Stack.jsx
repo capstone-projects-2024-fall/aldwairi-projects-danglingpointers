@@ -64,7 +64,6 @@ const Stack = forwardRef((_, ref) => {
 
       // Change the color of the first child (or any other logic for changing colors)
       if (firstChild) {
-        firstChild.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`; // Random color
         container.removeChild(firstChild);
         container.appendChild(firstChild);
       }
