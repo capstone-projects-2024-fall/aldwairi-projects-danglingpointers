@@ -10,7 +10,7 @@ const InboxComponent = ({
 }) => {
   return (
     <div>
-      <div className="inbox-component">
+      <div className="inbox-component" style={{margin: "10px 0"}}>
         <div onClick={onClick} style={{ cursor: "pointer" }}>
           {isThreadVisible ? "▽" : "▷"}
         </div>

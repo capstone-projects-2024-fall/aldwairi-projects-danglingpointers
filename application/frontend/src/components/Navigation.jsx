@@ -26,8 +26,8 @@ export default function Navigation() {
           </Link>
         </li>
         <li>
-          <Link to="/practice">
-            <Button text="Practice" />
+          <Link to="/play">
+            <Button text="Play" />
           </Link>
         </li>
         <li>
