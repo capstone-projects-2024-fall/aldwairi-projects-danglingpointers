@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import Dashboard from "./components/pages/Dashboard";
 import Game from "./components/pages/Game";
@@ -11,7 +11,7 @@ import { GameProvider } from "./context/GameContext";
 import DefaultLayout from "./layouts/DefaultLayout";
 import useUserAuthStore from "./stores/userAuthStore";
 import "./styles/App.scss";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { HOST_PATH } from "./scripts/constants";
 import ErrorPage from "./components/pages/ErrorPage";
@@ -19,8 +19,9 @@ import ErrorPage from "./components/pages/ErrorPage";
 export default function App() {
   const { isLoggedIn } = useUserAuthStore();
   const [profiles, setProfiles] = useState(null);
+  const location = useLocation();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const fetchUserItems = async () => {
       try {
         const usersResponse = await axios.get(`${HOST_PATH}/users`);
@@ -32,7 +33,7 @@ export default function App() {
     };
 
     fetchUserItems();
-  }, []);
+  }, [location.pathname]);
 
   return (
     <Routes>
@@ -73,6 +74,7 @@ export default function App() {
               />
             ))
           : null}
+          
         <Route path="profile" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

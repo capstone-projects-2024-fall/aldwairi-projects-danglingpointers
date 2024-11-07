@@ -1,5 +1,6 @@
 import { forwardRef, useContext, useEffect, useState } from "react";
 import Pointer from "./Pointer";
+import getRandomColor from "../../scripts/get-random-color";
 import GameContext from "../../context/GameContext";
 import getStackInterval from "../../scripts/get-stack-interval";
 
@@ -7,8 +8,14 @@ const Stack = forwardRef((_, ref) => {
   const [totalPointerCounter, setTotalPointerCounter] = useState(0);
   const [currentPointerCounter, setCurrentPointerCounter] = useState(0);
   const [pointers, setPointers] = useState([]);
-  const { setUserScore, setUserLives, userLivesCount, setUserLivesCount, gameStarted, setPointersCleared } =
-    useContext(GameContext);
+  const {
+    setUserScore,
+    setUserLives,
+    userLivesCount,
+    setUserLivesCount,
+    gameStarted,
+    setPointersCleared,
+  } = useContext(GameContext);
 
   useEffect(() => {
     if (!gameStarted || userLivesCount === 0) return;
@@ -25,14 +32,13 @@ const Stack = forwardRef((_, ref) => {
         <Pointer
           key={totalPointerCounter}
           id={totalPointerCounter}
+          color={getRandomColor()}
           onAnimationIteration={() => {
             const thisPointer = pointerContainer.querySelector(
               `.pointer-${totalPointerCounter}`
             );
 
-            if (thisPointer.classList.contains("animation-four")) {
-              setUserScore((score) => score + 1);
-            } else {
+            if (!thisPointer.classList.contains("animation-four")) {
               setUserLives((lives) => {
                 let newLives = [...lives];
                 newLives.pop();
@@ -46,7 +52,7 @@ const Stack = forwardRef((_, ref) => {
               const newCounter = prevCounter - 1;
               // Check if all pointers are removed
               if (newCounter === 0) {
-                setTimeout(() => setPointersCleared(true), 0);   //queue this as to not console log error
+                setTimeout(() => setPointersCleared(true), 0); //queue this as to not console log error
               }
               return newCounter;
             });

@@ -39,10 +39,11 @@ class CreateOrLoginView(generics.GenericAPIView):
 
         username = request.data.get('username')
         password = request.data.get('password')
-        user = User.objects.get(username=username)
 
         # Create an account if user not found in database
-        if user is None:
+        if User.objects.filter(username=username).exists():
+            user = User.objects.get(username=username)
+        else:
             user = User.objects.create_user(
                 username=username,
                 password=password,
@@ -60,7 +61,7 @@ class CreateUserMetaDataView(generics.GenericAPIView):
         credentials passed from the frontend. This method responds with JSON
         objects with user settings, items, and points to be stored in sessionStorage.
         '''
-               
+
         user_id = request.data.get('user_id')
         security_question_id = request.data.get('security_question')
         security_question = SecurityQuestion.objects.get(
@@ -208,16 +209,15 @@ class GameViewSet(viewsets.ModelViewSet):
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
-    
+
     def get_queryset(self):
         queryset = self.queryset
-        
+
         user_id = self.request.query_params.get('user_id')
         if user_id:
             queryset = queryset.filter(id=user_id)
-            
+
         return queryset
-    
 
 
 class SecurityQuestionViewSet(viewsets.ModelViewSet):
