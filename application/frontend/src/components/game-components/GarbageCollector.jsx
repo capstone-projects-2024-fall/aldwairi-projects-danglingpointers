@@ -1,7 +1,8 @@
 import {
   forwardRef,
+  useContext,
   useEffect,
-  useLayoutEffect,
+  // useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -9,22 +10,24 @@ import {
   checkLeftBoundary,
   checkRightBoundary,
 } from "../../scripts/check-boundaries";
-import useUserAuthStore from "../../stores/userAuthStore";
+// import useUserAuthStore from "../../stores/userAuthStore";
+import AuthContext from "../../auth/AuthContext";
 
 const GarbageCollector = forwardRef((_, ref) => {
-  const { userId } = useUserAuthStore();
+  // const { userId } = useUserAuthStore();
   const [styleLeft, setStyleLeft] = useState("1px");
-  const [garbageCollectorColor, setGarbageCollectorColor] = useState("");
+  const { garbageCollectorColor } =
+    useContext(AuthContext);
   const intervalRef = useRef(null);
 
-  useLayoutEffect(() => {
-    if (userId) {
-      const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
-      const color = store.state.settings.garbageCollectorColor;
-      if (color) setGarbageCollectorColor(color);
-      else setGarbageCollectorColor("green");
-    } else setGarbageCollectorColor("red");
-  }, [userId]);
+  // useLayoutEffect(() => {
+  //   if (userId) {
+  //     const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+  //     const color = store.state.settings.garbageCollectorColor;
+  //     if (color) setGarbageCollectorColor(color);
+  //     else setGarbageCollectorColor("green");
+  //   } else setGarbageCollectorColor("red");
+  // }, [userId]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {

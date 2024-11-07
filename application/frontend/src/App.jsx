@@ -50,7 +50,7 @@ export default function App() {
         />
 
         <Route
-          path="practice"
+          path="play"
           element={
             <GameProvider>
               <Game />

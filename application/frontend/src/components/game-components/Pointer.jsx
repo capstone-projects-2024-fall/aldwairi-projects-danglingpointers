@@ -6,7 +6,7 @@ export default function Pointer({ color, id, onAnimationIteration }) {
   const { gameStarted, setUserScore, userLives } = useContext(GameContext);
   const pointerRef = useRef(null);
   const [pointerLeft, setPointerLeft] = useState(0);
-  const [collisionCount, setCollisionCount] = useState(0);
+  // const [collisionCount, setCollisionCount] = useState(0);
   const [shouldAnimate, setShouldAnimate] = useState(true);
   const requestRef = useRef(null);
 
@@ -56,7 +56,7 @@ export default function Pointer({ color, id, onAnimationIteration }) {
           checkForCollision(pointerRect, garbageCollectorRect) &&
           !userLives.includes("💀")
         ) {
-          setCollisionCount((prevCount) => prevCount + 1);
+          // setCollisionCount((prevCount) => prevCount + 1);
           setUserScore((prevScore) => prevScore + 1);
           if (pointer.classList.contains("animation-three")) {
             pointer.classList.replace("animation-three", "animation-four");
@@ -86,8 +86,6 @@ export default function Pointer({ color, id, onAnimationIteration }) {
         backgroundColor: color,
         left: `${pointerLeft}px`,
       }}
-    >
-      {collisionCount}
-    </div>
+    ></div>
   );
 }

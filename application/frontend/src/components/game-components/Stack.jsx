@@ -5,8 +5,11 @@ import GameContext from "../../context/GameContext";
 import getStackInterval from "../../scripts/get-stack-interval";
 
 const Stack = forwardRef((_, ref) => {
-  const [totalPointerCounter, setTotalPointerCounter] = useState(0);
-  const [currentPointerCounter, setCurrentPointerCounter] = useState(0);
+  const {
+    setCurrentPointerCounter,
+    totalPointerCounter,
+    setTotalPointerCounter,
+  } = useContext(GameContext);
   const [pointers, setPointers] = useState([]);
   const {
     setUserScore,
@@ -38,7 +41,9 @@ const Stack = forwardRef((_, ref) => {
               `.pointer-${totalPointerCounter}`
             );
 
-            if (!thisPointer.classList.contains("animation-four")) {
+            if (thisPointer.classList.contains("animation-four")) {
+              setUserScore((prevScore) => prevScore + 2);
+            } else {
               setUserLives((lives) => {
                 let newLives = [...lives];
                 newLives.pop();
@@ -75,7 +80,7 @@ const Stack = forwardRef((_, ref) => {
         container.appendChild(firstChild);
       }
     };
-    const random = getStackInterval(3250, 75);
+    const random = getStackInterval(3000, 750);
     const intervalId = setInterval(updateStack, random);
 
     return () => clearInterval(intervalId);
@@ -87,7 +92,9 @@ const Stack = forwardRef((_, ref) => {
     userLivesCount,
     gameStarted,
     setPointersCleared,
+    setCurrentPointerCounter,
     totalPointerCounter,
+    setTotalPointerCounter,
   ]);
 
   return (
@@ -95,13 +102,7 @@ const Stack = forwardRef((_, ref) => {
       <section className="pointer-container">{pointers}</section>
       <section className="stack" id="stack">
         {Array.from({ length: 8 }, (_, index) => (
-          <div key={index} className={`memory memory${index + 1}`}>
-            {(
-              totalPointerCounter *
-              parseFloat(`0.2${index}`) *
-              parseFloat(`0.1${currentPointerCounter}`)
-            ).toFixed(5)}
-          </div>
+          <div key={index} className={`memory memory${index + 1}`}></div>
         ))}
       </section>
     </div>
