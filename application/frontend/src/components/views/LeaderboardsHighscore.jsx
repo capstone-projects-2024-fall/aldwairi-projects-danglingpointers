@@ -14,7 +14,7 @@ export default function LeaderboardsHighScore() {
           `${HOST_PATH}/games?leaderboards_highscore=true`
         );
             const highScores = [];
-                (highScoreResponse.data || []).forEach((game) => {
+                (highScoreResponse.data.filter(x => x.status === "Complete").slice(0, 50) || []).forEach((game) => {
                     if (game.player_one_score) highScores.push({ ...game, score: game.player_one_score });
                     if (game.player_two_score) highScores.push({ ...game, score: game.player_two_score });
                 });
