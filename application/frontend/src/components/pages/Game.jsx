@@ -31,7 +31,6 @@ export default function Game() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [finalTimer, setFinalTimer] = useState(0);
   const intervalRef = useRef(null);
-  const gameRef = useRef(null);
   const stackRef = useRef(null);
   const garbageCollectorRef = useRef(null);
   const recyclingBinRef = useRef(null);
@@ -155,7 +154,7 @@ export default function Game() {
   }, [selectedIndex, userItems]);
 
   return (
-    <main className="main-game" ref={gameRef}>
+    <main className="main-game">
       <article className="details-container">
         <div className="game-details">
           <div className="timer">Timer: {convertSecondsToMinutes(timer)}</div>
