@@ -82,7 +82,7 @@ export default function Game() {
             mode: gameMode,
             status: "Complete",
           });
-          setUserMoney((prevMoney) => prevMoney + userScore)
+          setUserMoney((prevMoney) => prevMoney + userScore);
 
           console.log("Game data posted successfully:", response.data);
         } catch (error) {
@@ -104,7 +104,7 @@ export default function Game() {
     finalTimer,
     userId,
     userScore,
-    setUserMoney
+    setUserMoney,
   ]);
 
   // Fetch Items
@@ -169,7 +169,7 @@ export default function Game() {
           <div className="score">Score: {userScore}</div>
           <div className="lives-remaining">Lives: {userLives}</div>
         </div>
-        <div className="user-items">
+        {/* <div className="user-items">
           <div className="selected-item">
             {userItems.length > 0 ? (
               <span className="item-icon">{userItems[selectedIndex].icon}</span>
@@ -177,19 +177,19 @@ export default function Game() {
               <p className="item-warning">Login to buy and use items!</p>
             )}
           </div>
-        </div>
+        </div> */}
         <div className="start-game">
           {/* Start Round Button */}
           <button
             onClick={initializeRound}
             className="start-round-button"
-            style={{ 
+            style={{
               background: gameStarted ? "red" : "green",
               color: "white",
-              cursor: gameStarted ? "not-allowed" : "pointer" 
+              cursor: gameStarted ? "not-allowed" : "pointer",
             }}
           >
-            {gameStarted ? "Round In Progress" : "Start New Round"} 
+            {gameStarted ? "Round In Progress" : "Start New Round"}
           </button>
         </div>
       </article>

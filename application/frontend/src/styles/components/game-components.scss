@@ -140,11 +140,12 @@
 
 .recycling-bin {
   height: 100px;
-  width: 150px;
+  width: 175px;
   font-size: 48px;
   background-color: lightgray;
   display: grid;
   place-items: center;
+  z-index: 10000;
 }
 
 .button {
