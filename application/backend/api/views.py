@@ -98,6 +98,11 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
+        
+        profiles = self.request.query_params.get('profiles')
+        if profiles:
+            return queryset
+        
         user_id = self.request.query_params.get('user_id')
         if user_id:
             queryset = queryset.filter(id=user_id)
