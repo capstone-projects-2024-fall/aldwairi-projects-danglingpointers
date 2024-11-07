@@ -2,11 +2,11 @@ import InboxComponent from './InboxComponent'
 import { useState } from "react";
 
 export default function Inbox() {
-    var currUser = 'root'
+    var currUser = 'Alice'
 
     var threads = [
-        [{sender: 'root', text: 'hi!'}, {sender: 'root2', text: 'root2 message!'}],
-        [{sender: 'root', text: 'hi!'}, {sender: 'root3', text: 'root3 message!'}]
+        [{sender: 'Alice', text: 'hey'}, {sender: 'Bobby', text: 'hi'}],
+        [{sender: 'Alice', text: 'hello'}, {sender: 'Carla', text: 'hey!'}]
     ];
 
     const [openThreads, setOpenThreads] = useState([]);

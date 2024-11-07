@@ -31,7 +31,6 @@ export default function Game() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [finalTimer, setFinalTimer] = useState(0);
   const intervalRef = useRef(null);
-  const gameRef = useRef(null);
   const stackRef = useRef(null);
   const garbageCollectorRef = useRef(null);
   const recyclingBinRef = useRef(null);
@@ -135,8 +134,8 @@ export default function Game() {
   // Use Items Event Listener
   useEffect(() => {
     const handleKeyDown = (event) => {
-      event.preventDefault();
       if (event.key === "Tab") {
+        event.preventDefault();
         const newIndex =
           (selectedIndex + (event.shiftKey ? -1 : 1) + userItems.length) %
           userItems.length;
@@ -146,44 +145,45 @@ export default function Game() {
       }
     };
 
-    const mainGame = gameRef.current;
-    mainGame.addEventListener("keydown", handleKeyDown);
+    // const mainGame = gameRef.current;
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      mainGame.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [selectedIndex, userItems]);
 
   return (
-    <main className="main-game" ref={gameRef}>
+    <main className="main-game">
       <article className="details-container">
         <div className="game-details">
           <div className="timer">Timer: {convertSecondsToMinutes(timer)}</div>
           <div className="score">Score: {userScore}</div>
           <div className="lives-remaining">Lives: {userLives}</div>
-          {gameMode === "versus" ? (
-            <>
-              <div className="opponent-score">Opponent Score: </div>
-              <div className="opponent-lives">Opponent Lives: </div>
-            </>
-          ) : null}
         </div>
         <div className="user-items">
           <div className="selected-item">
             {userItems.length > 0 ? (
               <span className="item-icon">{userItems[selectedIndex].icon}</span>
-            ) : null}
+            ) : (
+              <p className="item-warning">Login to buy and use items!</p>
+            )}
           </div>
         </div>
-
-        {/* Start Round Button */}
-        <button
-          onClick={initializeRound}
-          className="start-round-button"
-          disabled={gameStarted}
-        >
-          Start New Round
-        </button>
+        <div className="start-game">
+          {/* Start Round Button */}
+          <button
+            onClick={initializeRound}
+            className="start-round-button"
+            style={{ 
+              background: gameStarted ? "red" : "green",
+              color: "white",
+              cursor: gameStarted ? "not-allowed" : "pointer" 
+            }}
+          >
+            {gameStarted ? "Round In Progress" : "Start New Round"} 
+          </button>
+        </div>
       </article>
 
       <article className="game">
