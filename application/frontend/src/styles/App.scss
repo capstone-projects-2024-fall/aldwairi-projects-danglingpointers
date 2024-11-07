@@ -1,0 +1,19 @@
+@use "./_index";
+
+/*
+* Style Precedence (lowest to highest) 
+* index.css
+* App.css
+* _index.scss
+* App.scss
+* 
+* Cascading Style Sheets: Styles declared at the top of a stylesheet
+* will be overwritten if new styles are defined for the same elements,
+* classes, or ids
+*
+* Default (fallback) styles are appropriate for index.css and App.css
+* in the event that the main stylesheets for the application do not load
+*
+* App.scss is typically reserved for scaffolding new style ideas before
+* they are organized into the scss tree and forwarded to _index.scss
+*/

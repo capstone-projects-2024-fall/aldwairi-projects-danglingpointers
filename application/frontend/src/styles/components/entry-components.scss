@@ -1,0 +1,63 @@
+@use "../constants/constants";
+
+.base-entry {
+  width: 400px;
+  background-color: lightgray;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.item-entry {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: start;
+
+  .item-img-container {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 20px;
+  }
+
+  .item-name {
+    margin: 0;
+    margin-top: 10px;
+    font-size: 2rem;
+  }
+
+  .item-description-container {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 70px;
+    padding: 2.5px 5px;
+    width: 100%;
+
+    .item-description {
+      max-width: 80%;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .btn-item-cost {
+      width: 60px;
+      height: 25px;
+      color: white;
+    }
+
+    .btn-item-cost.green {
+      background: green;
+    }
+
+    .btn-item-cost.red {
+      background: red;
+    }
+  }
+}
+
+.item-img {
+  font-size: 2.5rem;
+}

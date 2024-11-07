@@ -1,0 +1,96 @@
+@use "../constants/_constants";
+
+.navigation {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: constants.$small-flex-gap;
+  height: constants.$navigation-height;
+  margin: 0 constants.$default-margin;
+
+  h1 {
+    font-size: 2rem;
+    margin: 0;
+  }
+
+  .ul-default {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-end;
+    justify-content: flex-end;
+    flex-grow: 1;
+    gap: constants.$small-flex-gap;
+    margin-bottom: constants.$small-margin;
+    li {
+      list-style: none;
+    }
+
+    .li-row {
+      display: flex;
+      flex-flow: row nowrap;
+      gap: constants.$small-flex-gap;
+    }
+
+    .search-container {
+      display: flex;
+      flex-flow: column nowrap;
+    }
+
+    input {
+      padding: 2.5px;
+    }
+
+    .username-search input {
+      padding-left: constants.$input-search-padding;
+    }
+
+    .username-search::before {
+      content: "🔍";
+      position: absolute;
+      top: 20px;
+    }
+
+    .username-search-results-container {
+      position: absolute;
+      top: 40px;
+      width: 193px;
+      max-height: 400px;
+      overflow-y: scroll;
+    }
+
+    .username-search-results {
+      display: flex;
+      flex-flow: column nowrap;
+      background-color: black;
+      color: white;
+      z-index: 10;
+
+      li {
+        padding: 3px;
+      }
+
+      li.search-error {
+        background: black;
+        color: red;
+      }
+
+      li:not(.search-error) {
+        max-width: 100%;
+        white-space: nowrap;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .login-container {
+      display: flex;
+      align-items: flex-end;
+      form {
+        display: flex;
+        flex-flow: row nowrap;
+        gap: 10px;
+      }
+    }
+  }
+}

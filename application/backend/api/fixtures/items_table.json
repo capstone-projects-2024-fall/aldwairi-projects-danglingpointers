@@ -1,0 +1,57 @@
+[
+    {
+        "model": "api.Item",
+        "pk":"0",
+        "fields": {
+            "name" : "Slow Down",
+            "description" : "Pointers are released slower than the default value.",
+            "icon": "🐢",
+            "cost" : "10"
+        }
+
+    },
+    {
+        "model": "api.Item",
+        "pk":"1",
+        "fields": {
+            "name" : "Speed Up",
+            "description" : "Your garbage collector moves faster than the default value.",
+            "icon": "🐆",
+            "cost" : "8"
+        }
+
+    },
+    {
+        "model": "api.Item",
+        "pk":"2",
+        "fields": {
+            "name" : "Extra Life",
+            "description" : "Add 1 life to your current round.",
+            "icon": "💓",
+            "cost" : "20"
+        }
+
+    },
+    {
+        "model": "api.Item",
+        "pk":"3",
+        "fields": {
+            "name" : "Super Collector",
+            "description" : "Double the width of the garbage collector.",
+            "icon": "🔮",
+            "cost" : "15"
+        }
+
+    },
+    {
+        "model": "api.Item",
+        "pk":"4",
+        "fields": {
+            "name" : "Double Score",
+            "description" : "Your score increases by double the default amount.",
+            "icon": "🤑",
+            "cost" : "12"
+        }
+
+    }
+]

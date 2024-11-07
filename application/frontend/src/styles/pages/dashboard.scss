@@ -1,0 +1,101 @@
+@use "../constants/constants";
+
+.main-user-setup {
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - constants.$navigation-height);
+  max-height: calc(100vh - constants.$navigation-height);
+
+  form {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    gap: 20px;
+
+    .user-setup-label-container {
+      display: flex;
+      flex-flow: column nowrap;
+      width: 100%;
+    }
+
+    input,
+    select {
+      padding: 5px;
+    }
+
+    button {
+      padding: 5px;
+      width: 60px;
+    }
+  }
+}
+
+.main-dashboard {
+  min-height: calc(100vh - constants.$navigation-height);
+  max-height: calc(100vh - constants.$navigation-height);
+  display: grid;
+  grid-template-columns: repeat(20, 5%);
+  grid-template-rows: repeat(10, 10%);
+  grid-auto-flow: column;
+  margin: 0 constants.$default-margin 0 0;
+
+  .inbox {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: 1;
+    grid-row-end: -1;
+    padding: 0 constants.$default-margin;
+  }
+
+  .settings {
+    grid-column-start: 14;
+    grid-column-end: 20;
+    grid-row-start: 1;
+    grid-row-end: 4;
+  }
+
+  .store-container {
+    grid-column-start: 14;
+    grid-column-end: 20;
+    grid-row-start: 5;
+    grid-row-end: -1;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 20px;
+    overflow-y: hidden;
+  }
+
+  .user-previous-games {
+    grid-column-start: 5;
+    grid-column-end: 11;
+    grid-row-start: 1;
+    grid-row-end: -1;
+    display: flex;
+    flex-flow: column nowrap;
+    overflow-y: hidden;
+  }
+
+  .watchlist-container {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 10px;
+    justify-content: start;
+    align-items: start;
+    overflow-y: auto;
+  }
+}
+
+.li-setting {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  gap: 10px;
+
+  input {
+    padding: 5px;
+  }
+}
+
+.mb-def {
+  margin-bottom: constants.$default-margin;
+}
