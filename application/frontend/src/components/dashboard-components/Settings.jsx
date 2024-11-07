@@ -49,6 +49,7 @@ export default function Settings() {
             </li>
             {keys[index] === "garbageCollectorColor" ? (
               <SliderPicker
+                key={100000}
                 color={garbageCollectorColor}
                 onChangeComplete={handleChangeComplete}
               />

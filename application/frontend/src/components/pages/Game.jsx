@@ -7,6 +7,7 @@ import GameContext from "../../context/GameContext";
 import axios from "axios";
 import { HOST_PATH } from "../../scripts/constants";
 import useUserAuthStore from "../../stores/userAuthStore";
+import AuthContext from "../../auth/AuthContext";
 
 export default function Game() {
   const {
@@ -22,9 +23,12 @@ export default function Game() {
     setUserLivesCount,
     gameStarted,
     setGameStarted,
+    totalPointerCount,
     pointersCleared, // Listen for pointersCleared state
     setPointersCleared,
   } = useContext(GameContext);
+
+  const { setUserMoney } = useContext(AuthContext);
 
   const { userId } = useUserAuthStore();
   const [userItems, setUserItems] = useState([]);
@@ -78,6 +82,8 @@ export default function Game() {
             mode: gameMode,
             status: "Complete",
           });
+          setUserMoney((prevMoney) => prevMoney + userScore)
+
           console.log("Game data posted successfully:", response.data);
         } catch (error) {
           console.error("Error posting game data:", error);
@@ -91,12 +97,14 @@ export default function Game() {
     }
   }, [
     pointersCleared,
+    totalPointerCount,
     setGameStarted,
     userLivesCount,
     gameMode,
     finalTimer,
     userId,
     userScore,
+    setUserMoney
   ]);
 
   // Fetch Items

@@ -1,12 +1,13 @@
 import axios from "axios";
 import ItemEntry from "../entries/ItemEntry";
-import { useLayoutEffect, useState } from "react";
+import { useContext, useLayoutEffect, useState } from "react";
 import { HOST_PATH } from "../../scripts/constants";
+import AuthContext from "../../auth/AuthContext";
 
 export default function Store() {
   const [itemsList, setItemsList] = useState();
-  const userMoney = 10;
-  
+  const { userMoney, setUserMoney } = useContext(AuthContext);
+
   useLayoutEffect(() => {
     const fetchItems = async () => {
       try {
@@ -36,6 +37,7 @@ export default function Store() {
                 itemIcon={item.icon}
                 itemCost={item.cost}
                 userMoney={userMoney}
+                setUserMoney={setUserMoney}
               />
             ))
           : null}

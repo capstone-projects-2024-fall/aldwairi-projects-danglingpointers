@@ -5,6 +5,7 @@ export default function ItemEntry({
   itemCost,
   itemIcon,
   userMoney,
+  setUserMoney,
 }) {
   const [btnColor, setBtnColor] = useState("blue");
   useEffect(() => {
@@ -19,7 +20,13 @@ export default function ItemEntry({
       </div>
       <div className="item-description-container">
         <p className="item-description">{itemDescription}</p>
-        <button id="btnItemCost" className={`btn-item-cost ${btnColor}`}>
+        <button
+          id="btnItemCost"
+          onClick={() => {
+            setUserMoney((prevMoney) => prevMoney - itemCost);
+          }}
+          className={`btn-item-cost ${btnColor}`}
+        >
           ${itemCost}
         </button>
       </div>
