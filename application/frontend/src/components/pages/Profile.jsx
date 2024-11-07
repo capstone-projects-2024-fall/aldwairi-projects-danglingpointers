@@ -42,20 +42,37 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
   if (userNotFound)
     return <p className="mr-def">User not found in the database.</p>;
 
+  // Mock data for the comment wall
+  const comments = [
+    { id: 1, user: "MockUser1", text: "Great profile!" },
+    { id: 2, user: "MockUser2", text: "Looking forward to playing again!" },
+    { id: 3, user: "MockUser3", text: "Nice scores on your last games!" },
+  ];
+
   return (
     <main className="main-profile">
       <div className="profile-info">
-        <div>
-          <h1>User Profile</h1>
-          <div>
-            <strong>Username:</strong> {profileData.username}
+        <h1>User Profile</h1>
+        <div className="profile-header">
+          <div className="profile-pic-container">
+            <img
+              src="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/1966.png" //placeholder to fix later
+              alt="Profile"
+              className="profile-pic"
+            />
           </div>
-          <div>
-            <strong>Date Joined:</strong> {profileData.dateJoined}
-          </div>
-          <div>
-            <strong>Last Login:</strong>{" "}
-            {profileData.lastLogin || profileData.dateJoined}
+          <div className="profile-details">
+            <div>
+              <strong>Username:</strong> {profileData.username}
+              <span className="online-status" />
+            </div>
+            <div>
+              <strong>Date Joined:</strong> {profileData.dateJoined}
+            </div>
+            <div>
+              <strong>Last Login:</strong>{" "}
+              {profileData.lastLogin || profileData.dateJoined}
+            </div>
           </div>
         </div>
         <div className="recent-games">
@@ -77,6 +94,16 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
           ) : (
             <p>No recent games available.</p>
           )}
+        </div>
+        <div className="comment-wall">
+          <h2>Comment Wall</h2>
+          <ul>
+            {comments.map((comment) => (
+              <li key={comment.id}>
+                <strong>{comment.user}:</strong> {comment.text}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </main>
