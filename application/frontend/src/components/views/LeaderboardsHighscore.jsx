@@ -5,7 +5,7 @@ import GameEntry from "../entries/GameEntry";
 import { Link } from "react-router-dom";
 
 export default function LeaderboardsHighScore() {
-  const [leaderboardHighScore, setLeaderboardsHighScore] = useState([]);
+  const [leaderboardsHighScore, setLeaderboardsHighScore] = useState([]);
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -30,7 +30,7 @@ export default function LeaderboardsHighScore() {
 
   return (
     <article className="default-scrollbar">
-        <div className="leaderboardshighscore">
+        <div className="leaderboard">
             <div className="link-flex">
                 <Link to="/leaderboards">
                     <h2>Highscore Leaderboards</h2>

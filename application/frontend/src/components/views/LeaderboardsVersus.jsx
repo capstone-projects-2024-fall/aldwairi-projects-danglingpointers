@@ -14,7 +14,7 @@ export default function LeaderboardsVersus() {
           `${HOST_PATH}/games?leaderboards_versus=true`
         );
 
-        setLeaderboardsVersus(versusResponse.data.slice(0, 5) || []);
+        setLeaderboardsVersus(versusResponse.data);
 
             } catch (error) {
                 console.error('Error fetching games data:', error);
@@ -26,7 +26,7 @@ export default function LeaderboardsVersus() {
 
 return(
     <article className="default-scrollbar">
-        <div className="leaderboards-versus">
+        <div className="leaderboard">
             <div className="link-flex">
                 <Link to="/leaderboards">
                     <h2>Versus Leaderboards</h2>

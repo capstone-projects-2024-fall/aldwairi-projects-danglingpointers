@@ -4,12 +4,12 @@ import LeaderboardsSolo from "../views/LeaderboardsSolo";
 
 export default function Leaderboards() {
     return (
-        <main className="main-default">
+        <main className="leaderboards-default">
             <h2>Leaderboards</h2>
             <div className="leaderboards-container">
                 <LeaderboardsSolo />
-                <LeaderboardsVersus />   
-                <LeaderboardsHighScore />          
+                <LeaderboardsVersus /> 
+                <LeaderboardsHighScore />      
             </div>
         </main>
     );

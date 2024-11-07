@@ -14,7 +14,7 @@ export default function LeaderboardsSolo() {
           `${HOST_PATH}/games?leaderboards_solo=true`
         );
 
-        setLeaderboardsSolo(soloResponse.data.slice(0, 5) || []);
+        setLeaderboardsSolo(soloResponse.data);
 
             } catch (error) {
                 console.error('Error fetching games data:', error);
@@ -26,7 +26,7 @@ export default function LeaderboardsSolo() {
 
   return (
     <article className="default-scrollbar">
-        <div className="leaderboards-solo">
+        <div className="leaderboard">
             <div className="link-flex">
                 <Link to="/leaderboards">
                     <h2>Solo Leaderboards</h2>
