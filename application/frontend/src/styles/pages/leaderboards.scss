@@ -1,18 +1,10 @@
-.leaderboards-container {
-    display: grid;
-    grid-template-columns: 250px 435px 325px 325px;
-    column-gap: 40px;
+@use "../constants/constants";
 
-    .solo-leaderboards {
-        width: 250px;
-    }
-    .versus-leaderboards {
-        width: 435px;
-    }
-    .leaderboards-solo {
-        width: 325px;
-    }
-    .leaderboards-solo {
-        width: 325px;
-    }
+.leaderboards-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 20px;
+    min-height: calc(100vh - constants.$navigation-height);
+    max-height: calc(100vh - constants.$navigation-height);
 }

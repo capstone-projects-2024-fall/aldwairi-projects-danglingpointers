@@ -1,6 +1,6 @@
-import LeaderboardsPreview from "../previews/LeaderboardsPreview";
-import LobbyPreview from "../previews/LobbyPreview";
-import WatchPreview from "../previews/WatchPreview";
+import LeaderboardsPreview from "../views/LeaderboardsPreview";
+import LobbyPreview from "../views/LobbyPreview";
+import WatchPreview from "../views/WatchPreview";
 
 export default function Home() {
   return (
