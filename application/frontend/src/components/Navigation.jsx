@@ -21,11 +21,6 @@ export default function Navigation() {
           </Link>
         </li>
         <li>
-          <Link to="/lobby">
-            <Button text="Lobby" />
-          </Link>
-        </li>
-        <li>
           <Link to="/play">
             <Button text="Play" />
           </Link>

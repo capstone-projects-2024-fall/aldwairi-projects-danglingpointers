@@ -4,7 +4,6 @@ import Dashboard from "./components/pages/Dashboard";
 import Game from "./components/pages/Game";
 import Home from "./components/pages/Home";
 import Leaderboards from "./components/pages/Leaderboards";
-import Lobby from "./components/pages/Lobby";
 import Profile from "./components/pages/Profile";
 import Watch from "./components/pages/Watch";
 import { GameProvider } from "./context/GameContext";
@@ -41,7 +40,6 @@ export default function App() {
         <Route path="*" element={<ErrorPage />} />
         <Route index element={<Home />} />
         <Route path="leaderboards" element={<Leaderboards />} />
-        <Route path="lobby" element={<Lobby />} />
         <Route path="watch" element={<Watch />} />
 
         <Route
