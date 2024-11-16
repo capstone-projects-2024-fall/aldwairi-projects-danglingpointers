@@ -1,5 +1,8 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from api.models import Item
+from asgiref.sync import sync_to_async
+
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -22,7 +25,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
 
         if data.get('type') == 'game_message':
-            game_id = data.get('game_id', None)  
+            game_id = data.get('game_id', None)
             if game_id:
                 await self.game_message({'message_id': game_id})
             else:
@@ -46,3 +49,30 @@ class ItemConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         pass
+    async def item_message(self, event):
+        item_id = event['item_id']
+        item = await sync_to_async(self.get_item_by_id)(item_id)# fetch item from db
+
+        if item:
+            # Send item details
+            await self.send(text_data=json.dumps({
+                'type': 'item',
+                'item': {
+                    'id': item.id,
+                    'name': item.name,
+                    'description': item.description,
+                    'icon': item.icon,
+                    'cost': item.cost,
+                },
+            }))
+        else:
+                # Send error when item is not found
+            await self.send(text_data=json.dumps({
+                'error': f'Item with ID {item_id} not found.'
+            }))
+
+    def get_item_by_id(self, item_id):
+        try:
+            return Item.objects.get(id=item_id)
+        except Item.DoesNotExist:
+            return None
