@@ -24,7 +24,7 @@ export default function App() {
   useEffect(() => {
     const fetchUserItems = async () => {
       try {
-        const usersResponse = await axios.get(`${HOST_PATH}/users?profiles=true`);
+        const usersResponse = await axios.get(`${HOST_PATH}/users/?profiles=true`);
         const users = usersResponse.data;
         setProfiles(users);
       } catch (error) {
