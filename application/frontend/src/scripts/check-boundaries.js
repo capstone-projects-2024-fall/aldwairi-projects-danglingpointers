@@ -4,9 +4,7 @@ export function checkLeftBoundary(garbageCollector, stack) {
 
   const collisionStack = garbageCollectorLeftBoundary <= stackBoundary + 75;
 
-  if (collisionStack) return false;
-
-  return true;
+  return !collisionStack
 }
 
 export function checkRightBoundary(garbageCollector, recyclingBin) {
@@ -17,7 +15,5 @@ export function checkRightBoundary(garbageCollector, recyclingBin) {
   const collisionRecyclingBin =
     garbageCollectorRightBoundary >= recyclingBinBoundary - 75;
 
-  if (collisionRecyclingBin) return false;
-
-  return true;
+  return !collisionRecyclingBin;
 }
