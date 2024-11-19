@@ -12,7 +12,31 @@ class ChatConsumer(AsyncWebsocketConsumer):
         pass
 
     async def receive(self, text_data):
-        pass
+        data = json.loads(text_data)
+        type = data.get('type')
+        message = data.get('message', '')
+        user_id = data.get('user_id', None)
+
+        if type == 'chat_message' and user_id:
+            #create an event
+            event = {
+                'user_id': user_id,
+                'message': message
+            }
+            await self.chat_message(event)
+        else:
+             await self.send(text_data=json.dumps({
+                    'error': 'user_id or type is missing.'
+                }))
+
+    async def chat_message(self, event):
+        message = event['message']
+        user_id = event['user_id']
+        await self.send(text_data=json.dumps({
+            'type': 'chat',
+            'message': message,
+            'user_id': user_id,
+        }))
     
 class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):

@@ -8,9 +8,7 @@ export default function checkForCollision(pointer, garbageCollector) {
 
   const collisionX =
     pointerX > garbageCollectorX1 && pointerX < garbageCollectorX2;
-  const collisionY = pointerY > garbageCollectorY;
+  const collisionY = pointerY >= garbageCollectorY;
 
-  if (collisionX && collisionY) return true;
-  
-  return false;
+  return collisionX && collisionY;
 }
