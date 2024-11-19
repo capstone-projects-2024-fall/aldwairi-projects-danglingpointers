@@ -15,6 +15,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         user_id = data.get('user_id', None)
 
         if type == 'chat_message' and user_id:
+            #create an event
             event = {
                 'user_id': user_id,
                 'message': message
