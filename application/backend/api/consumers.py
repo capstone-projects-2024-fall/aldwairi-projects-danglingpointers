@@ -51,3 +51,51 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 }
             )
         pass
+class ItemConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        pass
+
+    async def disconnect(self, close_code):
+        pass
+
+    async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        if 'item_message_id' in text_data_json:
+            item_message_id = text_data_json['item_message_id']
+        item_message = text_data_json['item_message']
+
+        if text_data_json['type'] == 'approve':
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    'type': 'approve_message',
+                    'item_message_id': item_message_id,
+                    'item_message': item_message
+                }
+            )
+        elif text_data_json['type'] == 'reject':
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    'type': 'reject_message',
+                    'item_message': item_message
+                }
+            )
+        elif text_data_json['type'] == 'complete':
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    'type': 'complete_message',
+                    'item_message_id': item_message_id,
+                    'item_message': item_message
+                }
+            )
+        else:
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    'type': 'chat_message',
+                    'item_message': item_message
+                }
+            )
+        pass
