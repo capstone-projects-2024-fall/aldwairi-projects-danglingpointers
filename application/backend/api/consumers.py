@@ -1,4 +1,5 @@
 import json
+from asgiref.sync import async_to_sync
 from channels.generic.websocket import AsyncWebsocketConsumer
 from api.models import Item
 from asgiref.sync import sync_to_async
@@ -64,6 +65,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             'game_id': game_id,
         }))
 
+
 class ItemConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         pass
@@ -71,8 +73,21 @@ class ItemConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         pass
 
-    async def receive(self, text_data):
-        pass
+
+    async def receive(self, item_data):
+        text_data_json = json.loads(item_data)
+        if 'item_id' in text_data_json:
+            item_id = text_data_json['item_id']
+
+        if text_data_json['type'] == 'item':
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    'type': 'item',
+                    'message': item_id,
+                }
+            )
+
     async def item_message(self, event):
         item_id = event['item_id']
         item = await sync_to_async(self.get_item_by_id)(item_id)# fetch item from db
@@ -100,3 +115,4 @@ class ItemConsumer(AsyncWebsocketConsumer):
             return Item.objects.get(id=item_id)
         except Item.DoesNotExist:
             return None
+
