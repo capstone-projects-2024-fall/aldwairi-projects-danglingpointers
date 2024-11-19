@@ -13,9 +13,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def chat_message(self, event):
         message = event['message']
+        user_id = event['user_id']
         await self.send(text_data=json.dumps({
             'type': 'chat',
             'message': message,
+            'user_id': user_id,
         }))
     
 class GameConsumer(AsyncWebsocketConsumer):
