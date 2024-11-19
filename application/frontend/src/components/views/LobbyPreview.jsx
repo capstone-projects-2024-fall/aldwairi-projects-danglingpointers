@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { HOST_PATH } from "../../scripts/constants";
 import GameEntry from "../entries/GameEntry";
-import { Link } from "react-router-dom";
 
 export default function LobbyPreview() {
   const [lobbyGames, setLobbyGames] = useState([]);
@@ -24,9 +23,7 @@ export default function LobbyPreview() {
     <article className="default-scrollbar">
       <div className="preview">
         <div className="link-flex">
-          <Link to="/lobby">
-            <h2>Lobby</h2>
-          </Link>
+          <h2>Lobby</h2>
           <span></span>
         </div>
         {lobbyGames.length > 0 ? (
@@ -48,9 +45,6 @@ export default function LobbyPreview() {
         ) : (
           <p>No pending games available.</p>
         )}
-        <Link to="/lobby">
-          <p>View more pending games</p>
-        </Link>
       </div>
     </article>
   );

@@ -28,8 +28,8 @@ export default function Settings() {
       <h1>Settings</h1>
       <ul style={{ marginBottom: "20px" }}>
         {values.map((value, index) => (
-          <>
-            <li key={index} className="li-setting">
+          <div key={index}>
+            <li className="li-setting">
               <p>{formatKey(keys[index])}: </p>
               <input
                 readOnly
@@ -54,7 +54,7 @@ export default function Settings() {
                 onChangeComplete={handleChangeComplete}
               />
             ) : null}
-          </>
+          </div>
         ))}
       </ul>
     </div>
