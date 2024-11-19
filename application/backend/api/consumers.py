@@ -60,17 +60,17 @@ class ItemConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        if 'item_message_id' in text_data_json:
-            item_message_id = text_data_json['item_message_id']
-        item_message = text_data_json['item_message']
+        if 'message_id' in text_data_json:
+            message_id = text_data_json['message_id']
+        message = text_data_json['message']
 
         if text_data_json['type'] == 'approve':
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
                     'type': 'approve_message',
-                    'item_message_id': item_message_id,
-                    'item_message': item_message
+                    'message_id': message_id,
+                    'message': message
                 }
             )
         elif text_data_json['type'] == 'reject':
@@ -78,7 +78,7 @@ class ItemConsumer(AsyncWebsocketConsumer):
                 self.room_group_name,
                 {
                     'type': 'reject_message',
-                    'item_message': item_message
+                    'message': message
                 }
             )
         elif text_data_json['type'] == 'complete':
@@ -86,16 +86,16 @@ class ItemConsumer(AsyncWebsocketConsumer):
                 self.room_group_name,
                 {
                     'type': 'complete_message',
-                    'item_message_id': item_message_id,
-                    'item_message': item_message
+                    'message_id': message_id,
+                    'message': message
                 }
             )
         else:
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
                 {
-                    'type': 'chat_message',
-                    'item_message': item_message
+                    'type': 'item_message',
+                    'message': message
                 }
             )
         pass
