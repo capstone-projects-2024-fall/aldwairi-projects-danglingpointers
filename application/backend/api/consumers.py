@@ -98,4 +98,4 @@ class ItemConsumer(AsyncWebsocketConsumer):
                     'message': message
                 }
             )
-        pass
+        
