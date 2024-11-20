@@ -8,6 +8,7 @@ export default function Settings() {
   const { garbageCollectorColor, setGarbageCollectorColor } =
     useContext(AuthContext);
 
+  // Update camelCase format to Camel Case
   function formatKey(key) {
     return key.replace(/([A-Z])/g, " $1").replace(/^./, key[0].toUpperCase());
   }
