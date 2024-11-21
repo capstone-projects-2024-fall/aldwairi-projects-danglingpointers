@@ -31,7 +31,7 @@ export default function Dashboard() {
   }, [userId]);
 
   useEffect(() => {
-    const ws = new WebSocket(`ws://${window.location.host}/ws/game-server/`);
+    const ws = new WebSocket(`ws://localhost:8000/ws/game-server/`);
   
     ws.onopen = () => {
       console.log("WebSocket connection to GameConsumer established");

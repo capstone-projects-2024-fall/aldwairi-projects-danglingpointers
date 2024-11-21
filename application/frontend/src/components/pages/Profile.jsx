@@ -40,7 +40,7 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
   }, [userId, username, dateJoined, lastLogin]);
 
   useEffect(() => {
-    const ws = new WebSocket(`ws://${window.location.host}/ws/game-server/`);
+    const ws = new WebSocket(`ws://localhost:8000/ws/game-server/`);
 
     ws.onopen = () => {
       console.log("WebSocket connection to GameConsumer established");
