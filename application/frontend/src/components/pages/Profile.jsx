@@ -9,6 +9,7 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
   const [recentGames, setRecentGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userNotFound, setUserNotFound] = useState(false);
+  const [gameMessage, setGameMessage] = useState(null);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -37,6 +38,34 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
 
     fetchProfileData();
   }, [userId, username, dateJoined, lastLogin]);
+
+  useEffect(() => {
+    const ws = new WebSocket(`ws://localhost:8000/ws/game-server/`);
+
+    ws.onopen = () => {
+      console.log("WebSocket connection to GameConsumer established");
+    };
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "game") {
+        setGameMessage(message);
+        console.log("Received game message:", message);
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection to GameConsumer closed");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, []);
 
   if (loading) return <p className="mr-def">Loading profile...</p>;
   if (userNotFound)
@@ -105,6 +134,13 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
             ))}
           </ul>
         </div>
+        {/* Display game message if available */}
+        {gameMessage && (
+          <div className="game-message">
+            <h2>Live Game Update</h2>
+            <p>Game ID: {gameMessage.game_id}</p>
+          </div>
+        )}
       </div>
     </main>
   );
