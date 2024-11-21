@@ -30,6 +30,34 @@ export default function Dashboard() {
     fetchUserMetaData();
   }, [userId]);
 
+  useEffect(() => {
+    const ws = new WebSocket(`ws://${window.location.host}/ws/game-server/`);
+  
+    ws.onopen = () => {
+      console.log("WebSocket connection to GameConsumer established");
+    };
+  
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "game") {
+        setGameMessage(message);
+        console.log("Received game message:", message);
+      }
+    };
+  
+    ws.onclose = () => {
+      console.log("WebSocket connection to GameConsumer closed");
+    };
+  
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+  
+    return () => {
+      ws.close();
+    };
+  }, []);
+
   if (userNeedsMetaData) {
     return <UserSetup setUserNeedsMetaData={setUserNeedsMetaData} />;
   }
