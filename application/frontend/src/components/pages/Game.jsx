@@ -51,6 +51,10 @@ export default function Game() {
     setPointersCleared(false); // Reset pointers cleared state when starting a new round
   };
 
+  const terminateRound = () => {
+    console.log('hi');
+  };
+
   // Game Timer
   useEffect(() => {
     if (gameStarted && userLivesCount > 0) {
@@ -190,6 +194,17 @@ export default function Game() {
             }}
           >
             {gameStarted ? "Round In Progress" : "Start New Round"}
+          </button>
+          <button
+            onClick={terminateRound}
+            className="start-round-button"
+            style={{
+              background: gameStarted ? "green" : "red",
+              color: "white",
+              cursor: gameStarted ? "pointer" : "not-allowed",
+            }}
+          >
+            Terminate Round
           </button>
         </div>
       </article>
