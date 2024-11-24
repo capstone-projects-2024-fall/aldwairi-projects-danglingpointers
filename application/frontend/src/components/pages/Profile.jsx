@@ -9,7 +9,6 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
   const [recentGames, setRecentGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userNotFound, setUserNotFound] = useState(false);
-  const [gameMessage, setGameMessage] = useState(null);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -48,8 +47,10 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
 
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
+      if (message.type === "connected")
+        console.log(message);
+      
       if (message.type === "game") {
-        setGameMessage(message);
         console.log("Received game message:", message);
       }
     };
@@ -134,13 +135,6 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
             ))}
           </ul>
         </div>
-        {/* Display game message if available */}
-        {gameMessage && (
-          <div className="game-message">
-            <h2>Live Game Update</h2>
-            <p>Game ID: {gameMessage.game_id}</p>
-          </div>
-        )}
       </div>
     </main>
   );

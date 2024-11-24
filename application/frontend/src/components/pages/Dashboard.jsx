@@ -40,7 +40,6 @@ export default function Dashboard() {
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
       if (message.type === "game") {
-        setGameMessage(message);
         console.log("Received game message:", message);
       }
     };
