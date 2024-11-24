@@ -22,29 +22,28 @@ export default function App() {
   const location = useLocation();
 
   useEffect(() => {
-    const fetchUserItems = async () => {
+    const fetchUsers = async () => {
       try {
         const usersResponse = await axios.get(
           `${HOST_PATH}/users/?profiles=true`
         );
         const users = usersResponse.data;
-        console.log(users);
         setProfiles(users);
       } catch (error) {
         console.error("Error fetching user profiles:", error);
       }
     };
 
-    fetchUserItems();
+    fetchUsers();
 
     const ws = new WebSocket(USER_URL);
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("WebSocket message received:", data);
+      // console.log("WebSocket message received:", data);
 
       if (data.message === "New user created") {
-        fetchUserItems();
+        fetchUsers();
       }
     };
 
@@ -56,9 +55,9 @@ export default function App() {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const usersResponse = await axios.get(`${HOST_PATH}/users`);
+        const usersResponse = await axios.get(`${HOST_PATH}/games`);
         const games = usersResponse.data;
-        console.log(games);
+        console.log(games.length);
         setGames(games);
       } catch (error) {
         console.error("Error fetching games:", error);
@@ -71,7 +70,7 @@ export default function App() {
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("WebSocket message received:", data);
+      // console.log("WebSocket message received:", data);
 
       if (data.message === "New game created") {
         fetchGames();

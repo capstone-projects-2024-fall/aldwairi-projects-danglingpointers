@@ -41,9 +41,13 @@ export default function Game() {
   const wsRef = useRef(null);
 
   useEffect(() => {
-    const ws = new WebSocket(GAME_URL)
+    const ws = new WebSocket(GAME_URL);
     wsRef.current = ws;
-  }, [])
+
+    return () => {
+      ws.close();
+    };
+  }, []);
 
   // Function to initialize a new round
   const initializeRound = () => {
@@ -58,15 +62,14 @@ export default function Game() {
   };
 
   const terminateRound = () => {
-    console.log('hi');
     const gameMessage = {
-      type: 'game',
+      type: "game",
       game_id: 1,
     };
 
     console.log(gameMessage);
 
-    wsRef.current.send(JSON.stringify(gameMessage))
+    wsRef.current.send(JSON.stringify(gameMessage));
   };
 
   // Game Timer
@@ -98,6 +101,7 @@ export default function Game() {
             player_one_score: userScore,
             game_length: finalTimer,
             mode: gameMode,
+            // link: `game/game_id_${gameId}`,
             status: "Complete",
           });
           setUserMoney((prevMoney) => prevMoney + userScore);

@@ -5,7 +5,7 @@ from cryptography.fernet import Fernet
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 import os
-from rest_framework import generics, status, viewsets
+from rest_framework import generics, pagination, status, viewsets
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -194,16 +194,24 @@ class GameViewSet(viewsets.ModelViewSet):
         query_params = self.request.query_params
 
         if 'watch' in query_params:
+            if 'preview' in query_params:
+                return queryset.filter(status='Active').order_by('-date')[:10]
             return queryset.filter(status='Active').order_by('-date')
 
         if 'lobby' in query_params:
+            if 'preview' in query_params:
+                return queryset.filter(mode='Versus', status='Pending').order_by('-date')[:10]
             return queryset.filter(mode='Versus', status='Pending').order_by('-date')
 
         if 'leaderboards_solo' in query_params:
-            return queryset.filter(mode='Solo', status='Complete').order_by('-player_one_score')[:10]
+            if 'preview' in query_params:
+                return queryset.filter(mode='Solo', status='Complete').order_by('-player_one_score')[:10]
+            return queryset.filter(mode='Solo', status='Complete').order_by('-player_one_score')
 
         if 'leaderboards_versus' in query_params:
-            return queryset.filter(mode='Versus', status='Complete').order_by('-player_one_score', '-player_two_score')[:10]
+            if 'preview' in query_params:
+                return queryset.filter(mode='Versus', status='Complete').order_by('-player_one_score', '-player_two_score')[:10]
+            return queryset.filter(mode='Versus', status='Complete').order_by('-player_one_score', '-player_two_score')
 
         # Query for recently played games on the profile
         if 'recent_games' in query_params:

@@ -19,7 +19,7 @@ export default function UserPreviousGames() {
           response.data.filter((game) => game.status === "Complete")
         );
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 
