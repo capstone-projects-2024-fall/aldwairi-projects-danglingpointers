@@ -17,6 +17,7 @@ export default function LeaderboardsHighScore({ leaderboardsHighScore }) {
                   { id: game.player_one, name: "" },
                   { id: game.player_two, name: "" },
                 ]}
+                gameId={game.id}
                 status={game.status}
                 scores={[game.player_one_score, game.player_two_score]}
               />

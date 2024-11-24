@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function GameEntry({ gameId, users, status, scores = [] }) {
   const [btnColor, setBtnColor] = useState("green");
+  const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,8 +15,13 @@ export default function GameEntry({ gameId, users, status, scores = [] }) {
   }, [status]);
 
   function handleClick() {
-    console.log(gameId);
-    navigate(`game/game_id_${gameId}`);
+    const currentPath = location.pathname;
+
+    if (currentPath.includes("leaderboards")) {
+      navigate(`/game/game_id_${gameId}`);
+    } else {
+      navigate(`game/game_id_${gameId}`);
+    }
   }
 
   return (

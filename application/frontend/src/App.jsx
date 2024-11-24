@@ -57,7 +57,6 @@ export default function App() {
       try {
         const usersResponse = await axios.get(`${HOST_PATH}/games`);
         const games = usersResponse.data;
-        console.log(games.length);
         setGames(games);
       } catch (error) {
         console.error("Error fetching games:", error);

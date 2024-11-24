@@ -18,7 +18,7 @@ export default function LeaderboardsSolo({ leaderboardsSolo }) {
                   { id: game.player_two, name: "" },
                 ]}
                 status={game.status}
-                gameLink={game.link}
+                gameId={game.id}
                 mode={game.mode}
                 scores={[game.player_one_score, game.player_two_score]}
               />
