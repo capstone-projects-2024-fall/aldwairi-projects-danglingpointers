@@ -37,7 +37,7 @@ export default function GameEntry({ gameId, users, status, scores = [] }) {
           style={{ background: btnColor }}
           onClick={handleClick}
         >
-          {status}
+          {status === "Pending" ? "Join Game" : status}
         </button>
       </div>
     </section>

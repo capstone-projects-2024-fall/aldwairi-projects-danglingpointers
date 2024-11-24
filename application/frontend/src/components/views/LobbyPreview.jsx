@@ -7,7 +7,7 @@ export default function LobbyPreview({ lobbyGames, setIsCreateGame }) {
       <div className="preview">
         <div className="link-flex">
           <h2>Lobby</h2>
-          <button className="btn-create-game-modal" onClick={() => setIsCreateGame(true)}>Create Game</button>
+          <button className="btn-create-game-modal" onClick={() => setIsCreateGame(true)}>Create Versus Game</button>
         </div>
         {lobbyGames.length > 0 ? (
           <ul>
