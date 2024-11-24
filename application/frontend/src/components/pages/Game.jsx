@@ -5,7 +5,7 @@ import convertSecondsToMinutes from "../../scripts/convert-seconds-to-minutes";
 import { useEffect, useRef, useContext, useState } from "react";
 import GameContext from "../../context/GameContext";
 import axios from "axios";
-import { HOST_PATH } from "../../scripts/constants";
+import { GAME_URL, HOST_PATH } from "../../scripts/constants";
 import useUserAuthStore from "../../stores/userAuthStore";
 import AuthContext from "../../auth/AuthContext";
 
@@ -38,6 +38,12 @@ export default function Game() {
   const stackRef = useRef(null);
   const garbageCollectorRef = useRef(null);
   const recyclingBinRef = useRef(null);
+  const wsRef = useRef(null);
+
+  useEffect(() => {
+    const ws = new WebSocket(GAME_URL)
+    wsRef.current = ws;
+  }, [])
 
   // Function to initialize a new round
   const initializeRound = () => {
@@ -53,6 +59,14 @@ export default function Game() {
 
   const terminateRound = () => {
     console.log('hi');
+    const gameMessage = {
+      type: 'game',
+      game_id: 1,
+    };
+
+    console.log(gameMessage);
+
+    wsRef.current.send(JSON.stringify(gameMessage))
   };
 
   // Game Timer
