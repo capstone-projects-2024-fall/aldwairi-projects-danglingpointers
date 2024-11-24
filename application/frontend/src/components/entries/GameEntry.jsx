@@ -2,15 +2,15 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function GameEntry({ gameId, users, status, scores = [] }) {
-  const [btnColor, setBtnColor] = useState("blue");
+  const [btnColor, setBtnColor] = useState("green");
   const navigate = useNavigate();
 
   useEffect(() => {
-    status === "Complete"
-      ? setBtnColor("green")
+    status === "Active"
+      ? setBtnColor("blue")
       : status === "Pending"
       ? setBtnColor("orange")
-      : setBtnColor("blue");
+      : setBtnColor("green");
   }, [status]);
 
   function handleClick() {

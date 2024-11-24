@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import LeaderboardsPreview from "../views/LeaderboardsPreview";
 import LobbyPreview from "../views/LobbyPreview";
 import WatchPreview from "../views/WatchPreview";
+import Loading from "../Loading";
 import { HOST_PATH } from "../../scripts/constants";
 import axios from "axios";
 import CreateGameModal from "../CreateGameModal";
@@ -59,9 +60,7 @@ export default function Home() {
   return (
     <main className="main-home">
       {isLoading ? (
-        <div style={{ height: "100vh", display: "grid", placeItems: "center" }}>
-          <h1 style={{ fontSize: "4rem" }}>LOADING...</h1>
-        </div>
+        <Loading />
       ) : isCreateGame ? 
       <CreateGameModal setIsCreateGame={setIsCreateGame}/>: (
         <div className="preview-container">
