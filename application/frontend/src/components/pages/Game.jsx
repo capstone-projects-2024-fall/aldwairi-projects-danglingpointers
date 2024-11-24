@@ -49,6 +49,33 @@ export default function Game() {
     };
   }, []);
 
+  useEffect(() => {
+    const ws = new WebSocket(`ws://localhost:8000/ws/chat-server/`);
+  
+    ws.onopen = () => {
+      console.log("WebSocket connection to ChatConsumer established");
+    };
+  
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "chat") {
+        console.log("Received chat message:", message);
+      }
+    };
+  
+    ws.onclose = () => {
+      console.log("WebSocket connection to ChatConsumer closed");
+    };
+  
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+  
+    return () => {
+      ws.close();
+    };
+  }, []);
+
   // Function to initialize a new round
   const initializeRound = () => {
     if (gameStarted) return; // Prevent starting if game is already in progress
