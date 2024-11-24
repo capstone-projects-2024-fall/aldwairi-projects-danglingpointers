@@ -57,6 +57,33 @@ export default function Dashboard() {
     };
   }, []);
 
+  useEffect(() => {
+    const ws = new WebSocket(`ws://localhost:8000/ws/chat-server/`);
+  
+    ws.onopen = () => {
+      console.log("WebSocket connection to ChatConsumer established");
+    };
+  
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "chat") {
+        console.log("Received chat message:", message);
+      }
+    };
+  
+    ws.onclose = () => {
+      console.log("WebSocket connection to ChatConsumer closed");
+    };
+  
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+  
+    return () => {
+      ws.close();
+    };
+  }, []);
+
   if (userNeedsMetaData) {
     return <UserSetup setUserNeedsMetaData={setUserNeedsMetaData} />;
   }
