@@ -1,14 +1,11 @@
 import GameEntry from "../entries/GameEntry";
-import { Link } from "react-router-dom";
 
 export default function LeaderboardsVersus({ leaderboardsVersus }) {
   return (
     <article className="default-scrollbar">
       <div className="leaderboard">
         <div className="link-flex">
-          <Link to="/leaderboards">
-            <h2>Versus Leaderboards</h2>
-          </Link>
+          <h2>Versus Leaderboards</h2>
           <span></span>
         </div>
         {leaderboardsVersus ? (

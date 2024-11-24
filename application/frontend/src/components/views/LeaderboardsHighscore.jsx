@@ -1,14 +1,11 @@
 import GameEntry from "../entries/GameEntry";
-import { Link } from "react-router-dom";
 
 export default function LeaderboardsHighScore({ leaderboardsHighScore }) {
   return (
     <article className="default-scrollbar">
       <div className="leaderboard">
         <div className="link-flex">
-          <Link to="/leaderboards">
-            <h2>Highscore Leaderboards</h2>
-          </Link>
+          <h2>Highscore Leaderboards</h2>
           <span></span>
         </div>
         {leaderboardsHighScore ? (
