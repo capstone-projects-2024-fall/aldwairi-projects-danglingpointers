@@ -1,3 +1,4 @@
+from datetime import timezone
 from .models import UserMetaData, Game, Item, SecurityQuestion
 from .serializers import UserSerializer, UserMetaDataSerializer, GameSerializer, ItemSerializer, SecurityQuestionSerializer
 from cryptography.fernet import Fernet
@@ -93,16 +94,16 @@ class CreateUserMetaDataView(generics.GenericAPIView):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects
     serializer_class = UserSerializer
 
     def get_queryset(self):
         queryset = self.queryset
-        
+
         profiles = self.request.query_params.get('profiles')
         if profiles:
             return queryset
-        
+
         user_id = self.request.query_params.get('user_id')
         if user_id:
             queryset = queryset.filter(id=user_id)
@@ -117,7 +118,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class UserMetaDataViewSet(viewsets.ModelViewSet):
-    queryset = UserMetaData.objects.all()
+    queryset = UserMetaData.objects
     serializer_class = UserMetaDataSerializer
 
     def get_queryset(self):
@@ -185,7 +186,7 @@ class UserMetaDataViewSet(viewsets.ModelViewSet):
 
 
 class GameViewSet(viewsets.ModelViewSet):
-    queryset = Game.objects.all()
+    queryset = Game.objects
     serializer_class = GameSerializer
 
     def get_queryset(self):
@@ -214,15 +215,6 @@ class GameViewSet(viewsets.ModelViewSet):
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
-
-    def get_queryset(self):
-        queryset = self.queryset
-
-        user_id = self.request.query_params.get('user_id')
-        if user_id:
-            queryset = queryset.filter(id=user_id)
-
-        return queryset
 
 
 class SecurityQuestionViewSet(viewsets.ModelViewSet):
