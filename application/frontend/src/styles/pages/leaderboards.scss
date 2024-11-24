@@ -1,5 +1,9 @@
 @use "../constants/constants";
 
+.leaderboards-default {
+  padding: 0 20px;
+}
+
 .leaderboards-container {
   width: 100%;
   min-height: calc(100vh - constants.$navigation-height);
@@ -9,7 +13,6 @@
   justify-content: space-evenly;
   align-items: flex-start;
   gap: constants.$default-margin;
-  padding: 0 20px;
 
   article {
     flex: 1;
