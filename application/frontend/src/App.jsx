@@ -12,19 +12,23 @@ import useUserAuthStore from "./stores/userAuthStore";
 import "./styles/App.scss";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { HOST_PATH } from "./scripts/constants";
+import { GAME_URL, HOST_PATH, USER_URL } from "./scripts/constants";
 import ErrorPage from "./components/pages/ErrorPage";
 
 export default function App() {
   const { isLoggedIn } = useUserAuthStore();
+  const [games, setGames] = useState(null);
   const [profiles, setProfiles] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
     const fetchUserItems = async () => {
       try {
-        const usersResponse = await axios.get(`${HOST_PATH}/users/?profiles=true`);
+        const usersResponse = await axios.get(
+          `${HOST_PATH}/users/?profiles=true`
+        );
         const users = usersResponse.data;
+        console.log(users);
         setProfiles(users);
       } catch (error) {
         console.error("Error fetching user profiles:", error);
@@ -32,6 +36,51 @@ export default function App() {
     };
 
     fetchUserItems();
+
+    const ws = new WebSocket(USER_URL);
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("WebSocket message received:", data);
+
+      if (data.message === "New user created") {
+        fetchUserItems();
+      }
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        const usersResponse = await axios.get(`${HOST_PATH}/users`);
+        const games = usersResponse.data;
+        console.log(games);
+        setGames(games);
+      } catch (error) {
+        console.error("Error fetching games:", error);
+      }
+    };
+
+    fetchGames();
+
+    const ws = new WebSocket(GAME_URL);
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("WebSocket message received:", data);
+
+      if (data.message === "New game created") {
+        fetchGames();
+      }
+    };
+
+    return () => {
+      ws.close();
+    };
   }, [location.pathname]);
 
   return (
@@ -72,7 +121,21 @@ export default function App() {
               />
             ))
           : null}
-          
+
+        {games
+          ? Object.entries(games).map(([key, value]) => (
+              <Route
+                path={`game/game_id_${value.id}`}
+                key={key}
+                element={
+                  <GameProvider>
+                    <Game />
+                  </GameProvider>
+                }
+              />
+            ))
+          : null}
+
         <Route path="profile" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
