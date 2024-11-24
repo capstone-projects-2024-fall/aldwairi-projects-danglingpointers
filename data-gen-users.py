@@ -25,7 +25,7 @@ def generate_user_entry(pk):
     }
 
 
-num_entries = 100
+num_entries = 500
 games_data = [generate_user_entry(i) for i in range(num_entries)]
 
 with open("./application/backend/api/fixtures/users_table.json", "w") as outfile:

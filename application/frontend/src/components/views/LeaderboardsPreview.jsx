@@ -1,33 +1,7 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { HOST_PATH } from "../../scripts/constants";
 import GameEntry from "../entries/GameEntry";
 import { Link } from "react-router-dom";
 
-export default function LeaderboardsPreview() {
-  const [leaderboardsSolo, setLeaderboardsSolo] = useState([]);
-  const [leaderboardsVersus, setLeaderboardsVersus] = useState([]);
-
-  useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        const soloResponse = await axios.get(
-          `${HOST_PATH}/games?leaderboards_solo=true`
-        );
-        const versusResponse = await axios.get(
-          `${HOST_PATH}/games?leaderboards_versus=true`
-        );
-
-        setLeaderboardsSolo(soloResponse.data.slice(0, 5) || []);
-        setLeaderboardsVersus(versusResponse.data.slice(0, 5) || []);
-      } catch (error) {
-        console.error("Error fetching games data:", error);
-      }
-    };
-
-    fetchGames();
-  }, []);
-
+export default function LeaderboardsPreview({ leaderboardsSolo, leaderboardsVersus }) {
   return (
     <article className="leaderboards-preview-container default-scrollbar">
       <div className="leaderboards-preview preview">
@@ -47,7 +21,7 @@ export default function LeaderboardsPreview() {
                   { id: game.player_two, name: "" },
                 ]}
                 status={game.status}
-                gameLink={game.link}
+                gameId={game.id}
                 mode={game.mode}
                 scores={[game.player_one_score, game.player_two_score]}
               />
@@ -73,6 +47,7 @@ export default function LeaderboardsPreview() {
                   { id: game.player_one, name: "" },
                   { id: game.player_two, name: "" },
                 ]}
+                gameId={game.id}
                 status={game.status}
                 scores={[game.player_one_score, game.player_two_score]}
               />
