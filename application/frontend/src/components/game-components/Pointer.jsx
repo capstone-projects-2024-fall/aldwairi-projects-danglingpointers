@@ -3,7 +3,8 @@ import GameContext from "../../context/GameContext";
 import checkForCollision from "../../scripts/check-for-collision";
 
 export default function Pointer({ color, id, onAnimationIteration }) {
-  const { gameStarted, setUserScore, userLives } = useContext(GameContext);
+  const { gameStarted, practiceStarted, setUserScore, userLives } =
+    useContext(GameContext);
   const pointerRef = useRef(null);
   const [pointerLeft, setPointerLeft] = useState(0);
   // const [collisionCount, setCollisionCount] = useState(0);
@@ -12,7 +13,7 @@ export default function Pointer({ color, id, onAnimationIteration }) {
 
   // Pointer Creation
   useEffect(() => {
-    if (!gameStarted) {
+    if (!gameStarted && !practiceStarted) {
       setShouldAnimate(false);
       return;
     }
@@ -41,14 +42,14 @@ export default function Pointer({ color, id, onAnimationIteration }) {
         handleAnimationIteration
       );
     };
-  }, [onAnimationIteration, gameStarted, shouldAnimate]);
+  }, [onAnimationIteration, gameStarted, practiceStarted, shouldAnimate]);
 
   // Optimized Collision Detection
   useEffect(() => {
     const detectCollision = () => {
       const pointer = pointerRef.current;
       const garbageCollector = document.querySelector(".garbage-collector");
-      if (pointer && garbageCollector && gameStarted) {
+      if (pointer && garbageCollector) {
         const pointerRect = pointer.getBoundingClientRect();
         const garbageCollectorRect = garbageCollector.getBoundingClientRect();
 
@@ -70,11 +71,11 @@ export default function Pointer({ color, id, onAnimationIteration }) {
       requestRef.current = requestAnimationFrame(detectCollision);
     };
 
-    if (gameStarted) {
+    if (gameStarted || practiceStarted) {
       requestRef.current = requestAnimationFrame(detectCollision);
     }
     return () => cancelAnimationFrame(requestRef.current);
-  }, [gameStarted, setUserScore, userLives]);
+  }, [gameStarted, practiceStarted, setUserScore, userLives]);
 
   return (
     <div

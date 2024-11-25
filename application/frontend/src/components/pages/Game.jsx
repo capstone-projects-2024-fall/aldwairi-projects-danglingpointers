@@ -2,7 +2,7 @@ import GarbageCollector from "../game-components/GarbageCollector";
 import RecyclingBin from "../game-components/RecyclingBin";
 import Stack from "../game-components/Stack";
 import convertSecondsToMinutes from "../../scripts/convert-seconds-to-minutes";
-import { useEffect, useRef, useContext, useState } from "react";
+import { useEffect, useRef, useContext, useState, useCallback } from "react";
 import GameContext from "../../context/GameContext";
 import axios from "axios";
 import { GAME_URL, HOST_PATH } from "../../scripts/constants";
@@ -23,23 +23,30 @@ export default function Game() {
     setUserLivesCount,
     gameStarted,
     setGameStarted,
+    practiceStarted,
+    setPracticeStarted,
     totalPointerCount,
+    setPointers,
     pointersCleared, // Listen for pointersCleared state
     setPointersCleared,
   } = useContext(GameContext);
 
+  // TODO: Database
   const { setUserMoney } = useContext(AuthContext);
 
   const { userId } = useUserAuthStore();
-  const [userItems, setUserItems] = useState([]);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+
   const [finalTimer, setFinalTimer] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [userItems, setUserItems] = useState([]);
+
   const intervalRef = useRef(null);
   const stackRef = useRef(null);
   const garbageCollectorRef = useRef(null);
   const recyclingBinRef = useRef(null);
   const wsRef = useRef(null);
 
+  // Set web sockets
   useEffect(() => {
     const ws = new WebSocket(GAME_URL);
     wsRef.current = ws;
@@ -49,32 +56,61 @@ export default function Game() {
     };
   }, []);
 
+  const resetGameContext = useCallback(
+    (mode) => {
+      setTimer(0);
+      setUserScore(0);
+      setUserLives(["❤️", "❤️", "❤️"]);
+      setUserLivesCount(3);
+      setGameMode(mode);
+      mode === "Practice" ? setPracticeStarted(true) : setGameStarted(true);
+      setPointersCleared(false); // Reset pointers cleared state when starting a new round
+      // TODO: JSON
+      // TODO: Post to Game
+    },
+    [
+      setGameMode,
+      setGameStarted,
+      setPointersCleared,
+      setPracticeStarted,
+      setTimer,
+      setUserLives,
+      setUserLivesCount,
+      setUserScore,
+    ]
+  );
+
   // Function to initialize a new round
-  const initializeRound = () => {
-    if (gameStarted) return; // Prevent starting if game is already in progress
-    setTimer(0);
-    setUserScore(0);
-    setUserLives(["❤️", "❤️", "❤️"]);
-    setUserLivesCount(3);
-    setGameMode("Solo");
-    setGameStarted(true);
-    setPointersCleared(false); // Reset pointers cleared state when starting a new round
+  function initializeRound() {
+    if (gameStarted || practiceStarted) return;
+    resetGameContext("Solo");
+  }
+
+  function initializePractice() {
+    if (gameStarted || practiceStarted) return;
+    resetGameContext("Practice");
+  }
+
+  const terminatePractice = () => {
+    setPracticeStarted(false);
+    setPointers([]);
   };
 
-  const terminateRound = () => {
-    const gameMessage = {
-      type: "game",
-      game_id: 1,
-    };
+  // TODO: Sockets
+  // const terminateRound = () => {
+  //   const gameMessage = {
+  //     type: "game",
+  //     game_id: 1,
+  //   };
 
-    console.log(gameMessage);
+  //   console.log(gameMessage);
 
-    wsRef.current.send(JSON.stringify(gameMessage));
-  };
+  //   wsRef.current.send(JSON.stringify(gameMessage));
+  // };
 
   // Game Timer
   useEffect(() => {
-    if (gameStarted && userLivesCount > 0) {
+    if ((gameStarted || practiceStarted) && userLivesCount > 0) {
       const intervalId = setInterval(() => {
         setTimer((prevTime) => prevTime + 1);
       }, 1000);
@@ -88,7 +124,14 @@ export default function Game() {
       clearInterval(intervalRef.current);
       setFinalTimer(timer);
     }
-  }, [gameStarted, finalTimer, timer, setTimer, userLivesCount]);
+  }, [
+    gameStarted,
+    practiceStarted,
+    finalTimer,
+    timer,
+    setTimer,
+    userLivesCount,
+  ]);
 
   // End game after all pointers are off-screen
   useEffect(() => {
@@ -114,8 +157,13 @@ export default function Game() {
     };
 
     if (pointersCleared && userLivesCount === 0) {
-      postGameData();
-      setGameStarted(false); // End game once all pointers are cleared and lives are zero
+      if (gameStarted) {
+        postGameData();
+        setGameStarted(false); // End game once all pointers are cleared and lives are zero
+      }
+      if (practiceStarted) {
+        resetGameContext("Practice");
+      }
     }
   }, [
     pointersCleared,
@@ -123,17 +171,20 @@ export default function Game() {
     setGameStarted,
     userLivesCount,
     gameMode,
+    gameStarted,
+    practiceStarted,
+    resetGameContext,
     finalTimer,
     userId,
     userScore,
     setUserMoney,
   ]);
 
-  // Fetch Items
+  // Fetch User by Id
   useEffect(() => {
-    const fetchUserItems = async () => {
-      if (userId) {
-        try {
+    const fetchUser = async () => {
+      try {
+        if (userId) {
           const metadataResponse = await axios.get(
             `${HOST_PATH}/user-metadata?user_id=${userId}`
           );
@@ -145,20 +196,23 @@ export default function Game() {
             const itemResponse = await axios.get(
               `${HOST_PATH}/items?user_id=${itemId}`
             );
-            return itemResponse.data[0];
+            return itemResponse.data[itemId];
           });
 
           const resolvedItems = await Promise.all(itemPromises);
-          fetchedItems.push(...resolvedItems); // Efficiently add fetched items
+          fetchedItems.push(...resolvedItems);
 
           setUserItems(fetchedItems);
-        } catch (error) {
-          console.error("Error fetching items:", error);
+        } else {
+          const itemResponse = await axios.get(`${HOST_PATH}/items/`);
+          setUserItems(itemResponse.data);
         }
+      } catch (error) {
+        console.error("Error fetching items:", error);
       }
     };
 
-    fetchUserItems();
+    fetchUser();
   }, [userId]);
 
   // Use Items Event Listener
@@ -175,7 +229,6 @@ export default function Game() {
       }
     };
 
-    // const mainGame = gameRef.current;
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
@@ -191,7 +244,7 @@ export default function Game() {
           <div className="score">Score: {userScore}</div>
           <div className="lives-remaining">Lives: {userLives}</div>
         </div>
-        {/* <div className="user-items">
+        <div className="user-items">
           <div className="selected-item">
             {userItems.length > 0 ? (
               <span className="item-icon">{userItems[selectedIndex].icon}</span>
@@ -199,36 +252,43 @@ export default function Game() {
               <p className="item-warning">Login to buy and use items!</p>
             )}
           </div>
-        </div> */}
+        </div>
         <div className="start-game">
           {/* Start Round Button */}
           <button
             onClick={initializeRound}
             className="start-round-button"
             style={{
-              background: gameStarted ? "red" : "green",
+              background: gameStarted || practiceStarted ? "red" : "green",
               color: "white",
-              cursor: gameStarted ? "not-allowed" : "pointer",
+              cursor:
+                gameStarted || practiceStarted || !userId
+                  ? "not-allowed"
+                  : "pointer",
             }}
+            aria-label={
+              userId ? null : "Login to start round, see game stats, and more!"
+            }
           >
             {gameStarted ? "Round In Progress" : "Start New Round"}
           </button>
+
           <button
-            onClick={terminateRound}
+            onClick={practiceStarted ? terminatePractice : initializePractice}
             className="start-round-button"
             style={{
-              background: gameStarted ? "green" : "red",
+              background: gameStarted ? "red" : "blue",
               color: "white",
-              cursor: gameStarted ? "pointer" : "not-allowed",
+              cursor: "pointer",
             }}
           >
-            Terminate Round
+            {practiceStarted ? "End Practice" : "Practice"}
           </button>
         </div>
       </article>
 
       <article className="game">
-        <Stack ref={stackRef} />
+        <Stack practiceStarted={practiceStarted} ref={stackRef} />
         <GarbageCollector ref={garbageCollectorRef} />
         <RecyclingBin ref={recyclingBinRef} />
       </article>

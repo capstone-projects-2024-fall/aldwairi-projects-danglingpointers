@@ -1,11 +1,13 @@
 @use "../constants/_constants";
 
 .main-game {
+  //! DO NOT TOUCH
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
   align-items: center;
   height: calc(100vh - constants.$navigation-height);
+  //! DO NOT TOUCH
 
   .details-container {
     display: flex;
@@ -19,6 +21,21 @@
       border: 1px black solid;
       border-radius: 3px;
       padding: 5px;
+
+      &[aria-label] {
+        position: relative;
+      }
+
+      &[aria-label]:hover::after {
+        content: attr(aria-label);
+        position: absolute;
+        top: 100%;
+        left: 0;
+        padding: 5px;
+        background-color: black;
+        color: white;
+        z-index: 1;
+      }
     }
 
     .game-details {
@@ -47,6 +64,18 @@
       }
     }
   }
+}
+
+.main-game-replay {
+  display: grid;
+  place-items: center;
+  height: calc(100vh - constants.$navigation-height);
+}
+
+.start-game {
+  display: flex;
+  flex-flow: column;
+  gap: 10px;
 }
 
 .game {

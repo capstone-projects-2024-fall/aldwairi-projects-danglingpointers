@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { GAME_URL, HOST_PATH, USER_URL } from "./scripts/constants";
 import ErrorPage from "./components/pages/ErrorPage";
+import GameReplay from "./components/pages/GameReplay";
 
 export default function App() {
   const { isLoggedIn } = useUserAuthStore();
@@ -126,9 +127,11 @@ export default function App() {
                 path={`game/game_id_${value.id}`}
                 key={key}
                 element={
-                  <GameProvider>
-                    <Game />
-                  </GameProvider>
+                  value.status === "Active" ? (
+                    <></> // GameWatch?
+                  ) : value.status === "Complete" ? (
+                    <GameReplay />
+                  ) : null
                 }
               />
             ))

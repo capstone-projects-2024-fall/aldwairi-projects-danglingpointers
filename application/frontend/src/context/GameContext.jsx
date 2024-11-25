@@ -12,6 +12,8 @@ export const GameProvider = ({ children }) => {
   const [userLives, setUserLives] = useState(["❤️", "❤️", "❤️"]);
   const [userLivesCount, setUserLivesCount] = useState(3);
   const [gameStarted, setGameStarted] = useState(false);
+  const [practiceStarted, setPracticeStarted] = useState(false);
+  const [pointers, setPointers] = useState([]);
   const [pointersCleared, setPointersCleared] = useState(false); // Track pointers cleared
 
   return (
@@ -29,6 +31,10 @@ export const GameProvider = ({ children }) => {
         setUserLivesCount,
         gameStarted,
         setGameStarted,
+        practiceStarted,
+        setPracticeStarted,
+        pointers,
+        setPointers,
         currentPointerCounter,
         setCurrentPointerCounter,
         totalPointerCounter,

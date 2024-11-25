@@ -1,4 +1,4 @@
-import { forwardRef, useContext, useEffect, useState } from "react";
+import { forwardRef, useContext, useEffect } from "react";
 import Pointer from "./Pointer";
 import getRandomColor from "../../scripts/get-random-color";
 import GameContext from "../../context/GameContext";
@@ -7,21 +7,24 @@ import getStackInterval from "../../scripts/get-stack-interval";
 const Stack = forwardRef((_, ref) => {
   const {
     setCurrentPointerCounter,
+    pointers, setPointers,
     totalPointerCounter,
     setTotalPointerCounter,
   } = useContext(GameContext);
-  const [pointers, setPointers] = useState([]);
   const {
     setUserScore,
     setUserLives,
     userLivesCount,
     setUserLivesCount,
     gameStarted,
+    practiceStarted,
     setPointersCleared,
   } = useContext(GameContext);
 
   useEffect(() => {
-    if (!gameStarted || userLivesCount === 0) return;
+    let isGameStarted = true;
+    if (!gameStarted || userLivesCount === 0) isGameStarted = false;
+    if (!isGameStarted && !practiceStarted) return;
 
     // Reset pointers cleared state when the game starts
     setPointersCleared(false);
@@ -48,7 +51,13 @@ const Stack = forwardRef((_, ref) => {
                 let newLives = [...lives];
                 newLives.pop();
                 setUserLivesCount(newLives.length);
-                return newLives.length ? newLives : ["💀"];
+
+                if (newLives.length) {
+                  return newLives 
+                } else {
+                  return ["💀"];
+                }
+                  
               });
             }
 
@@ -91,10 +100,12 @@ const Stack = forwardRef((_, ref) => {
     setUserScore,
     userLivesCount,
     gameStarted,
+    setPointers,
     setPointersCleared,
     setCurrentPointerCounter,
     totalPointerCounter,
     setTotalPointerCounter,
+    practiceStarted,
   ]);
 
   return (
