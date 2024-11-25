@@ -3,8 +3,14 @@ import GameContext from "../../context/GameContext";
 import checkForCollision from "../../scripts/check-for-collision";
 
 export default function Pointer({ color, id, onAnimationIteration }) {
-  const { gameStarted, practiceStarted, setUserScore, userLives } =
-    useContext(GameContext);
+  const {
+    gameStarted,
+    isDoubleScore,
+    setIsDoubleScore,
+    practiceStarted,
+    setUserScore,
+    userLives,
+  } = useContext(GameContext);
   const pointerRef = useRef(null);
   const [pointerLeft, setPointerLeft] = useState(0);
   // const [collisionCount, setCollisionCount] = useState(0);
@@ -58,7 +64,9 @@ export default function Pointer({ color, id, onAnimationIteration }) {
           !userLives.includes("💀")
         ) {
           // setCollisionCount((prevCount) => prevCount + 1);
-          setUserScore((prevScore) => prevScore + 1);
+          setUserScore((prevScore) =>
+            isDoubleScore ? prevScore + 2 : prevScore + 1
+          );
           if (pointer.classList.contains("animation-three")) {
             pointer.classList.replace("animation-three", "animation-four");
           } else if (pointer.classList.contains("animation-two")) {
@@ -75,7 +83,17 @@ export default function Pointer({ color, id, onAnimationIteration }) {
       requestRef.current = requestAnimationFrame(detectCollision);
     }
     return () => cancelAnimationFrame(requestRef.current);
-  }, [gameStarted, practiceStarted, setUserScore, userLives]);
+  }, [gameStarted, isDoubleScore, practiceStarted, setUserScore, userLives]);
+
+  useEffect(() => {
+    if (isDoubleScore) {
+      const timeoutId = setTimeout(() => {
+        setIsDoubleScore(false);
+      }, 10000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isDoubleScore, setIsDoubleScore]);
 
   return (
     <div

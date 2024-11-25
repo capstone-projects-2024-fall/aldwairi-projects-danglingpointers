@@ -15,16 +15,6 @@ export default function Home() {
   const [lobbyGames, setLobbyGames] = useState(null);
   const [watchGames, setWatchGames] = useState(null);
 
-  // TODO: Splash screen??
-  // function timeout(ms) {
-  //   return new Promise(resolve => setTimeout(resolve, ms))
-  // }
-
-  // async function sleep() {
-  //   await timeout(15000)
-  //   setIsLoading(false);
-  // }
-
   useEffect(() => {
     const fetchGames = async () => {
       try {

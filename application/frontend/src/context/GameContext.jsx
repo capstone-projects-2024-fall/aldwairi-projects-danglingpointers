@@ -15,7 +15,10 @@ export const GameProvider = ({ children }) => {
   const [practiceStarted, setPracticeStarted] = useState(false);
   const [pointers, setPointers] = useState([]);
   const [pointersCleared, setPointersCleared] = useState(false); // Track pointers cleared
-
+  const [isSlowDown, setIsSlowDown] = useState(false);
+  const [isSpeedUp, setIsSpeedUp] = useState(false);
+  const [isSuperCollector, setIsSuperCollector] = useState(false);
+  const [isDoubleScore, setIsDoubleScore] = useState(false);
   return (
     <GameContext.Provider
       value={{
@@ -41,6 +44,14 @@ export const GameProvider = ({ children }) => {
         setTotalPointerCounter,
         pointersCleared,
         setPointersCleared, // Expose pointersCleared and setPointersCleared
+        isSlowDown,
+        isSpeedUp,
+        isSuperCollector,
+        isDoubleScore,
+        setIsSlowDown,
+        setIsSpeedUp,
+        setIsSuperCollector,
+        setIsDoubleScore,
       }}
     >
       {children}

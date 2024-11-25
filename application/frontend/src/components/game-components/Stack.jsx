@@ -7,7 +7,10 @@ import getStackInterval from "../../scripts/get-stack-interval";
 const Stack = forwardRef((_, ref) => {
   const {
     setCurrentPointerCounter,
-    pointers, setPointers,
+    pointers,
+    setPointers,
+    setIsSlowDown,
+    isSlowDown,
     totalPointerCounter,
     setTotalPointerCounter,
   } = useContext(GameContext);
@@ -53,11 +56,10 @@ const Stack = forwardRef((_, ref) => {
                 setUserLivesCount(newLives.length);
 
                 if (newLives.length) {
-                  return newLives 
+                  return newLives;
                 } else {
                   return ["💀"];
                 }
-                  
               });
             }
 
@@ -89,12 +91,15 @@ const Stack = forwardRef((_, ref) => {
         container.appendChild(firstChild);
       }
     };
-    const random = getStackInterval(3000, 750);
+    const base = isSlowDown ? 4500 : 3000;
+    const mod = isSlowDown ? 500 : 750;
+    const random = getStackInterval(base, mod);
     const intervalId = setInterval(updateStack, random);
 
     return () => clearInterval(intervalId);
   }, [
     ref,
+    isSlowDown,
     setUserLives,
     setUserLivesCount,
     setUserScore,
@@ -107,6 +112,16 @@ const Stack = forwardRef((_, ref) => {
     setTotalPointerCounter,
     practiceStarted,
   ]);
+
+  useEffect(() => {
+    if (isSlowDown) {
+      const timeoutId = setTimeout(() => {
+        setIsSlowDown(false);
+      }, 10000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isSlowDown, setIsSlowDown]);
 
   return (
     <div ref={ref}>

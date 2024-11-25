@@ -29,6 +29,10 @@ export default function Game() {
     setPointers,
     pointersCleared, // Listen for pointersCleared state
     setPointersCleared,
+    setIsSlowDown,
+    setIsSpeedUp,
+    setIsSuperCollector,
+    setIsDoubleScore,
   } = useContext(GameContext);
 
   // TODO: Database
@@ -225,7 +229,38 @@ export default function Game() {
           userItems.length;
         setSelectedIndex(newIndex);
       } else if (event.key === "Enter") {
-        console.log(userItems[selectedIndex].icon);
+        switch (selectedIndex) {
+          case 0:
+            setIsSlowDown(true);
+            if (gameStarted) {
+              console.log("-1");
+            }
+            break;
+          case 1:
+            setIsSpeedUp(true);
+            if (gameStarted) {
+              console.log("-1");
+            }
+            break;
+          case 2:
+            setUserLives([...userLives, "❤️"]);
+            if (gameStarted) {
+              console.log("-1");
+            }
+            break;
+          case 3:
+            setIsSuperCollector(true);
+            if (gameStarted) {
+              console.log("-1");
+            }
+            break;
+          case 4:
+            setIsDoubleScore(true);
+            if (gameStarted) {
+              console.log("-1");
+            }
+            break;
+        }
       }
     };
 
@@ -234,7 +269,17 @@ export default function Game() {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [selectedIndex, userItems]);
+  }, [
+    gameStarted,
+    setUserLives,
+    userLives,
+    selectedIndex,
+    userItems,
+    setIsSlowDown,
+    setIsSpeedUp,
+    setIsDoubleScore,
+    setIsSuperCollector,
+  ]);
 
   return (
     <main className="main-game">
