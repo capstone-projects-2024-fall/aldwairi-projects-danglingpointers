@@ -19,6 +19,34 @@ export default function Watch() {
     fetchGames();
   }, []);
 
+  useEffect(() => {
+    const ws = new WebSocket(`ws://localhost:8000/ws/game-server/`);
+
+    ws.onopen = () => {
+      console.log("WebSocket connection to GameConsumer established");
+    };
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "game") {
+        setGameMessage(message);
+        console.log("Received game message:", message);
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection to GameConsumer closed");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, []);
+  
   return (
     <main className="main-default main-watch">
       <article className="watch-games default-scrollbar">
