@@ -41,6 +41,8 @@
     .game-details {
       display: flex;
       flex-flow: column nowrap;
+      width: 300px;
+      max-width: 300px;
     }
 
     .user-items {
@@ -75,7 +77,13 @@
 .start-game {
   display: flex;
   flex-flow: column;
+  align-items: flex-end;
   gap: 10px;
+  width: 200px;
+
+  button {
+    width: 150px;
+  }
 }
 
 .game {

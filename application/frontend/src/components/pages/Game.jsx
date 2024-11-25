@@ -26,7 +26,6 @@ export default function Game() {
     practiceStarted,
     setPracticeStarted,
     totalPointerCount,
-    setPointers,
     pointersCleared, // Listen for pointersCleared state
     setPointersCleared,
     setIsSlowDown,
@@ -48,6 +47,8 @@ export default function Game() {
   const stackRef = useRef(null);
   const garbageCollectorRef = useRef(null);
   const recyclingBinRef = useRef(null);
+  const btnPlayRef = useRef(null);
+  const btnPracticeRef = useRef(null);
   const wsRef = useRef(null);
 
   // Set web sockets
@@ -87,17 +88,20 @@ export default function Game() {
   // Function to initialize a new round
   function initializeRound() {
     if (gameStarted || practiceStarted) return;
+    btnPlayRef.current.blur();
     resetGameContext("Solo");
   }
 
   function initializePractice() {
     if (gameStarted || practiceStarted) return;
+    btnPracticeRef.current.blur();
     resetGameContext("Practice");
   }
 
   const terminatePractice = () => {
     setPracticeStarted(false);
-    setPointers([]);
+    const pointerContainer = stackRef.current.querySelector('.pointer-container');
+    pointerContainer.innerHTML = '';
   };
 
   // TODO: Sockets
@@ -301,6 +305,7 @@ export default function Game() {
         <div className="start-game">
           {/* Start Round Button */}
           <button
+            ref={btnPlayRef}
             onClick={initializeRound}
             className="start-round-button"
             style={{
@@ -319,6 +324,7 @@ export default function Game() {
           </button>
 
           <button
+            ref={btnPracticeRef}
             onClick={practiceStarted ? terminatePractice : initializePractice}
             className="start-round-button"
             style={{

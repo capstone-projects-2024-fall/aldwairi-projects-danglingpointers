@@ -43,7 +43,7 @@ export const GameProvider = ({ children }) => {
         totalPointerCounter,
         setTotalPointerCounter,
         pointersCleared,
-        setPointersCleared, // Expose pointersCleared and setPointersCleared
+        setPointersCleared,
         isSlowDown,
         isSpeedUp,
         isSuperCollector,
