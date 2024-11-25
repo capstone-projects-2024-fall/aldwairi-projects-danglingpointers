@@ -88,6 +88,8 @@ export default function Game() {
   // Function to initialize a new round
   function initializeRound() {
     if (gameStarted || practiceStarted) return;
+    // TODO: Post game to database in versus mode
+
     btnPlayRef.current.blur();
     resetGameContext("Solo");
   }
@@ -147,12 +149,11 @@ export default function Game() {
     const postGameData = async () => {
       if (userId) {
         try {
-          const response = await axios.post(`${HOST_PATH}/games/`, {
+          const response = await axios.post(`${HOST_PATH}/create-game/`, {
             player_one: userId,
             player_one_score: userScore,
             game_length: finalTimer,
             mode: gameMode,
-            // link: `game/game_id_${gameId}`,
             status: "Complete",
           });
           setUserMoney((prevMoney) => prevMoney + userScore);
@@ -330,7 +331,7 @@ export default function Game() {
             style={{
               background: gameStarted ? "red" : "blue",
               color: "white",
-              cursor: "pointer",
+              cursor: gameStarted ? "not-allowed" : "pointer",
             }}
           >
             {practiceStarted ? "End Practice" : "Practice"}

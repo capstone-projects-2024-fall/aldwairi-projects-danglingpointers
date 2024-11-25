@@ -54,7 +54,6 @@ class Game(models.Model):
         User, related_name='player_two', on_delete=models.CASCADE, null=True, blank=True)
     public = models.BooleanField(default=True)
     date = models.DateTimeField(auto_now_add=True)
-    link = models.URLField(max_length=200, blank=True, null=True)
     status = models.CharField(max_length=50, choices=(
         ('Active', 'Active'),
         ('Pending', 'Pending'),
