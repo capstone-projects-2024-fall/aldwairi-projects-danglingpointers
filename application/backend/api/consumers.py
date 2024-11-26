@@ -52,7 +52,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         await self.accept()
         await self.send(text_data=json.dumps({
             'type': 'connected',
-            'message': 'Django ItemConsumer connected!',
+            'message': 'Django GameConsumer connected!',
         }))
 
     async def receive(self, text_data):

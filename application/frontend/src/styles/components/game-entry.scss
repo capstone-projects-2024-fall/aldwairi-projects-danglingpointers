@@ -6,6 +6,12 @@
   margin-bottom: 10px;
 }
 
+.flex-row-container {
+  display: flex; 
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
 .game-users, .game-scores {
   display: flex;
   flex-flow: row nowrap;
