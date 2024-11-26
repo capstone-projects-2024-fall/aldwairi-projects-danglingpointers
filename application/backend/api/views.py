@@ -4,6 +4,8 @@ from .serializers import UserSerializer, UserMetaDataSerializer, GameSerializer,
 from cryptography.fernet import Fernet
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.db.models import F
+from django.db.models.functions import Greatest
 import os
 from rest_framework import generics, pagination, status, viewsets
 from rest_framework.response import Response
@@ -209,9 +211,13 @@ class GameViewSet(viewsets.ModelViewSet):
             return queryset.filter(mode='Solo', status='Complete').order_by('-player_one_score')
 
         if 'leaderboards_versus' in query_params:
+            queryset = queryset.filter(mode='Versus').annotate(max_score=Greatest(F('player_one_score'), F('player_two_score'))).order_by('-max_score')
             if 'preview' in query_params:
-                return queryset.filter(mode='Versus', status='Complete').order_by('-player_one_score', '-player_two_score')[:10]
-            return queryset.filter(mode='Versus', status='Complete').order_by('-player_one_score', '-player_two_score')
+                return queryset[:10]
+            return queryset
+        
+        if 'longest_games' in query_params:
+            return queryset.order_by('-game_length')
 
         # Query for recently played games on the profile
         if 'recent_games' in query_params:

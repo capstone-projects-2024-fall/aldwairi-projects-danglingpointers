@@ -1,18 +1,19 @@
 import GameEntry from "../entries/GameEntry";
 
-export default function LeaderboardsHighScore({ leaderboardsHighScore }) {
+export default function LeaderboardsHighScore({ longestGames }) {
   return (
     <article className="default-scrollbar">
       <div className="leaderboard">
         <div className="link-flex">
-          <h2>Highscore Leaderboards</h2>
+          <h2>Longest Games</h2>
           <span></span>
         </div>
-        {leaderboardsHighScore ? (
+        {longestGames ? (
           <ul>
-            {leaderboardsHighScore.map((game, index) => (
+            {longestGames.map((game, index) => (
               <GameEntry
                 key={index}
+                gameLength={game.game_length}
                 users={[
                   { id: game.player_one, name: "" },
                   { id: game.player_two, name: "" },

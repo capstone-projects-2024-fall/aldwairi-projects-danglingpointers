@@ -1,5 +1,5 @@
 import LeaderboardsVersus from "../views/LeaderboardsVersus";
-import LeaderboardsHighScore from "../views/LeaderboardsHighscore";
+import LeaderboardsHighScore from "../views/LeaderboardsLongestGames";
 import LeaderboardsSolo from "../views/LeaderboardsSolo";
 import { useEffect, useState } from "react";
 import Loading from "../Loading";
@@ -10,7 +10,7 @@ export default function Leaderboards() {
   const [isLoading, setIsLoading] = useState(true);
   const [leaderboardsSolo, setLeaderboardsSolo] = useState(null);
   const [leaderboardsVersus, setLeaderboardsVersus] = useState(null);
-  const [leaderboardsHighScore, setLeaderboardsHighScore] = useState(null);
+  const [longestGames, setLongestGames] = useState(null);
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -27,25 +27,13 @@ export default function Leaderboards() {
 
         setLeaderboardsVersus(versusResponse.data);
 
-        const highScoreResponse = await axios.get(
-            `${HOST_PATH}/games?leaderboards_highscore=true`
-          );
-          const highScores = [];
-          (
-            highScoreResponse.data
-              .filter((x) => x.status === "Complete")
-              .slice(0, 50) || []
-          ).forEach((game) => {
-            if (game.player_one_score)
-              highScores.push({ ...game, score: game.player_one_score });
-            if (game.player_two_score)
-              highScores.push({ ...game, score: game.player_two_score });
-          });
-          highScores.sort((a, b) => b.score - a.score);
+        const longestGamesResponse = await axios.get(
+          `${HOST_PATH}/games?longest_games=true`
+        );
 
-          setLeaderboardsHighScore(highScores);
+        setLongestGames(longestGamesResponse.data);
 
-          setIsLoading(false);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching games data:", error);
       }
@@ -61,8 +49,10 @@ export default function Leaderboards() {
       ) : (
         <div className="leaderboards-container">
           <LeaderboardsSolo leaderboardsSolo={leaderboardsSolo} />
-          <LeaderboardsVersus leaderboardsVersus={leaderboardsVersus}/>
-          <LeaderboardsHighScore leaderboardsHighScore={leaderboardsHighScore}/>
+          <LeaderboardsVersus leaderboardsVersus={leaderboardsVersus} />
+          <LeaderboardsHighScore
+            longestGames={longestGames}
+          />
         </div>
       )}
     </main>

@@ -16,6 +16,7 @@ export default function WatchPreview({ watchGames }) {
             {watchGames.map((game, index) => (
               <GameEntry
                 key={index}
+                gameLength={game.game_length}
                 users={[
                   { id: game.player_one, name: "" },
                   { id: game.player_two, name: "" },
