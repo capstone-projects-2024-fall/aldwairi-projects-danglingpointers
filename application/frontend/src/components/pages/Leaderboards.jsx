@@ -1,6 +1,6 @@
 import axios from "axios";
 import LeaderboardsVersus from "../views/LeaderboardsVersus";
-import LeaderboardsHighScore from "../views/LeaderboardsLongestGames";
+import LeaderboardsHighScore from "../views/LeaderboardsHighscore";
 import LeaderboardsSolo from "../views/LeaderboardsSolo";
 import { useEffect, useState } from "react";
 import { HOST_PATH } from "../../scripts/constants";
