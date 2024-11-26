@@ -11,6 +11,7 @@ const useUserMetaDataStore = create(
         const response = await axios.post(`${HOST_PATH}/create-user-metadata/`, formData);
 
         set(() => ({
+          points: response.data.user_points,
           settings: response.data.settings,
         }));
       },

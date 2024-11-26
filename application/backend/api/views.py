@@ -73,15 +73,8 @@ class CreateUserMetaDataView(generics.GenericAPIView):
 
         user = User.objects.get(id=user_id)
         items = Item.objects.all()
-        item_history = {
-            0: {},
-            1: {},
-            2: {},
-            3: {},
-            4: {},
-        }
         settings = {
-            "garbageCollectorColor": "blue",
+            "garbageCollectorColor": "#0022ff",
             "moveLeft": "ArrowLeft",
             "moveRight": "ArrowRight",
             "toggleNextItem": "Spacebar",
@@ -92,18 +85,17 @@ class CreateUserMetaDataView(generics.GenericAPIView):
             user=user,
             security_question=security_question,
             security_answer=security_answer,
-            items=items,
-            item_history=item_history,
             settings=settings,
         )
         userMetaData.items.add(*items)
         userMetaData.save()
 
+        user_points = str(UserMetaData.user_points)
+
         return Response(
             {
-                'items': items,
-                'item_history': item_history,
                 'settings': settings,
+                'user_points': user_points,
             },
             status=status.HTTP_200_OK)
 

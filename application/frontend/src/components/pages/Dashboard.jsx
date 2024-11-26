@@ -88,7 +88,7 @@ export default function Dashboard() {
     return <UserSetup setUserNeedsMetaData={setUserNeedsMetaData} />;
   }
   return (
-    <main className="main-dashboard">
+    <main className="main-dashboard default-scrollbar">
       <Inbox />
       <Store />
       <Settings />
