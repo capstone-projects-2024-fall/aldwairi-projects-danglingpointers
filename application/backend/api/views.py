@@ -73,15 +73,26 @@ class CreateUserMetaDataView(generics.GenericAPIView):
 
         user = User.objects.get(id=user_id)
         items = Item.objects.all()
-        item_history = {}
+        item_history = {
+            0: {},
+            1: {},
+            2: {},
+            3: {},
+            4: {},
+        }
         settings = {
-            "garbageCollectorColor": "blue"
+            "garbageCollectorColor": "blue",
+            "moveLeft": "ArrowLeft",
+            "moveRight": "ArrowRight",
+            "toggleNextItem": "Spacebar",
+            "useItem": "Enter",
         }
 
         userMetaData = UserMetaData.objects.create(
             user=user,
             security_question=security_question,
             security_answer=security_answer,
+            items=items,
             item_history=item_history,
             settings=settings,
         )
@@ -90,6 +101,8 @@ class CreateUserMetaDataView(generics.GenericAPIView):
 
         return Response(
             {
+                'items': items,
+                'item_history': item_history,
                 'settings': settings,
             },
             status=status.HTTP_200_OK)
@@ -206,17 +219,19 @@ class GameViewSet(viewsets.ModelViewSet):
             return queryset.filter(mode='Versus', status='Pending').order_by('-date')
 
         if 'leaderboards_solo' in query_params:
-            queryset = queryset.filter(mode='Solo', status='Complete').order_by('-player_one_score')
+            queryset = queryset.filter(
+                mode='Solo', status='Complete').order_by('-player_one_score')
             if 'preview' in query_params:
                 return queryset[:10]
             return queryset[:20]
 
         if 'leaderboards_versus' in query_params:
-            queryset = queryset.filter(mode='Versus').annotate(max_score=Greatest(F('player_one_score'), F('player_two_score'))).order_by('-max_score')
+            queryset = queryset.filter(mode='Versus').annotate(max_score=Greatest(
+                F('player_one_score'), F('player_two_score'))).order_by('-max_score')
             if 'preview' in query_params:
                 return queryset[:10]
             return queryset[:20]
-        
+
         if 'longest_games' in query_params:
             return queryset.order_by('-game_length')[:20]
 
