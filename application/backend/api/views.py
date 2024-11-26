@@ -206,18 +206,19 @@ class GameViewSet(viewsets.ModelViewSet):
             return queryset.filter(mode='Versus', status='Pending').order_by('-date')
 
         if 'leaderboards_solo' in query_params:
+            queryset = queryset.filter(mode='Solo', status='Complete').order_by('-player_one_score')
             if 'preview' in query_params:
-                return queryset.filter(mode='Solo', status='Complete').order_by('-player_one_score')[:10]
-            return queryset.filter(mode='Solo', status='Complete').order_by('-player_one_score')
+                return queryset[:10]
+            return queryset[:20]
 
         if 'leaderboards_versus' in query_params:
             queryset = queryset.filter(mode='Versus').annotate(max_score=Greatest(F('player_one_score'), F('player_two_score'))).order_by('-max_score')
             if 'preview' in query_params:
                 return queryset[:10]
-            return queryset
+            return queryset[:20]
         
         if 'longest_games' in query_params:
-            return queryset.order_by('-game_length')
+            return queryset.order_by('-game_length')[:20]
 
         # Query for recently played games on the profile
         if 'recent_games' in query_params:

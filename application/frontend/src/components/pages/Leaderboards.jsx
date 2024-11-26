@@ -1,13 +1,10 @@
 import axios from "axios";
 import LeaderboardsVersus from "../views/LeaderboardsVersus";
-import LeaderboardsHighScore from "../views/LeaderboardsHighscore";
+import LeaderboardsLongestGames from "../views/LeaderboardsLongestGames";
 import LeaderboardsSolo from "../views/LeaderboardsSolo";
 import { useEffect, useState } from "react";
 import { HOST_PATH } from "../../scripts/constants";
 import Loading from "../Loading";
-import LeaderboardsHighScore from "../views/LeaderboardsHighScore";
-import LeaderboardsSolo from "../views/LeaderboardsSolo";
-import LeaderboardsVersus from "../views/LeaderboardsVersus";
 
 export default function Leaderboards() {
   const [isLoading, setIsLoading] = useState(true);
@@ -18,26 +15,22 @@ export default function Leaderboards() {
   // Fetch data for the leaderboards
   const fetchGames = async () => {
     try {
-      const [soloResponse, versusResponse, highScoreResponse] = await Promise.all([
-        axios.get(`${HOST_PATH}/games?leaderboards_solo=true`),
-        axios.get(`${HOST_PATH}/games?leaderboards_versus=true`),
-        axios.get(`${HOST_PATH}/games?leaderboards_highscore=true`),
-      ]);
+      const [soloResponse, versusResponse, longestGamesResponse] =
+        await Promise.all([
+          axios.get(`${HOST_PATH}/games?leaderboards_solo=true`),
+          axios.get(`${HOST_PATH}/games?leaderboards_versus=true`),
+          axios.get(`${HOST_PATH}/games?longest_games=true`),
+        ]);
 
       setLeaderboardsSolo(soloResponse.data);
       setLeaderboardsVersus(versusResponse.data);
+      setLongestGames(longestGamesResponse.data);
 
-        const longestGamesResponse = await axios.get(
-          `${HOST_PATH}/games?longest_games=true`
-        );
-
-        setLongestGames(longestGamesResponse.data);
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching games data:", error);
-      }
-    };
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching games data:", error);
+    }
+  };
 
   useEffect(() => {
     fetchGames();
@@ -79,16 +72,21 @@ export default function Leaderboards() {
             );
           }
 
-          // Update high scores leaderboard
-          if (leaderboardsHighScore) {
-            setLeaderboardsHighScore((prev) => {
-              const updatedHighScores = prev.map((game) =>
+          // Update longest games leaderboard
+          if (longestGames) {
+            setLongestGames((prev) => {
+              const updatedLongestGames = prev.map((game) =>
                 game.id === updatedGame.id
-                  ? { ...game, score: Math.max(updatedGame.player_one_score || 0, updatedGame.player_two_score || 0) }
+                  ? {
+                      ...game,
+                      score: Math.max(
+                        updatedGame.player_one_score || 0,
+                        updatedGame.player_two_score || 0
+                      ),
+                    }
                   : game
               );
-              updatedHighScores.sort((a, b) => b.score - a.score); // Re-sort after updates
-              return updatedHighScores;
+              return updatedLongestGames;
             });
           }
         }
@@ -109,7 +107,7 @@ export default function Leaderboards() {
     return () => {
       if (ws) ws.close();
     };
-  }, [leaderboardsSolo, leaderboardsVersus, leaderboardsHighScore]);
+  }, [leaderboardsSolo, leaderboardsVersus, longestGames]);
 
   return (
     <main className="leaderboards-default">
@@ -119,9 +117,7 @@ export default function Leaderboards() {
         <div className="leaderboards-container">
           <LeaderboardsSolo leaderboardsSolo={leaderboardsSolo} />
           <LeaderboardsVersus leaderboardsVersus={leaderboardsVersus} />
-          <LeaderboardsHighScore
-            longestGames={longestGames}
-          />
+          <LeaderboardsLongestGames longestGames={longestGames} />
         </div>
       )}
     </main>
