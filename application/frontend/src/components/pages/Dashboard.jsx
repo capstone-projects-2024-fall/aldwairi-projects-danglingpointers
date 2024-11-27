@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Inbox from "../dashboard-components/Inbox"
+import Inbox from "../dashboard-components/Inbox";
 import Store from "../dashboard-components/Store";
 import Settings from "../dashboard-components/Settings";
 // import UserLeaderboards from "../dashboard-components/UserLeaderboards";
@@ -21,8 +21,8 @@ export default function Dashboard() {
           `${HOST_PATH}/user-metadata?user_id=${userId}`
         );
 
-        if (metadataResponse.data.length) setUserNeedsMetaData(false);
-        else setUserNeedsMetaData(true);
+        console.log(metadataResponse.data);
+        setUserNeedsMetaData(false);
       } catch (error) {
         console.log(error);
       }
@@ -32,26 +32,26 @@ export default function Dashboard() {
 
   useEffect(() => {
     const ws = new WebSocket(`ws://localhost:8000/ws/game-server/`);
-  
+
     ws.onopen = () => {
       console.log("WebSocket connection to GameConsumer established");
     };
-  
+
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
       if (message.type === "game") {
         console.log("Received game message:", message);
       }
     };
-  
+
     ws.onclose = () => {
       console.log("WebSocket connection to GameConsumer closed");
     };
-  
+
     ws.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
-  
+
     return () => {
       ws.close();
     };
@@ -59,26 +59,26 @@ export default function Dashboard() {
 
   useEffect(() => {
     const ws = new WebSocket(`ws://localhost:8000/ws/chat-server/`);
-  
+
     ws.onopen = () => {
       console.log("WebSocket connection to ChatConsumer established");
     };
-  
+
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
       if (message.type === "chat") {
         console.log("Received chat message:", message);
       }
     };
-  
+
     ws.onclose = () => {
       console.log("WebSocket connection to ChatConsumer closed");
     };
-  
+
     ws.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
-  
+
     return () => {
       ws.close();
     };

@@ -223,13 +223,13 @@ export default function Game() {
   // Use Items Event Listener
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === "Tab") {
+      if (event.key === toggleNextItem.current) {
         event.preventDefault();
         const newIndex =
           (selectedIndex + (event.shiftKey ? -1 : 1) + userItems.length) %
           userItems.length;
         setSelectedIndex(newIndex);
-      } else if (event.key === "Enter") {
+      } else if (event.key === useItem.current) {
         console.log(userItems[selectedIndex].icon);
       }
     };
@@ -250,7 +250,7 @@ export default function Game() {
           <div className="score">Score: {userScore}</div>
           <div className="lives-remaining">Lives: {userLives}</div>
         </div>
-        {/* <div className="user-items">
+        <div className="user-items">
           <div className="selected-item">
             {userItems.length > 0 ? (
               <span className="item-icon">{userItems[selectedIndex].icon}</span>
@@ -258,7 +258,7 @@ export default function Game() {
               <p className="item-warning">Login to buy and use items!</p>
             )}
           </div>
-        </div> */}
+        </div>
         <div className="start-game">
           {/* Start Round Button */}
           <button

@@ -1,13 +1,13 @@
 import axios from "axios";
 import ItemEntry from "../entries/ItemEntry";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { HOST_PATH } from "../../scripts/constants";
 
 export default function Store() {
   const [itemsList, setItemsList] = useState();
   const [userMoney, setUserMoney] = useState(null);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
     setUserMoney(store.state.points);
 

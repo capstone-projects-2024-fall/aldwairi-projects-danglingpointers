@@ -10,13 +10,17 @@ import { GameProvider } from "./context/GameContext";
 import DefaultLayout from "./layouts/DefaultLayout";
 import useUserAuthStore from "./stores/userAuthStore";
 import "./styles/App.scss";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { GAME_URL, HOST_PATH, USER_URL } from "./scripts/constants";
 import ErrorPage from "./components/pages/ErrorPage";
+import useUserMetaDataStore from "./stores/userMetaDataStore";
+import AuthContext from "./auth/AuthContext";
 
 export default function App() {
   const { isLoggedIn } = useUserAuthStore();
+  const { userId } = useContext(AuthContext);
+  const { createUserMetaData } = useUserMetaDataStore();
   const [games, setGames] = useState(null);
   const [profiles, setProfiles] = useState(null);
   const location = useLocation();
@@ -57,7 +61,6 @@ export default function App() {
       try {
         const usersResponse = await axios.get(`${HOST_PATH}/games`);
         const games = usersResponse.data;
-        console.log(games.length);
         setGames(games);
       } catch (error) {
         console.error("Error fetching games:", error);
@@ -81,6 +84,32 @@ export default function App() {
       ws.close();
     };
   }, [location.pathname]);
+
+  useEffect(() => {
+    console.log("change");
+    if (userId) {
+      const handleBeforeUnload = async (event) => {
+        event.preventDefault();
+        const store = JSON.parse(sessionStorage.getItem("user-metadata-store"));
+        const formData = {
+          user_id: userId,
+          settings: store.state.settings,
+          user_points: store.state.points,
+        };
+
+        try {
+          await createUserMetaData(formData);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      window.addEventListener("beforeunload", handleBeforeUnload);
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+      };
+    }
+  }, [location.pathname, createUserMetaData, userId]);
 
   return (
     <Routes>

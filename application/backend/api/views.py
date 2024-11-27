@@ -30,7 +30,7 @@ class CreateOrLoginView(generics.GenericAPIView):
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
             refresh_token = str(refresh)
-
+            
             return Response(
                 {
                     'accessToken': access_token,
@@ -66,38 +66,50 @@ class CreateUserMetaDataView(generics.GenericAPIView):
         '''
 
         user_id = request.data.get('user_id')
-        security_question_id = request.data.get('security_question')
-        security_question = SecurityQuestion.objects.get(
-            id=security_question_id)
-        security_answer = request.data.get('security_answer')
-
         user = User.objects.get(id=user_id)
-        items = Item.objects.all()
-        settings = {
-            "garbageCollectorColor": "#0022ff",
-            "moveLeft": "ArrowLeft",
-            "moveRight": "ArrowRight",
-            "toggleNextItem": "Tab",
-            "useItem": "Enter",
-        }
 
-        userMetaData = UserMetaData.objects.create(
-            user=user,
-            security_question=security_question,
-            security_answer=security_answer,
-            settings=settings,
-        )
-        userMetaData.items.add(*items)
-        userMetaData.save()
+        if UserMetaData.objects.filter(user=user).exists():
+            userMetaData = UserMetaData.objects.get(user=user)
+            settings = request.data.get('settings')
+            user_points = request.data.get('user_points')
 
-        user_points = 0
+            userMetaData.settings = settings
+            userMetaData.user_points = user_points if user_points is not None else 0
+            userMetaData.save()
 
-        return Response(
-            {
-                'settings': settings,
-                'user_points': user_points,
-            },
-            status=status.HTTP_200_OK)
+            return Response({"success": "success"}, status=status.HTTP_200_OK)
+        else:
+            security_question_id = request.data.get('security_question')
+            security_question = SecurityQuestion.objects.get(
+                id=security_question_id)
+            security_answer = request.data.get('security_answer')
+
+            items = Item.objects.all()
+            settings = {
+                "garbageCollectorColor": "#0022ff",
+                "moveLeft": "ArrowLeft",
+                "moveRight": "ArrowRight",
+                "toggleNextItem": "Tab",
+                "useItem": "Enter",
+            }
+
+            userMetaData = UserMetaData.objects.create(
+                user=user,
+                security_question=security_question,
+                security_answer=security_answer,
+                settings=settings,
+            )
+            userMetaData.items.add(*items)
+            userMetaData.save()
+
+            user_points = 0
+
+            return Response(
+                {
+                    'settings': settings,
+                    'user_points': user_points,
+                },
+                status=status.HTTP_200_OK)
 
 
 class UserCountView(generics.GenericAPIView):
