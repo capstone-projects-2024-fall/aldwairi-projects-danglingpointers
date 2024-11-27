@@ -13,11 +13,13 @@ export default function Dashboard() {
   const [userNeedsMetaData, setUserNeedsMetaData] = useState(true);
 
   useEffect(() => {
+    // User created and navigating from security question/answer screen
     if (sessionStorage.getItem("user-metadata-state")) {
       setUserNeedsMetaData(false);
       return;
     }
 
+    // Returning user logged in
     const fetchUserMetaData = async () => {
       try {
         const formData = {
@@ -28,10 +30,12 @@ export default function Dashboard() {
         console.log(error);
       }
     };
+
     fetchUserMetaData();
     setUserNeedsMetaData(false);
   }, [userId, setUserMetaData]);
 
+  // Game Socket
   useEffect(() => {
     const ws = new WebSocket(`ws://localhost:8000/ws/game-server/`);
 
@@ -59,6 +63,7 @@ export default function Dashboard() {
     };
   }, []);
 
+  // Chat Socket
   useEffect(() => {
     const ws = new WebSocket(`ws://localhost:8000/ws/chat-server/`);
 
