@@ -8,5 +8,17 @@ export const DEFAULT_SETTINGS = {
     moveLeft: "ArrowLeft",
     moveRight: "ArrowRight",
     toggleNextItem: "Tab",
-    UseItem: "Spacebar",
+    useItem: "Enter",
+}
+export const ITEMS = {
+    defaultSpeedStackBase: 3000,
+    slowDownStackBase: 4750,
+    defaultSpeedStackMod: 750,
+    slowDownStackMod: 75,
+    defaultSpeedGarbageCollector: 10,
+    speedUpGarbageCollector: 5,
+    defaultWidthGarbageCollector: "75px",
+    superWidthGarbageCollector: "150px",
+    defaultScore: 1,
+    doubleScore: 2,
 }

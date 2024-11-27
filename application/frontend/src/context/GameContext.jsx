@@ -13,6 +13,11 @@ export const GameProvider = ({ children }) => {
   const [userLivesCount, setUserLivesCount] = useState(3);
   const [gameStarted, setGameStarted] = useState(false);
   const [pointersCleared, setPointersCleared] = useState(false); // Track pointers cleared
+  const [itemInUse, setItemInUse] = useState(false);
+  const [isSlowDown, setIsSlowDown] = useState(false);
+  const [isSpeedUp, setIsSpeedUp] = useState(false);
+  const [isSuperCollector, setIsSuperCollector] = useState(false);
+  const [isDoubleScore, setIsDoubleScore] = useState(false);
 
   return (
     <GameContext.Provider
@@ -34,7 +39,17 @@ export const GameProvider = ({ children }) => {
         totalPointerCounter,
         setTotalPointerCounter,
         pointersCleared,
-        setPointersCleared, // Expose pointersCleared and setPointersCleared
+        setPointersCleared,
+        itemInUse,
+        setItemInUse,
+        isSlowDown,
+        setIsSlowDown,
+        isSpeedUp,
+        setIsSpeedUp,
+        isSuperCollector,
+        setIsSuperCollector,
+        isDoubleScore,
+        setIsDoubleScore,
       }}
     >
       {children}

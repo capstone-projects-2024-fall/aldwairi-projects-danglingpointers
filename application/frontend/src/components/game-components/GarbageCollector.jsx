@@ -3,11 +3,17 @@ import {
   checkLeftBoundary,
   checkRightBoundary,
 } from "../../scripts/check-boundaries";
-import { DEFAULT_SETTINGS } from "../../scripts/constants";
+import { DEFAULT_SETTINGS, ITEMS } from "../../scripts/constants";
 import AuthContext from "../../auth/AuthContext";
+import GameContext from "../../context/GameContext";
 
 const GarbageCollector = forwardRef((_, ref) => {
   const { userId } = useContext(AuthContext);
+  const {
+    isSpeedUp,
+    isSuperCollector,
+  } = useContext(GameContext);
+
   const [styleLeft, setStyleLeft] = useState("1px");
   const intervalRef = useRef(null);
   const garbageCollectorColor = useRef(null);
@@ -23,8 +29,8 @@ const GarbageCollector = forwardRef((_, ref) => {
       arrowRight.current = settings.moveRight;
     } else {
       garbageCollectorColor.current = DEFAULT_SETTINGS.garbageCollectorColor;
-      arrowLeft.current = DEFAULT_SETTINGS.arrowLeft;
-      arrowRight.current = DEFAULT_SETTINGS.arrowRight;
+      arrowLeft.current = DEFAULT_SETTINGS.moveLeft;
+      arrowRight.current = DEFAULT_SETTINGS.moveRight;
     }
   }, [userId]);
 
@@ -32,23 +38,28 @@ const GarbageCollector = forwardRef((_, ref) => {
     const handleKeyDown = (event) => {
       if (event.key === arrowLeft.current) {
         clearInterval(intervalRef.current);
-        intervalRef.current = setInterval(() => {
-          setStyleLeft((prevLeft) => {
-            if (
-              checkLeftBoundary(
-                document
-                  .querySelector(".garbage-collector")
-                  .getBoundingClientRect(),
-                document.querySelector(".stack").getBoundingClientRect()
+        intervalRef.current = setInterval(
+          () => {
+            setStyleLeft((prevLeft) => {
+              if (
+                checkLeftBoundary(
+                  document
+                    .querySelector(".garbage-collector")
+                    .getBoundingClientRect(),
+                  document.querySelector(".stack").getBoundingClientRect()
+                )
               )
-            )
-              return parseInt(prevLeft) - 10 + "px";
-            else {
-              clearInterval(intervalRef.current);
-              return prevLeft;
-            }
-          });
-        }, 10);
+                return parseInt(prevLeft) - 10 + "px";
+              else {
+                clearInterval(intervalRef.current);
+                return prevLeft;
+              }
+            });
+          },
+          isSpeedUp
+            ? ITEMS.speedUpGarbageCollector
+            : ITEMS.defaultSpeedGarbageCollector
+        );
       } else if (event.key === arrowRight.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = setInterval(() => {
@@ -82,14 +93,20 @@ const GarbageCollector = forwardRef((_, ref) => {
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("keyup", handleKeyUp);
     };
-  }, []);
+  }, [isSpeedUp]);
 
   return (
     <>
       <section
         className="garbage-collector"
         ref={ref}
-        style={{ left: styleLeft, background: garbageCollectorColor.current }}
+        style={{
+          left: styleLeft,
+          background: garbageCollectorColor.current,
+          width: isSuperCollector
+            ? ITEMS.superWidthGarbageCollector
+            : ITEMS.defaultWidthGarbageCollector,
+        }}
       ></section>
     </>
   );

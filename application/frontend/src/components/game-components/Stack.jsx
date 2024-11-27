@@ -3,12 +3,14 @@ import Pointer from "./Pointer";
 import getRandomColor from "../../scripts/get-random-color";
 import GameContext from "../../context/GameContext";
 import getStackInterval from "../../scripts/get-stack-interval";
+import { ITEMS } from "../../scripts/constants";
 
 const Stack = forwardRef((_, ref) => {
   const {
     setCurrentPointerCounter,
     totalPointerCounter,
     setTotalPointerCounter,
+    isSlowDown,
   } = useContext(GameContext);
   const [pointers, setPointers] = useState([]);
   const {
@@ -42,7 +44,7 @@ const Stack = forwardRef((_, ref) => {
             );
 
             if (thisPointer.classList.contains("animation-four")) {
-              setUserScore((prevScore) => prevScore + 2);
+              setUserScore((prevScore) => prevScore + ITEMS.doubleScore);
             } else {
               setUserLives((lives) => {
                 let newLives = [...lives];
@@ -80,7 +82,16 @@ const Stack = forwardRef((_, ref) => {
         container.appendChild(firstChild);
       }
     };
-    const random = getStackInterval(3000, 750);
+
+    const base = isSlowDown
+      ? ITEMS.slowDownStackBase
+      : ITEMS.defaultSpeedStackBase;
+
+    const mod = isSlowDown
+      ? ITEMS.slowDownStackMod
+      : ITEMS.defaultSpeedStackMod;
+      
+    const random = getStackInterval(base, mod);
     const intervalId = setInterval(updateStack, random);
 
     return () => clearInterval(intervalId);
@@ -91,6 +102,7 @@ const Stack = forwardRef((_, ref) => {
     setUserScore,
     userLivesCount,
     gameStarted,
+    isSlowDown,
     setPointersCleared,
     setCurrentPointerCounter,
     totalPointerCounter,

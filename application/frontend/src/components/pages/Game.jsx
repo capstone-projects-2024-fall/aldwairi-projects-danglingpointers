@@ -6,6 +6,7 @@ import { useEffect, useRef, useContext, useState } from "react";
 import GameContext from "../../context/GameContext";
 import axios from "axios";
 import { DEFAULT_SETTINGS, GAME_URL, HOST_PATH } from "../../scripts/constants";
+import setTemporaryItemState from "../../scripts/set-temp-item-state";
 import useUserAuthStore from "../../stores/userAuthStore";
 
 export default function Game() {
@@ -23,8 +24,13 @@ export default function Game() {
     gameStarted,
     setGameStarted,
     totalPointerCount,
-    pointersCleared, // Listen for pointersCleared state
+    pointersCleared,
     setPointersCleared,
+    setIsDoubleScore,
+    setIsSlowDown,
+    setIsSpeedUp,
+    setIsSuperCollector,
+    setItemInUse,
   } = useContext(GameContext);
 
   const { userId } = useUserAuthStore();
@@ -151,7 +157,10 @@ export default function Game() {
           if (store) {
             store.state.points = newPoints;
             console.log(store.state.points);
-            sessionStorage.setItem("user-metadata-state", JSON.stringify(store));
+            sessionStorage.setItem(
+              "user-metadata-state",
+              JSON.stringify(store)
+            );
           }
 
           console.log(sessionStorage.getItem("user-metadata-state"));
@@ -184,15 +193,15 @@ export default function Game() {
       const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
       if (store) {
         const settings = store.state.settings;
-        toggleNextItem.current = settings.garbageCollectorColor;
-        useItem.current = settings.moveLeft;
+        toggleNextItem.current = settings.toggleNextItem;
+        useItem.current = settings.useItem;
       } else {
-        toggleNextItem.current = DEFAULT_SETTINGS.garbageCollectorColor;
-        useItem.current = DEFAULT_SETTINGS.arrowLeft;
+        toggleNextItem.current = DEFAULT_SETTINGS.toggleNextItem;
+        useItem.current = DEFAULT_SETTINGS.useItem;
       }
 
-      if (userId) {
-        try {
+      try {
+        if (userId) {
           const metadataResponse = await axios.get(
             `${HOST_PATH}/user-metadata?user_id=${userId}`
           );
@@ -211,9 +220,12 @@ export default function Game() {
           fetchedItems.push(...resolvedItems); // Efficiently add fetched items
 
           setUserItems(fetchedItems);
-        } catch (error) {
-          console.error("Error fetching items:", error);
+        } else {
+          const itemResponse = await axios.get(`${HOST_PATH}/items`);
+          setUserItems(itemResponse.data);
         }
+      } catch (error) {
+        console.error("Error fetching items:", error);
       }
     };
 
@@ -223,14 +235,31 @@ export default function Game() {
   // Use Items Event Listener
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === toggleNextItem.current) {
+      if (gameStarted && event.key === toggleNextItem.current) {
         event.preventDefault();
         const newIndex =
           (selectedIndex + (event.shiftKey ? -1 : 1) + userItems.length) %
           userItems.length;
         setSelectedIndex(newIndex);
-      } else if (event.key === useItem.current) {
-        console.log(userItems[selectedIndex].icon);
+      } else if (gameStarted && event.key === useItem.current) {
+        switch (selectedIndex) {
+          case 0:
+            setTemporaryItemState(setItemInUse, setIsSlowDown);
+            break;
+          case 1:
+            setTemporaryItemState(setItemInUse, setIsSpeedUp);
+            break;
+          case 2:
+            if (userLives.length < 10)
+              setUserLives([...userLives, userLives[0]]);
+            break;
+          case 3:
+            setTemporaryItemState(setItemInUse, setIsSuperCollector);
+            break;
+          case 4:
+            setTemporaryItemState(setItemInUse, setIsDoubleScore);
+            break;
+        }
       }
     };
 
@@ -240,7 +269,18 @@ export default function Game() {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [selectedIndex, userItems]);
+  }, [
+    gameStarted,
+    selectedIndex,
+    userItems,
+    setIsDoubleScore,
+    setIsSlowDown,
+    setIsSpeedUp,
+    setIsSuperCollector,
+    setItemInUse,
+    setUserLives,
+    userLives
+  ]);
 
   return (
     <main className="main-game">
