@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import Inbox from "../dashboard-components/Inbox";
 import Store from "../dashboard-components/Store";
@@ -7,29 +6,30 @@ import Settings from "../dashboard-components/Settings";
 import UserPreviousGames from "../dashboard-components/UserPreviousGames";
 import UserSetup from "../dashboard-components/UserSetup";
 // import UserStats from "../dashboard-components/UserStats";
-import { HOST_PATH } from "../../scripts/constants";
+// import { HOST_PATH } from "../../scripts/constants";
 import useUserAuthStore from "../../stores/userAuthStore";
+import useUserMetaDataStore from "../../stores/userMetaDataStore";
 
 export default function Dashboard() {
   const { userId } = useUserAuthStore();
+  const { setUserMetaData } = useUserMetaDataStore();
   const [userNeedsMetaData, setUserNeedsMetaData] = useState(true);
 
   useEffect(() => {
-    if (userId) {
-      const fetchUserMetaData = async () => {
-        try {
-          const metadataResponse = await axios.get(
-            `${HOST_PATH}/user-metadata?user_id=${userId}`
-          );
-
-          console.log(metadataResponse.data);
-        } catch (error) {
-          console.log(error);
+    if (!userId) return;
+    const fetchUserMetaData = async () => {
+      try {
+        const formData = {
+          userId: userId
         }
-      };
-      fetchUserMetaData();
-    }
-  }, [userId]);
+        await setUserMetaData(formData);
+        setUserNeedsMetaData(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchUserMetaData();
+  }, [userId, setUserMetaData]);
 
   useEffect(() => {
     const ws = new WebSocket(`ws://localhost:8000/ws/game-server/`);

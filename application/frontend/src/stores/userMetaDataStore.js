@@ -8,11 +8,24 @@ const useUserMetaDataStore = create(
     (set) => ({
       settings: null,
       createUserMetaData: async (formData) => {
-        const response = await axios.post(`${HOST_PATH}/create-user-metadata/`, formData);
+        const response = await axios.post(
+          `${HOST_PATH}/create-user-metadata/`,
+          formData
+        );
 
         set(() => ({
           points: response.data.user_points,
           settings: response.data.settings,
+        }));
+      },
+      setUserMetaData: async (formData) => {
+        const response = await axios.get(
+          `${HOST_PATH}/user-metadata/?user_id=${formData.userId}`
+        );
+
+        set(() => ({
+          points: response.data[0].user_points,
+          settings: response.data[0].settings,
         }));
       },
     }),
