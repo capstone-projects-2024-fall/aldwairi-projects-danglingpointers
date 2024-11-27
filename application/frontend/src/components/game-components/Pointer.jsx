@@ -4,7 +4,7 @@ import checkForCollision from "../../scripts/check-for-collision";
 import { ITEMS } from "../../scripts/constants";
 
 export default function Pointer({ color, id, onAnimationIteration }) {
-  const { gameStarted, isDoubleScore, setUserScore, userLives } = useContext(GameContext);
+  const { gameStarted, isPractice, isDoubleScore, setUserScore, userLives } = useContext(GameContext);
   const pointerRef = useRef(null);
   const [pointerLeft, setPointerLeft] = useState(0);
   // const [collisionCount, setCollisionCount] = useState(0);
@@ -13,7 +13,7 @@ export default function Pointer({ color, id, onAnimationIteration }) {
 
   // Pointer Creation
   useEffect(() => {
-    if (!gameStarted) {
+    if (!gameStarted && !isPractice) {
       setShouldAnimate(false);
       return;
     }
@@ -42,14 +42,14 @@ export default function Pointer({ color, id, onAnimationIteration }) {
         handleAnimationIteration
       );
     };
-  }, [onAnimationIteration, gameStarted, shouldAnimate]);
+  }, [onAnimationIteration, gameStarted, isPractice, shouldAnimate]);
 
   // Optimized Collision Detection
   useEffect(() => {
     const detectCollision = () => {
       const pointer = pointerRef.current;
       const garbageCollector = document.querySelector(".garbage-collector");
-      if (pointer && garbageCollector && gameStarted) {
+      if (pointer && garbageCollector) {
         const pointerRect = pointer.getBoundingClientRect();
         const garbageCollectorRect = garbageCollector.getBoundingClientRect();
 
@@ -59,8 +59,8 @@ export default function Pointer({ color, id, onAnimationIteration }) {
         ) {
 
           setUserScore((prevScore) => {
-            if (isDoubleScore) prevScore + ITEMS.doubleScore;
-            else prevScore + ITEMS.defaultScore;
+            if (isDoubleScore) return prevScore + ITEMS.doubleScore;
+            else return prevScore + ITEMS.defaultScore;
           });
           if (pointer.classList.contains("animation-three")) {
             pointer.classList.replace("animation-three", "animation-four");
@@ -74,11 +74,11 @@ export default function Pointer({ color, id, onAnimationIteration }) {
       requestRef.current = requestAnimationFrame(detectCollision);
     };
 
-    if (gameStarted) {
+    if (gameStarted || isPractice) {
       requestRef.current = requestAnimationFrame(detectCollision);
     }
     return () => cancelAnimationFrame(requestRef.current);
-  }, [gameStarted, isDoubleScore, setUserScore, userLives]);
+  }, [gameStarted, isPractice, isDoubleScore, setUserScore, userLives]);
 
   return (
     <div

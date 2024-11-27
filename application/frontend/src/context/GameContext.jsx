@@ -18,6 +18,7 @@ export const GameProvider = ({ children }) => {
   const [isSpeedUp, setIsSpeedUp] = useState(false);
   const [isSuperCollector, setIsSuperCollector] = useState(false);
   const [isDoubleScore, setIsDoubleScore] = useState(false);
+  const [isPractice, setIsPractice] = useState(false);
 
   return (
     <GameContext.Provider
@@ -50,6 +51,8 @@ export const GameProvider = ({ children }) => {
         setIsSuperCollector,
         isDoubleScore,
         setIsDoubleScore,
+        isPractice,
+        setIsPractice,
       }}
     >
       {children}

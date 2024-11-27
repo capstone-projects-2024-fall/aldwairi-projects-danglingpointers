@@ -19,11 +19,12 @@ const Stack = forwardRef((_, ref) => {
     userLivesCount,
     setUserLivesCount,
     gameStarted,
+    isPractice,
     setPointersCleared,
   } = useContext(GameContext);
 
   useEffect(() => {
-    if (!gameStarted || userLivesCount === 0) return;
+    if ((!gameStarted && !isPractice) || userLivesCount === 0) return;
 
     // Reset pointers cleared state when the game starts
     setPointersCleared(false);
@@ -102,6 +103,7 @@ const Stack = forwardRef((_, ref) => {
     setUserScore,
     userLivesCount,
     gameStarted,
+    isPractice,
     isSlowDown,
     setPointersCleared,
     setCurrentPointerCounter,
