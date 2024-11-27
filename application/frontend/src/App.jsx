@@ -90,18 +90,19 @@ export default function App() {
     if (userId) {
       const handleBeforeUnload = async (event) => {
         event.preventDefault();
-        const store = JSON.parse(sessionStorage.getItem("user-metadata-store"));
-        const formData = {
-          user_id: userId,
-          settings: store.state.settings,
-          user_points: store.state.points,
-        };
+        console.log(event);
+        // const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+        // const formData = {
+        //   user_id: userId,
+        //   settings: store.state.settings,
+        //   user_points: store.state.points,
+        // };
 
-        try {
-          await createUserMetaData(formData);
-        } catch (error) {
-          console.error(error);
-        }
+        // try {
+        //   await createUserMetaData(formData);
+        // } catch (error) {
+        //   console.error(error);
+        // }
       };
 
       window.addEventListener("beforeunload", handleBeforeUnload);

@@ -9,16 +9,10 @@ import useUserMetaDataStore from "../../stores/userMetaDataStore";
 
 export default function Dashboard() {
   const { userId } = useUserAuthStore();
-  const { setUserMetaData } = useUserMetaDataStore();
+  const { isMetaDataSet, setUserMetaData } = useUserMetaDataStore();
   const [userNeedsMetaData, setUserNeedsMetaData] = useState(true);
 
   useEffect(() => {
-    // User created and navigating from security question/answer screen
-    if (sessionStorage.getItem("user-metadata-state")) {
-      setUserNeedsMetaData(false);
-      return;
-    }
-
     // Returning user logged in
     const fetchUserMetaData = async () => {
       try {
@@ -26,14 +20,25 @@ export default function Dashboard() {
           userId: userId,
         };
         await setUserMetaData(formData);
+        setUserNeedsMetaData(false);
       } catch (error) {
         console.log(error);
       }
     };
 
+    // If not signed in, return
+    if (!userId) return;
+
+    console.log(isMetaDataSet);
+
+    // User created and navigating from security question/answer screen
+    if (isMetaDataSet) {
+      setUserNeedsMetaData(false);
+      return;
+    }
+
     fetchUserMetaData();
-    setUserNeedsMetaData(false);
-  }, [userId, setUserMetaData]);
+  }, [userId, isMetaDataSet, setUserMetaData]);
 
   // Game Socket
   useEffect(() => {

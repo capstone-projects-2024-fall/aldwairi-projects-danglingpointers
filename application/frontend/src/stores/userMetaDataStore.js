@@ -6,7 +6,10 @@ import { HOST_PATH } from "../scripts/constants";
 const useUserMetaDataStore = create(
   persist(
     (set) => ({
+      isMetaDataSet: false,
+      points: null,
       settings: null,
+
       createUserMetaData: async (formData) => {
         const response = await axios.post(
           `${HOST_PATH}/create-user-metadata/`,
@@ -14,6 +17,7 @@ const useUserMetaDataStore = create(
         );
 
         set(() => ({
+          isMetaDataSet: true,
           points: response.data.user_points,
           settings: response.data.settings,
         }));
@@ -24,8 +28,18 @@ const useUserMetaDataStore = create(
         );
 
         set(() => ({
+          isMetaDataSet: true,
           points: response.data[0].user_points,
           settings: response.data[0].settings,
+        }));
+      },
+      unloadUserMetaData: async (formData) => {
+        await axios.post(`${HOST_PATH}/save-user-metadata/`, formData);
+
+        set(() => ({
+          isMetaDataSet: false,
+          points: null,
+          settings: null,
         }));
       },
     }),
