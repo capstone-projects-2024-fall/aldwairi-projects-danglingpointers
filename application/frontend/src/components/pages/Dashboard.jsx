@@ -15,19 +15,20 @@ export default function Dashboard() {
   const [userNeedsMetaData, setUserNeedsMetaData] = useState(true);
 
   useEffect(() => {
-    const fetchUserMetaData = async () => {
-      try {
-        const metadataResponse = await axios.get(
-          `${HOST_PATH}/user-metadata?user_id=${userId}`
-        );
+    if (userId) {
+      const fetchUserMetaData = async () => {
+        try {
+          const metadataResponse = await axios.get(
+            `${HOST_PATH}/user-metadata?user_id=${userId}`
+          );
 
-        console.log(metadataResponse.data);
-        setUserNeedsMetaData(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchUserMetaData();
+          console.log(metadataResponse.data);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchUserMetaData();
+    }
   }, [userId]);
 
   useEffect(() => {
