@@ -77,7 +77,7 @@ class CreateUserMetaDataView(generics.GenericAPIView):
             "garbageCollectorColor": "#0022ff",
             "moveLeft": "ArrowLeft",
             "moveRight": "ArrowRight",
-            "toggleNextItem": "Spacebar",
+            "toggleNextItem": "Tab",
             "useItem": "Enter",
         }
 
@@ -90,7 +90,7 @@ class CreateUserMetaDataView(generics.GenericAPIView):
         userMetaData.items.add(*items)
         userMetaData.save()
 
-        user_points = str(UserMetaData.user_points)
+        user_points = 0
 
         return Response(
             {
@@ -100,16 +100,18 @@ class CreateUserMetaDataView(generics.GenericAPIView):
             status=status.HTTP_200_OK)
 
 
+class UserCountView(generics.GenericAPIView):
+    def get(self, request):
+        user_count = User.objects.count()
+        return Response({'user_count': user_count})
+
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects
     serializer_class = UserSerializer
 
     def get_queryset(self):
         queryset = self.queryset
-
-        profiles = self.request.query_params.get('profiles')
-        if profiles:
-            return queryset
 
         user_id = self.request.query_params.get('user_id')
         if user_id:

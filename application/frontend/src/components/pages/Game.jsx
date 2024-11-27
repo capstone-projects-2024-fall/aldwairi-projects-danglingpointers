@@ -5,9 +5,8 @@ import convertSecondsToMinutes from "../../scripts/convert-seconds-to-minutes";
 import { useEffect, useRef, useContext, useState } from "react";
 import GameContext from "../../context/GameContext";
 import axios from "axios";
-import { GAME_URL, HOST_PATH } from "../../scripts/constants";
+import { DEFAULT_SETTINGS, GAME_URL, HOST_PATH } from "../../scripts/constants";
 import useUserAuthStore from "../../stores/userAuthStore";
-import AuthContext from "../../auth/AuthContext";
 
 export default function Game() {
   const {
@@ -28,8 +27,6 @@ export default function Game() {
     setPointersCleared,
   } = useContext(GameContext);
 
-  const { setUserMoney } = useContext(AuthContext);
-
   const { userId } = useUserAuthStore();
   const [userItems, setUserItems] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -39,6 +36,9 @@ export default function Game() {
   const garbageCollectorRef = useRef(null);
   const recyclingBinRef = useRef(null);
   const wsRef = useRef(null);
+  const toggleNextItem = useRef(null);
+  const useItem = useRef(null);
+  const userPoints = useRef(null);
 
   useEffect(() => {
     const ws = new WebSocket(GAME_URL);
@@ -51,30 +51,40 @@ export default function Game() {
 
   useEffect(() => {
     const ws = new WebSocket(`ws://localhost:8000/ws/chat-server/`);
-  
+
     ws.onopen = () => {
       console.log("WebSocket connection to ChatConsumer established");
     };
-  
+
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
       if (message.type === "chat") {
         console.log("Received chat message:", message);
       }
     };
-  
+
     ws.onclose = () => {
       console.log("WebSocket connection to ChatConsumer closed");
     };
-  
+
     ws.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
-  
+
     return () => {
       ws.close();
     };
   }, []);
+
+  useEffect(() => {
+    const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+    if (store) {
+      const points = store.state.points;
+      userPoints.current = points;
+    }
+  }, [userId, userPoints]);
+
+  useEffect(() => {}, [userScore]);
 
   // Function to initialize a new round
   const initializeRound = () => {
@@ -131,8 +141,20 @@ export default function Game() {
             // link: `game/game_id_${gameId}`,
             status: "Complete",
           });
-          setUserMoney((prevMoney) => prevMoney + userScore);
+          const prevPoints = userPoints.current;
+          const newPoints = prevPoints + userScore;
 
+          const store = JSON.parse(
+            sessionStorage.getItem("user-metadata-state")
+          );
+
+          if (store) {
+            store.state.points = newPoints;
+            console.log(store.state.points);
+            sessionStorage.setItem("user-metadata-state", JSON.stringify(store));
+          }
+
+          console.log(sessionStorage.getItem("user-metadata-state"));
           console.log("Game data posted successfully:", response.data);
         } catch (error) {
           console.error("Error posting game data:", error);
@@ -152,13 +174,23 @@ export default function Game() {
     gameMode,
     finalTimer,
     userId,
+    userPoints,
     userScore,
-    setUserMoney,
   ]);
 
   // Fetch Items
   useEffect(() => {
     const fetchUserItems = async () => {
+      const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+      if (store) {
+        const settings = store.state.settings;
+        toggleNextItem.current = settings.garbageCollectorColor;
+        useItem.current = settings.moveLeft;
+      } else {
+        toggleNextItem.current = DEFAULT_SETTINGS.garbageCollectorColor;
+        useItem.current = DEFAULT_SETTINGS.arrowLeft;
+      }
+
       if (userId) {
         try {
           const metadataResponse = await axios.get(

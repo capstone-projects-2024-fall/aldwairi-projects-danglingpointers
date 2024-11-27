@@ -1,37 +1,36 @@
-import {
-  forwardRef,
-  useContext,
-  useEffect,
-  // useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { forwardRef, useContext, useEffect, useRef, useState } from "react";
 import {
   checkLeftBoundary,
   checkRightBoundary,
 } from "../../scripts/check-boundaries";
-// import useUserAuthStore from "../../stores/userAuthStore";
+import { DEFAULT_SETTINGS } from "../../scripts/constants";
 import AuthContext from "../../auth/AuthContext";
 
 const GarbageCollector = forwardRef((_, ref) => {
-  // const { userId } = useUserAuthStore();
+  const { userId } = useContext(AuthContext);
   const [styleLeft, setStyleLeft] = useState("1px");
-  const { garbageCollectorColor } =
-    useContext(AuthContext);
   const intervalRef = useRef(null);
+  const garbageCollectorColor = useRef(null);
+  const arrowLeft = useRef(null);
+  const arrowRight = useRef(null);
 
-  // useLayoutEffect(() => {
-  //   if (userId) {
-  //     const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
-  //     const color = store.state.settings.garbageCollectorColor;
-  //     if (color) setGarbageCollectorColor(color);
-  //     else setGarbageCollectorColor("green");
-  //   } else setGarbageCollectorColor("red");
-  // }, [userId]);
+  useEffect(() => {
+    const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+    if (store) {
+      const settings = store.state.settings;
+      garbageCollectorColor.current = settings.garbageCollectorColor;
+      arrowLeft.current = settings.moveLeft;
+      arrowRight.current = settings.moveRight;
+    } else {
+      garbageCollectorColor.current = DEFAULT_SETTINGS.garbageCollectorColor;
+      arrowLeft.current = DEFAULT_SETTINGS.arrowLeft;
+      arrowRight.current = DEFAULT_SETTINGS.arrowRight;
+    }
+  }, [userId]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === "ArrowLeft") {
+      if (event.key === arrowLeft.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = setInterval(() => {
           setStyleLeft((prevLeft) => {
@@ -50,7 +49,7 @@ const GarbageCollector = forwardRef((_, ref) => {
             }
           });
         }, 10);
-      } else if (event.key === "ArrowRight") {
+      } else if (event.key === arrowRight.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = setInterval(() => {
           setStyleLeft((prevLeft) => {
@@ -90,7 +89,7 @@ const GarbageCollector = forwardRef((_, ref) => {
       <section
         className="garbage-collector"
         ref={ref}
-        style={{ left: styleLeft, background: garbageCollectorColor }}
+        style={{ left: styleLeft, background: garbageCollectorColor.current }}
       ></section>
     </>
   );

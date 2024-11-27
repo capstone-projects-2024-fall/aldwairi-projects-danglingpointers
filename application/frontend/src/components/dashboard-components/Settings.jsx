@@ -6,6 +6,8 @@ export default function Settings() {
   const [values, setValues] = useState([]);
   const [editSettings, setEditSettings] = useState(false);
   const [garbageCollectorColor, setGarbageCollectorColor] = useState();
+  const [isListeningForKeyPress, setIsListeningForKeyPress] = useState(false);
+  const [keyPressIndex, setKeyPressIndex] = useState();
 
   // Update camelCase format to Camel Case
   function formatKey(key) {
@@ -13,6 +15,17 @@ export default function Settings() {
   }
 
   const handleEditSettings = async () => {
+    if (editSettings) {
+      const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+      const settings = store.state.settings;
+      const keys = Object.keys(settings);
+      values[0] = garbageCollectorColor;
+
+      for (let i = 0; i < keys.length; i++) settings[keys[i]] = values[i];
+
+      store.state.settings = settings;
+      sessionStorage.setItem("user-metadata-state", JSON.stringify(store));
+    }
     setEditSettings(!editSettings);
   };
 
@@ -46,22 +59,53 @@ export default function Settings() {
           {editSettings ? "Save" : "Edit"}
         </button>
       </div>
-      <ul style={{ marginBottom: "20px" }}>
+      <ul>
         {values.map((value, index) => (
           <div key={index}>
             <li className="li-setting">
               <p>{formatKey(keys[index])}: </p>
               {editSettings ? (
                 <input
+                  className="no-cursor"
                   style={{
                     marginBottom: "10px",
+                    width: "50%",
+                    cursor: "default",
+                    backgroundColor:
+                      isListeningForKeyPress &&
+                      keyPressIndex === index &&
+                      keys[index] !== "garbageCollectorColor"
+                        ? "#b3e6e2"
+                        : "white",
                   }}
                   type="text"
-                  value={keys[index] === "garbageCollectorColor" ? garbageCollectorColor : value}
-                  onChange={(e) => {
-                    const updatedValues = [...values];
-                    updatedValues[index] = e.target.value;
-                    setValues(updatedValues);
+                  value={
+                    keys[index] === "garbageCollectorColor"
+                      ? garbageCollectorColor
+                      : isListeningForKeyPress && keyPressIndex === index
+                      ? "Press any key or esc to cancel"
+                      : value
+                  }
+                  onClick={() => {
+                    setIsListeningForKeyPress(true);
+                    setKeyPressIndex(index);
+                  }}
+                  onKeyDown={(e) => {
+                    if (isListeningForKeyPress) {
+                      if (e.key === "Escape") {
+                        setIsListeningForKeyPress(false);
+                        return;
+                      }
+
+                      let key = e.key === " " ? "Spacebar" : e.key;
+                      if (values.includes(key) && values.indexOf(key) !== index) return;
+
+                      const updatedValues = [...values];
+                      updatedValues[index] = key;
+
+                      setValues(updatedValues);
+                      setIsListeningForKeyPress(false);
+                    }
                   }}
                 />
               ) : (
@@ -69,28 +113,22 @@ export default function Settings() {
                   style={{
                     marginBottom: "10px",
                     cursor: "default",
+                    pointerEvents: "none",
                   }}
                   readOnly
                   type="text"
                   value={value}
-                  onChange={(e) => {
-                    const updatedValues = [...values];
-                    updatedValues[index] = e.target.value;
-                    setValues(updatedValues);
-                  }}
                 />
               )}
             </li>
-            {editSettings ? (
-              <div style={{ marginBottom: "20px" }}>
-                {keys[index] === "garbageCollectorColor" ? (
-                  <SliderPicker
-                    key={100000}
-                    color={garbageCollectorColor}
-                    onChangeComplete={handleChangeComplete}
-                  />
-                ) : null}
-              </div>
+            {editSettings && keys[index] === "garbageCollectorColor" ? (
+              <li style={{ marginBottom: "10px" }}>
+                <SliderPicker
+                  key={100000}
+                  color={garbageCollectorColor}
+                  onChangeComplete={handleChangeComplete}
+                />
+              </li>
             ) : null}
           </div>
         ))}

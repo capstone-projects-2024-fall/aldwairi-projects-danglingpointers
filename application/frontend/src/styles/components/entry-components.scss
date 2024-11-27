@@ -1,7 +1,6 @@
 @use "../constants/constants";
 
 .base-entry {
-  width: auto;
   background-color: lightgray;
   border: 1px solid black;
   border-radius: 5px;
@@ -12,6 +11,7 @@
   display: flex;
   flex-flow: column nowrap;
   align-items: start;
+  width: 95%;
 
   .item-img-container {
     display: flex;

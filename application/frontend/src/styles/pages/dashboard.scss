@@ -58,6 +58,9 @@
     grid-row-end: 5;
     overflow-y: scroll;
     padding-right: 10px;
+    .no-cursor:focus {
+      caret-color: transparent;
+    }
   }
 
   .store-container {
@@ -96,6 +99,9 @@
     justify-content: start;
     align-items: start;
     overflow-y: auto;
+    section {
+      width: 93%;
+    }
   }
 }
 

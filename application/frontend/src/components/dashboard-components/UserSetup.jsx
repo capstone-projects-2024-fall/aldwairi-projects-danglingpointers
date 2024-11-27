@@ -37,6 +37,7 @@ export default function UserSetup({ setUserNeedsMetaData }) {
 
     if (!selectedQuestion || !securityAnswer) return;
 
+    console.log(userId);
     const formData = {
       user_id: userId,
       security_question: selectedQuestion,

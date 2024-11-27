@@ -5,9 +5,12 @@ import { HOST_PATH } from "../../scripts/constants";
 
 export default function Store() {
   const [itemsList, setItemsList] = useState();
-  const [userMoney, setUserMoney] = useState(0);
+  const [userMoney, setUserMoney] = useState(null);
 
   useLayoutEffect(() => {
+    const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+    setUserMoney(store.state.points);
+
     const fetchItems = async () => {
       try {
         const itemsResponse = await axios.get(`${HOST_PATH}/items/`);
@@ -16,17 +19,14 @@ export default function Store() {
         console.error(error);
       }
     };
-
     fetchItems();
-
-    setUserMoney();
   }, []);
 
   return (
     <div className="store-container default-scrollbar mb-def">
       <div className="store-details">
         <h1 className="store-title">Store</h1>
-        <h1 className="user-money">${userMoney}</h1>
+        <h1 className="user-money">{userMoney ? `$${userMoney}` : "$0"}</h1>
       </div>
       <article className="store">
         {itemsList
