@@ -147,7 +147,7 @@ export default function Game() {
     const postGameData = async () => {
       if (userId) {
         try {
-          const response = await axios.post(`${HOST_PATH}/games/`, {
+          await axios.post(`${HOST_PATH}/games/`, {
             player_one: userId,
             player_one_score: userScore,
             game_length: finalTimer,
@@ -164,15 +164,11 @@ export default function Game() {
 
           if (store) {
             store.state.points = newPoints;
-            console.log(store.state.points);
             sessionStorage.setItem(
               "user-metadata-state",
               JSON.stringify(store)
             );
           }
-
-          console.log(sessionStorage.getItem("user-metadata-state"));
-          console.log("Game data posted successfully:", response.data);
         } catch (error) {
           console.error("Error posting game data:", error);
         }
@@ -322,12 +318,20 @@ export default function Game() {
             onClick={() => initializeRound("Solo")}
             className="start-round-button"
             style={{
-              background: !userId || gameStarted || isPractice ? "red" : "green",
+              background:
+                !userId || gameStarted || isPractice ? "red" : "green",
               color: "white",
-              cursor: !userId || gameStarted || isPractice ? "not-allowed" : "pointer",
+              cursor:
+                !userId || gameStarted || isPractice
+                  ? "not-allowed"
+                  : "pointer",
             }}
           >
-            {!userId ? "Login to Play" : gameStarted ? "Round In Progress" : "Start New Round"}
+            {!userId
+              ? "Login to Play"
+              : gameStarted
+              ? "Round In Progress"
+              : "Start New Round"}
           </button>
 
           <button

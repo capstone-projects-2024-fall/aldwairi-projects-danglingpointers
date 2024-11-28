@@ -10,17 +10,15 @@ import { GameProvider } from "./context/GameContext";
 import DefaultLayout from "./layouts/DefaultLayout";
 import useUserAuthStore from "./stores/userAuthStore";
 import "./styles/App.scss";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { GAME_URL, HOST_PATH, USER_URL } from "./scripts/constants";
 import ErrorPage from "./components/pages/ErrorPage";
 import useUserMetaDataStore from "./stores/userMetaDataStore";
-import AuthContext from "./auth/AuthContext";
 
 export default function App() {
-  const { isLoggedIn } = useUserAuthStore();
-  const { userId } = useContext(AuthContext);
-  const { createUserMetaData } = useUserMetaDataStore();
+  const { isLoggedIn, userId } = useUserAuthStore();
+  const { isMetaDataSet } = useUserMetaDataStore();
   const [games, setGames] = useState(null);
   const [profiles, setProfiles] = useState(null);
   const location = useLocation();
@@ -85,32 +83,29 @@ export default function App() {
     };
   }, [location.pathname]);
 
+  // Save before logged in user leaves website
   useEffect(() => {
-    console.log("change");
-    if (userId) {
-      const handleBeforeUnload = async (event) => {
-        event.preventDefault();
-        console.log(event);
-        // const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
-        // const formData = {
-        //   user_id: userId,
-        //   settings: store.state.settings,
-        //   user_points: store.state.points,
-        // };
+    if (!userId || !isMetaDataSet) return;
 
-        // try {
-        //   await createUserMetaData(formData);
-        // } catch (error) {
-        //   console.error(error);
-        // }
+    const handleUserMetaData = async () => {
+      const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+      const formData = {
+        user_id: userId,
+        settings: store.state.settings,
+        user_points: store.state.points,
       };
 
-      window.addEventListener("beforeunload", handleBeforeUnload);
-      return () => {
-        window.removeEventListener("beforeunload", handleBeforeUnload);
-      };
-    }
-  }, [location.pathname, createUserMetaData, userId]);
+      try {
+        await axios.post(`${HOST_PATH}/update-user-metadata/`, formData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    window.addEventListener("beforeunload", handleUserMetaData);
+    return () => {
+      window.removeEventListener("beforeunload", handleUserMetaData);
+    };
+  }, [isMetaDataSet, userId]);
 
   return (
     <Routes>

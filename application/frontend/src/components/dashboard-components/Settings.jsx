@@ -36,11 +36,21 @@ export default function Settings() {
   useEffect(() => {
     const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
     const settings = store.state.settings;
-    const values = Object.values(settings);
-    setKeys(Object.keys(settings));
-    setValues(values);
-    setGarbageCollectorColor(values[0]);
+
+    const sortedKeys = Object.keys(settings).sort();
+    const sortedObject = {};
+
+    sortedKeys.forEach((key) => {
+      sortedObject[key] = settings[key];
+    });
+
+    setKeys(Object.keys(sortedObject));
+    setValues(Object.values(sortedObject));
   }, []);
+
+  useEffect(() => {
+    setGarbageCollectorColor(values[0]);
+  }, [values]);
 
   return (
     <div className="settings">
@@ -98,7 +108,8 @@ export default function Settings() {
                       }
 
                       let key = e.key === " " ? "Spacebar" : e.key;
-                      if (values.includes(key) && values.indexOf(key) !== index) return;
+                      if (values.includes(key) && values.indexOf(key) !== index)
+                        return;
 
                       const updatedValues = [...values];
                       updatedValues[index] = key;

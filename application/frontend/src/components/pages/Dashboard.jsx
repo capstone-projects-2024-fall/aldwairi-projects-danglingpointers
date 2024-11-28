@@ -15,28 +15,29 @@ export default function Dashboard() {
   useEffect(() => {
     // Returning user logged in
     const fetchUserMetaData = async () => {
+      console.log("hiii");
       try {
         const formData = {
-          userId: userId,
+          user_id: userId,
         };
         await setUserMetaData(formData);
         setUserNeedsMetaData(false);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 
     // If not signed in, return
     if (!userId) return;
-
-    console.log(isMetaDataSet);
-
+    console.log(userId);
     // User created and navigating from security question/answer screen
     if (isMetaDataSet) {
       setUserNeedsMetaData(false);
+      console.log("hii");
       return;
     }
 
+    // Metadata not set, need to fetch it
     fetchUserMetaData();
   }, [userId, isMetaDataSet, setUserMetaData]);
 

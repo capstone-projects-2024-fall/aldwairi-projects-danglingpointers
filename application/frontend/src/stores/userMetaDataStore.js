@@ -24,7 +24,7 @@ const useUserMetaDataStore = create(
       },
       setUserMetaData: async (formData) => {
         const response = await axios.get(
-          `${HOST_PATH}/user-metadata/?user_id=${formData.userId}`
+          `${HOST_PATH}/user-metadata/?user_id=${formData.user_id}`
         );
 
         set(() => ({
@@ -33,15 +33,11 @@ const useUserMetaDataStore = create(
           settings: response.data[0].settings,
         }));
       },
-      unloadUserMetaData: async (formData) => {
-        await axios.post(`${HOST_PATH}/save-user-metadata/`, formData);
-
+      logoutUserMetaData: async() => {
         set(() => ({
           isMetaDataSet: false,
-          points: null,
-          settings: null,
-        }));
-      },
+        }))
+      }
     }),
     {
       name: "user-metadata-state",

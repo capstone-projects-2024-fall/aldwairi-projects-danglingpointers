@@ -4,11 +4,11 @@ import {
   checkRightBoundary,
 } from "../../scripts/check-boundaries";
 import { DEFAULT_SETTINGS, ITEMS } from "../../scripts/constants";
-import AuthContext from "../../auth/AuthContext";
 import GameContext from "../../context/GameContext";
+import useUserAuthStore from "../../stores/userAuthStore";
 
 const GarbageCollector = forwardRef((_, ref) => {
-  const { userId } = useContext(AuthContext);
+  const { userId } = useUserAuthStore();
   const {
     isSpeedUp,
     isSuperCollector,

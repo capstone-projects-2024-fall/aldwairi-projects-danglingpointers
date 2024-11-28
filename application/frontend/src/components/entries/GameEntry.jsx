@@ -21,7 +21,6 @@ export default function GameEntry({
   }, [status]);
 
   function handleClick() {
-    console.log(gameId);
     navigate(`game/game_id_${gameId}`);
   }
 

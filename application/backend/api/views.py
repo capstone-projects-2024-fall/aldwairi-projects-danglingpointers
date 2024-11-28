@@ -30,7 +30,7 @@ class CreateOrLoginView(generics.GenericAPIView):
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
             refresh_token = str(refresh)
-            
+
             return Response(
                 {
                     'accessToken': access_token,
@@ -67,6 +67,7 @@ class CreateUserMetaDataView(generics.GenericAPIView):
 
         user_id = request.data.get('user_id')
         user = User.objects.get(id=user_id)
+
 
         if UserMetaData.objects.filter(user=user).exists():
             userMetaData = UserMetaData.objects.get(user=user)
@@ -110,6 +111,32 @@ class CreateUserMetaDataView(generics.GenericAPIView):
                     'user_points': user_points,
                 },
                 status=status.HTTP_200_OK)
+
+
+class UpdateUserMetaDataView(generics.GenericAPIView):
+    def post(self, request):
+        '''
+        This method updates existing UserMetaData when a user navigates
+        between pages. This method returns a success message.
+        '''
+
+        user_id = request.data.get('user_id')
+        user_points = request.data.get('user_points')
+        settings = request.data.get('settings')
+
+        user = User.objects.get(id=user_id)
+        userMetaData = UserMetaData.objects.get(user=user)
+
+        userMetaData.user_points = user_points
+        userMetaData.settings = settings
+
+        userMetaData.save()
+
+        return Response(
+            {
+                'success': 'success',
+            },
+            status=status.HTTP_200_OK)
 
 
 class UserCountView(generics.GenericAPIView):
