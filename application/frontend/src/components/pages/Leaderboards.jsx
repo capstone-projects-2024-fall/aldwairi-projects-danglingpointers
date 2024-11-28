@@ -3,7 +3,7 @@ import LeaderboardsVersus from "../views/LeaderboardsVersus";
 import LeaderboardsLongestGames from "../views/LeaderboardsLongestGames";
 import LeaderboardsSolo from "../views/LeaderboardsSolo";
 import { useEffect, useState } from "react";
-import { HOST_PATH } from "../../scripts/constants";
+import { GAME_URL, HOST_PATH } from "../../scripts/constants";
 import Loading from "../Loading";
 
 export default function Leaderboards() {
@@ -40,7 +40,7 @@ export default function Leaderboards() {
   useEffect(() => {
     let ws;
     const connectWebSocket = () => {
-      ws = new WebSocket(`ws://localhost:8000/ws/game-server/`);
+      ws = new WebSocket(GAME_URL);
 
       ws.onopen = () => {
         console.log("WebSocket connection established");

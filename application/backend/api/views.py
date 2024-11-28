@@ -66,33 +66,83 @@ class CreateUserMetaDataView(generics.GenericAPIView):
         '''
 
         user_id = request.data.get('user_id')
-        security_question_id = request.data.get('security_question')
-        security_question = SecurityQuestion.objects.get(
-            id=security_question_id)
-        security_answer = request.data.get('security_answer')
+        user = User.objects.get(id=user_id)
+
+
+        if UserMetaData.objects.filter(user=user).exists():
+            userMetaData = UserMetaData.objects.get(user=user)
+            settings = request.data.get('settings')
+            user_points = request.data.get('user_points')
+
+            userMetaData.settings = settings
+            userMetaData.user_points = user_points if user_points is not None else 0
+            userMetaData.save()
+
+            return Response({"success": "success"}, status=status.HTTP_200_OK)
+        else:
+            security_question_id = request.data.get('security_question')
+            security_question = SecurityQuestion.objects.get(
+                id=security_question_id)
+            security_answer = request.data.get('security_answer')
+
+            items = Item.objects.all()
+            settings = {
+                "garbageCollectorColor": "#0022ff",
+                "moveLeft": "ArrowLeft",
+                "moveRight": "ArrowRight",
+                "toggleNextItem": "Tab",
+                "useItem": "Enter",
+            }
+
+            userMetaData = UserMetaData.objects.create(
+                user=user,
+                security_question=security_question,
+                security_answer=security_answer,
+                settings=settings,
+            )
+            userMetaData.items.add(*items)
+            userMetaData.save()
+
+            user_points = 0
+
+            return Response(
+                {
+                    'settings': settings,
+                    'user_points': user_points,
+                },
+                status=status.HTTP_200_OK)
+
+
+class UpdateUserMetaDataView(generics.GenericAPIView):
+    def post(self, request):
+        '''
+        This method updates existing UserMetaData when a user navigates
+        between pages. This method returns a success message.
+        '''
+
+        user_id = request.data.get('user_id')
+        user_points = request.data.get('user_points')
+        settings = request.data.get('settings')
 
         user = User.objects.get(id=user_id)
-        items = Item.objects.all()
-        item_history = {}
-        settings = {
-            "garbageCollectorColor": "blue"
-        }
+        userMetaData = UserMetaData.objects.get(user=user)
 
-        userMetaData = UserMetaData.objects.create(
-            user=user,
-            security_question=security_question,
-            security_answer=security_answer,
-            item_history=item_history,
-            settings=settings,
-        )
-        userMetaData.items.add(*items)
+        userMetaData.user_points = user_points
+        userMetaData.settings = settings
+
         userMetaData.save()
 
         return Response(
             {
-                'settings': settings,
+                'success': 'success',
             },
             status=status.HTTP_200_OK)
+
+
+class UserCountView(generics.GenericAPIView):
+    def get(self, request):
+        user_count = User.objects.count()
+        return Response({'user_count': user_count})
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -101,10 +151,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
-
-        profiles = self.request.query_params.get('profiles')
-        if profiles:
-            return queryset
 
         user_id = self.request.query_params.get('user_id')
         if user_id:
@@ -206,17 +252,19 @@ class GameViewSet(viewsets.ModelViewSet):
             return queryset.filter(mode='Versus', status='Pending').order_by('-date')
 
         if 'leaderboards_solo' in query_params:
-            queryset = queryset.filter(mode='Solo', status='Complete').order_by('-player_one_score')
+            queryset = queryset.filter(
+                mode='Solo', status='Complete').order_by('-player_one_score')
             if 'preview' in query_params:
                 return queryset[:10]
             return queryset[:20]
 
         if 'leaderboards_versus' in query_params:
-            queryset = queryset.filter(mode='Versus').annotate(max_score=Greatest(F('player_one_score'), F('player_two_score'))).order_by('-max_score')
+            queryset = queryset.filter(mode='Versus').annotate(max_score=Greatest(
+                F('player_one_score'), F('player_two_score'))).order_by('-max_score')
             if 'preview' in query_params:
                 return queryset[:10]
             return queryset[:20]
-        
+
         if 'longest_games' in query_params:
             return queryset.order_by('-game_length')[:20]
 

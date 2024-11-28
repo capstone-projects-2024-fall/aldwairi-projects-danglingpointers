@@ -21,7 +21,6 @@ export default function GameEntry({
   }, [status]);
 
   function handleClick() {
-    console.log(gameId);
     navigate(`game/game_id_${gameId}`);
   }
 
@@ -50,7 +49,7 @@ export default function GameEntry({
             {status === "Pending" ? "Join Game" : status}
           </button>
         </div>
-        <div>Length: {convertSecondsToMinutes(gameLength)}</div>
+        <div>Length: {gameLength ? convertSecondsToMinutes(gameLength) : 0}</div>
       </div>
     </section>
   );

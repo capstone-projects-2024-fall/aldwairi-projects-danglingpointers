@@ -5,9 +5,9 @@ import convertSecondsToMinutes from "../../scripts/convert-seconds-to-minutes";
 import { useEffect, useRef, useContext, useState } from "react";
 import GameContext from "../../context/GameContext";
 import axios from "axios";
-import { GAME_URL, HOST_PATH } from "../../scripts/constants";
+import { CHAT_URL, DEFAULT_SETTINGS, GAME_URL, HOST_PATH, ITEM_URL } from "../../scripts/constants";
+import setTemporaryItemState from "../../scripts/set-temp-item-state";
 import useUserAuthStore from "../../stores/userAuthStore";
-import AuthContext from "../../auth/AuthContext";
 
 export default function Game() {
   const {
@@ -24,14 +24,20 @@ export default function Game() {
     gameStarted,
     setGameStarted,
     totalPointerCount,
-    pointersCleared, // Listen for pointersCleared state
+    pointersCleared,
     setPointersCleared,
+    setIsDoubleScore,
+    setIsSlowDown,
+    setIsSpeedUp,
+    setIsSuperCollector,
+    setItemInUse,
+    isPractice,
+    setIsPractice,
   } = useContext(GameContext);
-
-  const { setUserMoney } = useContext(AuthContext);
 
   const { userId } = useUserAuthStore();
   const [userItems, setUserItems] = useState([]);
+  const [practiceItems, setPracticeItems] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [finalTimer, setFinalTimer] = useState(0);
   const intervalRef = useRef(null);
@@ -39,6 +45,9 @@ export default function Game() {
   const garbageCollectorRef = useRef(null);
   const recyclingBinRef = useRef(null);
   const wsRef = useRef(null);
+  const toggleNextItem = useRef(null);
+  const useItem = useRef(null);
+  const userPoints = useRef(null);
 
   useEffect(() => {
     const ws = new WebSocket(GAME_URL);
@@ -50,58 +59,69 @@ export default function Game() {
   }, []);
 
   useEffect(() => {
-    const ws = new WebSocket(`ws://localhost:8000/ws/chat-server/`);
-  
+    const ws = new WebSocket(CHAT_URL);
+
     ws.onopen = () => {
       console.log("WebSocket connection to ChatConsumer established");
     };
-  
+
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
       if (message.type === "chat") {
         console.log("Received chat message:", message);
       }
     };
-  
+
     ws.onclose = () => {
       console.log("WebSocket connection to ChatConsumer closed");
     };
-  
+
     ws.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
-  
+
     return () => {
       ws.close();
     };
   }, []);
 
+  useEffect(() => {
+    const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+    if (store) {
+      const points = store.state.points;
+      userPoints.current = points;
+    }
+  }, [userId, userPoints]);
+
+  useEffect(() => {}, [userScore]);
+
   // Function to initialize a new round
-  const initializeRound = () => {
-    if (gameStarted) return; // Prevent starting if game is already in progress
+  const initializeRound = (mode) => {
+    if (gameStarted || isPractice) return; // Prevent starting if game is already in progress
     setTimer(0);
     setUserScore(0);
     setUserLives(["❤️", "❤️", "❤️"]);
     setUserLivesCount(3);
-    setGameMode("Solo");
-    setGameStarted(true);
+    setGameMode(mode);
+    mode === "Practice" ? setIsPractice(true) : setGameStarted(true);
     setPointersCleared(false); // Reset pointers cleared state when starting a new round
   };
 
-  const terminateRound = () => {
-    const gameMessage = {
-      type: "game",
-      game_id: 1,
-    };
-
-    console.log(gameMessage);
-
-    wsRef.current.send(JSON.stringify(gameMessage));
+  const togglePractice = () => {
+    if (isPractice) {
+      setUserItems([]);
+      setIsPractice(false);
+      const pointerContainer =
+        stackRef.current.querySelector(".pointer-container");
+      pointerContainer.innerHTML = "";
+    } else {
+      initializeRound("Practice");
+    }
   };
 
   // Game Timer
   useEffect(() => {
-    if (gameStarted && userLivesCount > 0) {
+    if ((gameStarted || isPractice) && userLivesCount > 0) {
       const intervalId = setInterval(() => {
         setTimer((prevTime) => prevTime + 1);
       }, 1000);
@@ -111,11 +131,15 @@ export default function Game() {
       return () => {
         clearInterval(intervalRef.current);
       };
-    } else if (!gameStarted || userLivesCount <= 0 || finalTimer == 0) {
+    } else if (
+      (!gameStarted && !isPractice) ||
+      userLivesCount <= 0 ||
+      finalTimer == 0
+    ) {
       clearInterval(intervalRef.current);
       setFinalTimer(timer);
     }
-  }, [gameStarted, finalTimer, timer, setTimer, userLivesCount]);
+  }, [gameStarted, isPractice, finalTimer, timer, setTimer, userLivesCount]);
 
   // End game after all pointers are off-screen
   useEffect(() => {
@@ -123,7 +147,7 @@ export default function Game() {
     const postGameData = async () => {
       if (userId) {
         try {
-          const response = await axios.post(`${HOST_PATH}/games/`, {
+          await axios.post(`${HOST_PATH}/games/`, {
             player_one: userId,
             player_one_score: userScore,
             game_length: finalTimer,
@@ -131,9 +155,20 @@ export default function Game() {
             // link: `game/game_id_${gameId}`,
             status: "Complete",
           });
-          setUserMoney((prevMoney) => prevMoney + userScore);
+          const prevPoints = userPoints.current;
+          const newPoints = prevPoints + userScore;
 
-          console.log("Game data posted successfully:", response.data);
+          const store = JSON.parse(
+            sessionStorage.getItem("user-metadata-state")
+          );
+
+          if (store) {
+            store.state.points = newPoints;
+            sessionStorage.setItem(
+              "user-metadata-state",
+              JSON.stringify(store)
+            );
+          }
         } catch (error) {
           console.error("Error posting game data:", error);
         }
@@ -142,7 +177,7 @@ export default function Game() {
 
     if (pointersCleared && userLivesCount === 0) {
       postGameData();
-      setGameStarted(false); // End game once all pointers are cleared and lives are zero
+      gameMode === "Practice" ? setIsPractice(false) : setGameStarted(false);
     }
   }, [
     pointersCleared,
@@ -152,53 +187,88 @@ export default function Game() {
     gameMode,
     finalTimer,
     userId,
+    userPoints,
     userScore,
-    setUserMoney,
+    setIsPractice,
   ]);
 
-  // Fetch Items
+  // Fetch All Items
+  useEffect(() => {
+    const fetchAllItems = async () => {
+      try {
+        const itemResponse = await axios.get(`${HOST_PATH}/items`);
+        setPracticeItems(itemResponse.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchAllItems();
+  }, []);
+
+  // Fetch items for user
   useEffect(() => {
     const fetchUserItems = async () => {
-      if (userId) {
-        try {
+      const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+      if (store) {
+        const settings = store.state.settings;
+        toggleNextItem.current = settings.toggleNextItem;
+        useItem.current = settings.useItem;
+      } else {
+        toggleNextItem.current = DEFAULT_SETTINGS.toggleNextItem;
+        useItem.current = DEFAULT_SETTINGS.useItem;
+      }
+
+      try {
+        if (userId) {
           const metadataResponse = await axios.get(
             `${HOST_PATH}/user-metadata?user_id=${userId}`
           );
           const itemIds = metadataResponse.data[0].items;
 
-          const fetchedItems = [];
+          const allItems = practiceItems;
 
-          const itemPromises = itemIds.map(async (itemId) => {
-            const itemResponse = await axios.get(
-              `${HOST_PATH}/items?user_id=${itemId}`
-            );
-            return itemResponse.data[0];
-          });
-
-          const resolvedItems = await Promise.all(itemPromises);
-          fetchedItems.push(...resolvedItems); // Efficiently add fetched items
-
-          setUserItems(fetchedItems);
-        } catch (error) {
-          console.error("Error fetching items:", error);
+          setUserItems(allItems.filter((item) => itemIds.includes(item.id)));
         }
+      } catch (error) {
+        console.error("Error fetching items:", error);
       }
     };
 
     fetchUserItems();
-  }, [userId]);
+  }, [userId, practiceItems]);
 
   // Use Items Event Listener
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === "Tab") {
+      if ((gameStarted || isPractice) && event.key === toggleNextItem.current) {
         event.preventDefault();
-        const newIndex =
-          (selectedIndex + (event.shiftKey ? -1 : 1) + userItems.length) %
-          userItems.length;
+        const newIndex = isPractice
+          ? (selectedIndex + (event.shiftKey ? -1 : 1) + practiceItems.length) %
+            practiceItems.length
+          : (selectedIndex + (event.shiftKey ? -1 : 1) + userItems.length) %
+            userItems.length;
         setSelectedIndex(newIndex);
-      } else if (event.key === "Enter") {
-        console.log(userItems[selectedIndex].icon);
+      } else if ((gameStarted || isPractice) && event.key === useItem.current) {
+        event.preventDefault();
+        switch (selectedIndex) {
+          case 0:
+            setTemporaryItemState(setItemInUse, setIsSlowDown);
+            break;
+          case 1:
+            setTemporaryItemState(setItemInUse, setIsSpeedUp);
+            break;
+          case 2:
+            if (userLives.length < 10)
+              setUserLives([...userLives, userLives[0]]);
+            break;
+          case 3:
+            setTemporaryItemState(setItemInUse, setIsSuperCollector);
+            break;
+          case 4:
+            setTemporaryItemState(setItemInUse, setIsDoubleScore);
+            break;
+        }
       }
     };
 
@@ -208,7 +278,48 @@ export default function Game() {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [selectedIndex, userItems]);
+  }, [
+    gameStarted,
+    isPractice,
+    selectedIndex,
+    userItems,
+    setIsDoubleScore,
+    setIsSlowDown,
+    setIsSpeedUp,
+    setIsSuperCollector,
+    setItemInUse,
+    setUserLives,
+    userLives,
+    practiceItems,
+  ]);
+
+  // Game Socket
+  useEffect(() => {
+    const ws = new WebSocket(ITEM_URL);
+
+    ws.onopen = () => {
+      console.log("WebSocket connection to ItemConsumer established");
+    };
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "item") {
+        console.log("Received item message:", message);
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection to ItemConsumer closed");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, []);
 
   return (
     <main className="main-game">
@@ -218,38 +329,49 @@ export default function Game() {
           <div className="score">Score: {userScore}</div>
           <div className="lives-remaining">Lives: {userLives}</div>
         </div>
-        {/* <div className="user-items">
+        <div className="user-items">
           <div className="selected-item">
-            {userItems.length > 0 ? (
-              <span className="item-icon">{userItems[selectedIndex].icon}</span>
+            {isPractice ? (
+              <span className="item-icon">
+                {practiceItems[selectedIndex].icon}
+              </span>
             ) : (
-              <p className="item-warning">Login to buy and use items!</p>
+              <p className="item-warning">Login or Practice to use items!</p>
             )}
           </div>
-        </div> */}
+        </div>
         <div className="start-game">
           {/* Start Round Button */}
           <button
-            onClick={initializeRound}
+            onClick={() => initializeRound("Solo")}
             className="start-round-button"
             style={{
-              background: gameStarted ? "red" : "green",
+              background:
+                !userId || gameStarted || isPractice ? "red" : "green",
               color: "white",
-              cursor: gameStarted ? "not-allowed" : "pointer",
+              cursor:
+                !userId || gameStarted || isPractice
+                  ? "not-allowed"
+                  : "pointer",
             }}
           >
-            {gameStarted ? "Round In Progress" : "Start New Round"}
+            {!userId
+              ? "Login to Play"
+              : gameStarted
+              ? "Round In Progress"
+              : "Start New Round"}
           </button>
+
           <button
-            onClick={terminateRound}
+            onClick={togglePractice}
             className="start-round-button"
             style={{
-              background: gameStarted ? "green" : "red",
+              background: isPractice || !gameStarted ? "blue" : "red",
               color: "white",
-              cursor: gameStarted ? "pointer" : "not-allowed",
+              cursor: isPractice || !gameStarted ? "pointer" : "not-allowed",
             }}
           >
-            Terminate Round
+            {isPractice ? "End Practice" : "Begin Practice"}
           </button>
         </div>
       </article>

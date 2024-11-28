@@ -1,12 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class SecurityQuestion(models.Model):
     question = models.CharField(max_length=255)
 
 class UserMetaData(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    security_question = models.ForeignKey(SecurityQuestion, on_delete=models.CASCADE)
+    security_question = models.ForeignKey(
+        SecurityQuestion, on_delete=models.CASCADE)
     security_answer = models.CharField(max_length=255)
     solo_games_played = models.IntegerField(default=0)
     solo_high_score = models.IntegerField(default=0)
@@ -17,7 +19,6 @@ class UserMetaData(models.Model):
     versus_wins = models.IntegerField(default=0)
     versus_losses = models.IntegerField(default=0)
     items = models.ManyToManyField('Item')
-    item_history = models.JSONField(null=True, blank=True)
     settings = models.JSONField(null=True, blank=True)
     user_points = models.IntegerField(default=0)
 
