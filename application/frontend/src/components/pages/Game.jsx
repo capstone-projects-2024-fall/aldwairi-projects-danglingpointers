@@ -293,6 +293,34 @@ export default function Game() {
     practiceItems,
   ]);
 
+  // Game Socket
+  useEffect(() => {
+    const ws = new WebSocket(`ws://localhost:8000/ws/item-server/`);
+
+    ws.onopen = () => {
+      console.log("WebSocket connection to ItemConsumer established");
+    };
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "item") {
+        console.log("Received item message:", message);
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection to ItemConsumer closed");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, []);
+
   return (
     <main className="main-game">
       <article className="details-container">
