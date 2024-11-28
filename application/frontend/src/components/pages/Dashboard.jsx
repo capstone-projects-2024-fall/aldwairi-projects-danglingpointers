@@ -6,6 +6,7 @@ import UserPreviousGames from "../dashboard-components/UserPreviousGames";
 import UserSetup from "../dashboard-components/UserSetup";
 import useUserAuthStore from "../../stores/userAuthStore";
 import useUserMetaDataStore from "../../stores/userMetaDataStore";
+import { CHAT_URL, GAME_URL } from "../../scripts/constants";
 
 export default function Dashboard() {
   const { userId } = useUserAuthStore();
@@ -43,7 +44,7 @@ export default function Dashboard() {
 
   // Game Socket
   useEffect(() => {
-    const ws = new WebSocket(`ws://localhost:8000/ws/game-server/`);
+    const ws = new WebSocket(GAME_URL);
 
     ws.onopen = () => {
       console.log("WebSocket connection to GameConsumer established");
@@ -71,7 +72,7 @@ export default function Dashboard() {
 
   // Chat Socket
   useEffect(() => {
-    const ws = new WebSocket(`ws://localhost:8000/ws/chat-server/`);
+    const ws = new WebSocket(CHAT_URL);
 
     ws.onopen = () => {
       console.log("WebSocket connection to ChatConsumer established");

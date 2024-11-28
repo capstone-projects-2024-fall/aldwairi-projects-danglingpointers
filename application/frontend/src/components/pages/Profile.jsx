@@ -1,7 +1,7 @@
 // Profile.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { HOST_PATH } from "../../scripts/constants";
+import { GAME_URL, HOST_PATH } from "../../scripts/constants";
 import GameEntry from "../entries/GameEntry";
 
 const Profile = ({ userId, username, dateJoined, lastLogin }) => {
@@ -39,7 +39,7 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
   }, [userId, username, dateJoined, lastLogin]);
 
   useEffect(() => {
-    const ws = new WebSocket(`ws://localhost:8000/ws/game-server/`);
+    const ws = new WebSocket(GAME_URL);
 
     ws.onopen = () => {
       console.log("WebSocket connection to GameConsumer established");

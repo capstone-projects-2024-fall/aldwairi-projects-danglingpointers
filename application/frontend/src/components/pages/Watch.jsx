@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { HOST_PATH } from "../../scripts/constants";
+import { GAME_URL, HOST_PATH } from "../../scripts/constants";
 
 export default function Watch() {
   const [watchGames, setWatchGames] = useState([]);
@@ -21,7 +21,7 @@ export default function Watch() {
 
   // Game Socket
   useEffect(() => {
-    const ws = new WebSocket(`ws://localhost:8000/ws/game-server/`);
+    const ws = new WebSocket(GAME_URL);
 
     ws.onopen = () => {
       console.log("WebSocket connection to GameConsumer established");

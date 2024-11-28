@@ -5,7 +5,7 @@ import convertSecondsToMinutes from "../../scripts/convert-seconds-to-minutes";
 import { useEffect, useRef, useContext, useState } from "react";
 import GameContext from "../../context/GameContext";
 import axios from "axios";
-import { DEFAULT_SETTINGS, GAME_URL, HOST_PATH } from "../../scripts/constants";
+import { CHAT_URL, DEFAULT_SETTINGS, GAME_URL, HOST_PATH, ITEM_URL } from "../../scripts/constants";
 import setTemporaryItemState from "../../scripts/set-temp-item-state";
 import useUserAuthStore from "../../stores/userAuthStore";
 
@@ -59,7 +59,7 @@ export default function Game() {
   }, []);
 
   useEffect(() => {
-    const ws = new WebSocket(`ws://localhost:8000/ws/chat-server/`);
+    const ws = new WebSocket(CHAT_URL);
 
     ws.onopen = () => {
       console.log("WebSocket connection to ChatConsumer established");
@@ -295,7 +295,7 @@ export default function Game() {
 
   // Game Socket
   useEffect(() => {
-    const ws = new WebSocket(`ws://localhost:8000/ws/item-server/`);
+    const ws = new WebSocket(ITEM_URL);
 
     ws.onopen = () => {
       console.log("WebSocket connection to ItemConsumer established");
