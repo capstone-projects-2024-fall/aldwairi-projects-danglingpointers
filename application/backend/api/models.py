@@ -44,7 +44,7 @@ class UserMetaData(models.Model):
     versus_high_time = models.IntegerField(default=0)
     versus_wins = models.IntegerField(default=0)
     versus_losses = models.IntegerField(default=0)
-    items = models.ManyToManyField('Item')
+    items = models.JSONField(null=True, blank=True)
     settings = models.JSONField(null=True, blank=True)
     user_points = models.IntegerField(default=0)
     is_online = models.BooleanField(default=False)
