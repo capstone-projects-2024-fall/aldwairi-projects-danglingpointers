@@ -1,13 +1,13 @@
 from datetime import timezone
-from .models import UserMetaData, Game, Item, SecurityQuestion
-from .serializers import UserSerializer, UserMetaDataSerializer, GameSerializer, ItemSerializer, SecurityQuestionSerializer
+from .models import *
+from .serializers import *
 from cryptography.fernet import Fernet
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.db.models import F
 from django.db.models.functions import Greatest
 import os
-from rest_framework import generics, pagination, status, viewsets
+from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -67,7 +67,6 @@ class CreateUserMetaDataView(generics.GenericAPIView):
 
         user_id = request.data.get('user_id')
         user = User.objects.get(id=user_id)
-
 
         if UserMetaData.objects.filter(user=user).exists():
             userMetaData = UserMetaData.objects.get(user=user)
@@ -283,3 +282,62 @@ class ItemViewSet(viewsets.ModelViewSet):
 class SecurityQuestionViewSet(viewsets.ModelViewSet):
     queryset = SecurityQuestion.objects.all()
     serializer_class = SecurityQuestionSerializer
+
+
+class FriendshipViewSet(viewsets.ModelViewSet):
+    queryset = Friendship.objects
+    serializer_class = FriendshipSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+        
+        user_id = self.request.query_params.get('user_id')
+        if user_id:
+            queryset = queryset.filter(user__id=user_id)
+            
+            username = self.request.query_params.get('username')
+            # TODO: Pending, Active
+            
+            if username:
+                queryset = queryset.filter(friend__username=username)
+        
+        return queryset
+
+            
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+        
+        user_id = self.request.query_params.get('user_id')
+        if user_id:
+            queryset = queryset.filter(user__id=user_id)
+            
+            game = self.request.query_params.get('game')
+            user = self.request.query_params.get('user')
+            
+            if user:
+                queryset = queryset.filter(comment_type='User')
+            elif game:
+                queryset = queryset.filter(comment_type='Game')
+        
+        return queryset.order_by('-date')
+            
+class ChatMessageViewSet(viewsets.ModelViewSet):
+    queryset = ChatMessage.objects
+    serializer_class = ChatMessageSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+        
+        user_id = self.request.query_params.get('user_id')
+        if user_id:
+            queryset = queryset.filter(user__id=user_id)
+            
+            recipient = self.request.query_params.get('friend')
+            if recipient:
+                queryset = queryset.filter(recipient__username=recipient)
+        
+        return queryset.order_by('-date')

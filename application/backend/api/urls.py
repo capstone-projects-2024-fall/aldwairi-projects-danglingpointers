@@ -9,6 +9,10 @@ router.register(r'user-metadata', UserMetaDataViewSet)
 router.register(r'games', GameViewSet)
 router.register(r'items', ItemViewSet)
 router.register(r'security-questions', SecurityQuestionViewSet)
+router.register(r'friendships', FriendshipViewSet)
+router.register(r'comments', CommentViewSet)
+router.register(r'chat-messages', ChatMessageViewSet)
+
 
 urlpatterns = [
     path('', include(router.urls)),

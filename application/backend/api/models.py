@@ -21,16 +21,14 @@ class Friendship(models.Model):
         User, on_delete=models.CASCADE, related_name='target_user')
     friend = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='target_user_friend')
-    status = models.CharField(max_length=10, choices=[(
-        'pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')])
+    status = models.CharField(max_length=10, choices=(
+        ('Pending', 'Pending'),
+        ('Accepted', 'Accepted'),
+        ('Rejected', 'Rejected'),
+        ('Inactive', 'Inactive'),
+    ))
     date_request = models.DateTimeField(auto_now_add=True)
     date_response = models.DateTimeField(null=True, blank=True)
-
-
-class UserFriendList(models.Model):
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, primary_key=True)
-    friends = models.ManyToManyField(User, through=Friendship)
 
 
 class UserMetaData(models.Model):
@@ -49,6 +47,7 @@ class UserMetaData(models.Model):
     items = models.ManyToManyField('Item')
     settings = models.JSONField(null=True, blank=True)
     user_points = models.IntegerField(default=0)
+    is_online = models.BooleanField(default=False)
 
     @property
     def total_games_played(self):
@@ -86,7 +85,7 @@ class Comment(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     comment = models.TextField()
     comment_type = models.CharField(
-        max_length=7, choices=[('profile, Profile'), ('game', 'Game')])
+        max_length=7, blank=True, choices=(('Game', 'Game'), ('User', 'User')))
     content_id = models.IntegerField()
 
 

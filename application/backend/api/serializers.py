@@ -37,11 +37,7 @@ class FriendshipSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Friendship
         fields = '__all__'
-
-class UserFriendListSerializer(serializers.ModelSerializer):
-    class Meta: 
-        model = UserFriendList
-        fields = '__all__'
+        
 
 class ChatMessageSerializer(serializers.ModelSerializer):
     class Meta: 
