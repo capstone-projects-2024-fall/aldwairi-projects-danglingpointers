@@ -5,6 +5,34 @@ from django.contrib.auth.models import User
 class SecurityQuestion(models.Model):
     question = models.CharField(max_length=255)
 
+
+class Item(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    icon = models.CharField(max_length=1, null=True, blank=True)
+    cost = models.IntegerField()
+
+    def __str__(self):
+        return self.name
+
+
+class Friendship(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='target_user')
+    friend = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='target_user_friend')
+    status = models.CharField(max_length=10, choices=[(
+        'pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')])
+    date_request = models.DateTimeField(auto_now_add=True)
+    date_response = models.DateTimeField(null=True, blank=True)
+
+
+class UserFriendList(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, primary_key=True)
+    friends = models.ManyToManyField(User, through=Friendship)
+
+
 class UserMetaData(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     security_question = models.ForeignKey(
@@ -44,6 +72,24 @@ class UserMetaData(models.Model):
         return f"{self.user.username}'s metadata"
 
 
+class ChatMessage(models.Model):
+    sender = models.ForeignKey(
+        User, related_name="sender", on_delete=models.CASCADE)
+    recipient = models.ForeignKey(
+        User, related_name="recipient", on_delete=models.CASCADE)
+    message = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    comment = models.TextField()
+    comment_type = models.CharField(
+        max_length=7, choices=[('profile, Profile'), ('game', 'Game')])
+    content_id = models.IntegerField()
+
+
 class Game(models.Model):
     mode = models.CharField(max_length=50, choices=(
         ('Solo', 'Solo'),
@@ -70,13 +116,3 @@ class Game(models.Model):
 
     def __str__(self):
         return f"Game {self.id}: {self.mode}"
-
-
-class Item(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.TextField()
-    icon = models.CharField(max_length=1, null=True, blank=True)
-    cost = models.IntegerField()
-
-    def __str__(self):
-        return self.name
