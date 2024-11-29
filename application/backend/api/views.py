@@ -85,11 +85,11 @@ class CreateUserMetaDataView(generics.GenericAPIView):
             security_answer = request.data.get('security_answer')
             
             items = {
-                "0": "1",
-                "1": "1",
-                "2": "1",
-                "3": "1",
-                "4": "1",
+                0: 1,
+                1: 1,
+                2: 1,
+                3: 1,
+                4: 1,
             }
 
             settings = {
@@ -115,6 +115,7 @@ class CreateUserMetaDataView(generics.GenericAPIView):
                 {
                     'settings': settings,
                     'user_points': user_points,
+                    'items': items,
                 },
                 status=status.HTTP_200_OK)
 
