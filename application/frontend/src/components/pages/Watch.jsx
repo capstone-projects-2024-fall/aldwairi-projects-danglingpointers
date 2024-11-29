@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { GAME_URL, HOST_PATH } from "../../scripts/constants";
+import GameEntry from "../entries/GameEntry";
 
 export default function Watch() {
   const [watchGames, setWatchGames] = useState([]);
@@ -54,10 +55,18 @@ export default function Watch() {
         {watchGames.length > 0 ? (
           <ul className="max-height">
             {watchGames.map((game, index) => (
-              <li key={index}>
-                Mode: {game.mode}, Score: {game.player_one_score} vs{" "}
-                {game.player_two_score || "N/A"}
-              </li>
+              <GameEntry
+                key={index}
+                gameLength={game.game_length}
+                users={[
+                  { id: game.player_one, name: "" },
+                  { id: game.player_two, name: "" },
+                ]}
+                status={game.status}
+                gameId={game.id}
+                mode={game.mode}
+                scores={[game.player_one_score, game.player_two_score]}
+              />
             ))}
           </ul>
         ) : (

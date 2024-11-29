@@ -49,7 +49,7 @@ export default function GameEntry({
             {status === "Pending" ? "Join Game" : status}
           </button>
         </div>
-        <div>Length: {gameLength ? convertSecondsToMinutes(gameLength) : 0}</div>
+        <div>{gameLength ? `Length: ${convertSecondsToMinutes(gameLength)}` : ""}</div>
       </div>
     </section>
   );

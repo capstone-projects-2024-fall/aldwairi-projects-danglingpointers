@@ -54,6 +54,7 @@ export default function Game() {
   const toggleNextItem = useRef(null);
   const useItem = useRef(null);
   const userPoints = useRef(null);
+  const [currGameId, setCurrGameId] = useState(null);
 
   useEffect(() => {
     const ws = new WebSocket(GAME_URL);
@@ -101,6 +102,34 @@ export default function Game() {
 
   useEffect(() => {}, [userScore]);
 
+  const postActiveGameData = async (mode) => {
+    if (userId) {
+      try {
+        const payload = {
+          player_one: userId,
+          player_one_score: 0, // Initial score
+          game_length: 0, // Initial game length
+          mode: mode,
+          status: "Active",
+        };
+        console.log("Payload:", payload); // Log the payload
+        const response = await axios.post(`${HOST_PATH}/games/`, payload);
+        console.log("Response data:", response.data); // Log the response data
+        if (response.data && response.data.id) {
+          setCurrGameId(response.data.id);
+          console.log("Active game data posted, gameId:", response.data.id);
+        } else {
+          console.error("Game ID not found in response");
+        }
+      } catch (error) {
+        console.error("Error posting active game data:", error);
+        if (error.response) {
+          console.error("Response data:", error.response.data);
+        }
+      }
+    }
+  };
+
   // Function to initialize a new round
   const initializeRound = (mode) => {
     if (gameStarted || isPractice) return; // Prevent starting if game is already in progress
@@ -111,6 +140,10 @@ export default function Game() {
     setGameMode(mode);
     mode === "Practice" ? setIsPractice(true) : setGameStarted(true);
     setPointersCleared(false); // Reset pointers cleared state when starting a new round
+
+    if (mode !== "Practice") {
+      postActiveGameData(mode); // Post active game data when not in practice mode
+    }
   };
 
   const togglePractice = () => {
@@ -151,9 +184,9 @@ export default function Game() {
   useEffect(() => {
     // Function to post game data to the backend after the round ends
     const postGameData = async () => {
-      if (userId) {
+      if (userId && currGameId) {
         try {
-          await axios.post(`${HOST_PATH}/games/`, {
+          await axios.put(`${HOST_PATH}/games/${currGameId}/`, {
             player_one: userId,
             player_one_score: userScore,
             game_length: finalTimer,
