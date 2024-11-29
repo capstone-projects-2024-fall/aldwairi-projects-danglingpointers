@@ -5,7 +5,13 @@ import convertSecondsToMinutes from "../../scripts/convert-seconds-to-minutes";
 import { useEffect, useRef, useContext, useState } from "react";
 import GameContext from "../../context/GameContext";
 import axios from "axios";
-import { CHAT_URL, DEFAULT_SETTINGS, GAME_URL, HOST_PATH, ITEM_URL } from "../../scripts/constants";
+import {
+  CHAT_URL,
+  DEFAULT_SETTINGS,
+  GAME_URL,
+  HOST_PATH,
+  ITEM_URL,
+} from "../../scripts/constants";
 import setTemporaryItemState from "../../scripts/set-temp-item-state";
 import useUserAuthStore from "../../stores/userAuthStore";
 
@@ -36,7 +42,7 @@ export default function Game() {
   } = useContext(GameContext);
 
   const { userId } = useUserAuthStore();
-  const [userItems, setUserItems] = useState([]);
+  const [userItems, setUserItems] = useState({});
   const [practiceItems, setPracticeItems] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [finalTimer, setFinalTimer] = useState(0);
@@ -109,7 +115,7 @@ export default function Game() {
 
   const togglePractice = () => {
     if (isPractice) {
-      setUserItems([]);
+      setUserItems({});
       setIsPractice(false);
       const pointerContainer =
         stackRef.current.querySelector(".pointer-container");
@@ -210,6 +216,8 @@ export default function Game() {
   useEffect(() => {
     const fetchUserItems = async () => {
       const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+
+      // Set keys for keypress events
       if (store) {
         const settings = store.state.settings;
         toggleNextItem.current = settings.toggleNextItem;
@@ -219,16 +227,27 @@ export default function Game() {
         useItem.current = DEFAULT_SETTINGS.useItem;
       }
 
+      // Set user items from base item list
       try {
         if (userId) {
           const metadataResponse = await axios.get(
             `${HOST_PATH}/user-metadata?user_id=${userId}`
           );
-          const itemIds = metadataResponse.data[0].items;
+          const userMetaDataItems = metadataResponse.data[0].items;
+          const items = Object.keys(userMetaDataItems);
+          const quantities = Object.values(userMetaDataItems);
 
-          const allItems = practiceItems;
+          const itemsObject = {};
 
-          setUserItems(allItems.filter((item) => itemIds.includes(item.id)));
+          for (const key in practiceItems) {
+            if (items.includes(key)) {
+              itemsObject[key] = {
+                item: practiceItems[key],
+                quantity: quantities[key],
+              };
+            }
+          }
+          setUserItems(itemsObject);
         }
       } catch (error) {
         console.error("Error fetching items:", error);
@@ -241,13 +260,15 @@ export default function Game() {
   // Use Items Event Listener
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if ((gameStarted || isPractice) && event.key === toggleNextItem.current) {
+      if (event.key === toggleNextItem.current) {
         event.preventDefault();
         const newIndex = isPractice
           ? (selectedIndex + (event.shiftKey ? -1 : 1) + practiceItems.length) %
             practiceItems.length
-          : (selectedIndex + (event.shiftKey ? -1 : 1) + userItems.length) %
-            userItems.length;
+          : (selectedIndex +
+              (event.shiftKey ? -1 : 1) +
+              Object.keys(userItems).length) %
+            Object.keys(userItems).length;
         setSelectedIndex(newIndex);
       } else if ((gameStarted || isPractice) && event.key === useItem.current) {
         event.preventDefault();
@@ -335,6 +356,15 @@ export default function Game() {
               <span className="item-icon">
                 {practiceItems[selectedIndex].icon}
               </span>
+            ) : userId && Object.keys(userItems).length > 0 ? (
+              <>
+                <span className="item-icon">
+                  {userItems[selectedIndex].item.icon}
+                </span>
+                <span style={{marginBottom: "7.5px"}}>{userItems[selectedIndex].quantity} remaining</span>
+              </>
+            ) : userId ? (
+              <p className="item-warning">You are out of items!</p>
             ) : (
               <p className="item-warning">Login or Practice to use items!</p>
             )}

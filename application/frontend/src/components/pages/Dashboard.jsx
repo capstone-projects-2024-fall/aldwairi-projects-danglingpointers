@@ -16,7 +16,6 @@ export default function Dashboard() {
   useEffect(() => {
     // Returning user logged in
     const fetchUserMetaData = async () => {
-      console.log("hiii");
       try {
         const formData = {
           user_id: userId,
@@ -30,11 +29,9 @@ export default function Dashboard() {
 
     // If not signed in, return
     if (!userId) return;
-    console.log(userId);
     // User created and navigating from security question/answer screen
     if (isMetaDataSet) {
       setUserNeedsMetaData(false);
-      console.log("hii");
       return;
     }
 
