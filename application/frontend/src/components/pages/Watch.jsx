@@ -23,14 +23,14 @@ export default function Watch() {
 
   return (
     <main className="main-default main-watch">
-      <div className="watch-container">
+      <article className="watch-container">
         {error && <div className="error-message">{error}</div>}
         {isLoading ? (
           <div className="loading">Loading watchlist...</div>
         ) : (
           <Watchlist />
         )}
-      </div>
+      </article>
     </main>
   );
 }
