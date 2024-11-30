@@ -219,6 +219,7 @@ export default function Game() {
       gameMode === "Practice" ? setIsPractice(false) : setGameStarted(false);
     }
   }, [
+    currGameId,
     pointersCleared,
     totalPointerCount,
     setGameStarted,
