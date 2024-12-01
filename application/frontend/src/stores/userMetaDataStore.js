@@ -36,14 +36,14 @@ const useUserMetaDataStore = create(
           items: response.data[0].items,
         }));
       },
-      logoutUserMetaData: async() => {
+      logoutUserMetaData: async () => {
         set(() => ({
           isMetaDataSet: false,
           points: null,
           settings: null,
           items: null,
-        }))
-      }
+        }));
+      },
     }),
     {
       name: "user-metadata-state",

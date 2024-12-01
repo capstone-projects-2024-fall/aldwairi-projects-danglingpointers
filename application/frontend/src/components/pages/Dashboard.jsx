@@ -30,12 +30,12 @@ export default function Dashboard() {
     // If not signed in, return
     if (!userId) return;
     // User created and navigating from security question/answer screen
+
     if (isMetaDataSet) {
       setUserNeedsMetaData(false);
       return;
     }
 
-    // Metadata not set, need to fetch it
     fetchUserMetaData();
   }, [userId, isMetaDataSet, setUserMetaData]);
 
