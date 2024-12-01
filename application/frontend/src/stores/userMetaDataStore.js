@@ -9,6 +9,7 @@ const useUserMetaDataStore = create(
       isMetaDataSet: false,
       points: null,
       settings: null,
+      items: null,
 
       createUserMetaData: async (formData) => {
         const response = await axios.post(
@@ -20,6 +21,7 @@ const useUserMetaDataStore = create(
           isMetaDataSet: true,
           points: response.data.user_points,
           settings: response.data.settings,
+          items: response.data.items,
         }));
       },
       setUserMetaData: async (formData) => {
@@ -31,13 +33,17 @@ const useUserMetaDataStore = create(
           isMetaDataSet: true,
           points: response.data[0].user_points,
           settings: response.data[0].settings,
+          items: response.data[0].items,
         }));
       },
-      logoutUserMetaData: async() => {
+      logoutUserMetaData: async () => {
         set(() => ({
           isMetaDataSet: false,
-        }))
-      }
+          points: null,
+          settings: null,
+          items: null,
+        }));
+      },
     }),
     {
       name: "user-metadata-state",

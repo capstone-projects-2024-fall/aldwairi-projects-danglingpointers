@@ -19,6 +19,7 @@ export default function Store() {
         console.error(error);
       }
     };
+
     fetchItems();
   }, []);
 
@@ -33,6 +34,7 @@ export default function Store() {
           ? Object.entries(itemsList).map(([key, item]) => (
               <ItemEntry
                 key={key}
+                itemId={item.id}
                 itemName={item.name}
                 itemDescription={item.description}
                 itemIcon={item.icon}

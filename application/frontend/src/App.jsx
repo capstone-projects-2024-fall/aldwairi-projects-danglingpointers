@@ -93,6 +93,7 @@ export default function App() {
         user_id: userId,
         settings: store.state.settings,
         user_points: store.state.points,
+        items: store.state.items,
       };
 
       try {
