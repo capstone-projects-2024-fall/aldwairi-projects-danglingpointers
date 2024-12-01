@@ -230,17 +230,18 @@ export default function Game() {
       // Set user items from base item list
       try {
         if (userId) {
-          const metadataResponse = await axios.get(
-            `${HOST_PATH}/user-metadata?user_id=${userId}`
+          const store = JSON.parse(
+            sessionStorage.getItem("user-metadata-state")
           );
-          const userMetaDataItems = metadataResponse.data[0].items;
-          const items = Object.keys(userMetaDataItems);
-          const quantities = Object.values(userMetaDataItems);
+          const items = store.state.items;
+
+          const itemKeys = Object.keys(items);
+          const quantities = Object.values(items);
 
           const itemsObject = {};
 
           for (const key in practiceItems) {
-            if (items.includes(key)) {
+            if (itemKeys.includes(key)) {
               itemsObject[key] = {
                 item: practiceItems[key],
                 quantity: quantities[key],
@@ -259,6 +260,19 @@ export default function Game() {
 
   // Use Items Event Listener
   useEffect(() => {
+    function decrementItemInStorage(selectedIndex) {
+      const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+      const items = store.state.items;
+
+      items[selectedIndex] -= 1;
+      userItems[selectedIndex].quantity -= 1;
+      store.state.items = items;
+
+      console.log(store);
+
+      sessionStorage.setItem("user-metadata-state", JSON.stringify(store));
+    }
+
     const handleKeyDown = (event) => {
       if (event.key === toggleNextItem.current) {
         event.preventDefault();
@@ -272,6 +286,8 @@ export default function Game() {
         setSelectedIndex(newIndex);
       } else if ((gameStarted || isPractice) && event.key === useItem.current) {
         event.preventDefault();
+        decrementItemInStorage(selectedIndex);
+
         switch (selectedIndex) {
           case 0:
             setTemporaryItemState(setItemInUse, setIsSlowDown);
@@ -361,7 +377,9 @@ export default function Game() {
                 <span className="item-icon">
                   {userItems[selectedIndex].item.icon}
                 </span>
-                <span style={{marginBottom: "7.5px"}}>{userItems[selectedIndex].quantity} remaining</span>
+                <span style={{ marginBottom: "7.5px" }}>
+                  {userItems[selectedIndex].quantity} remaining
+                </span>
               </>
             ) : userId ? (
               <p className="item-warning">You are out of items!</p>
