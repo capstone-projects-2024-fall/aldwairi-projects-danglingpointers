@@ -1,34 +1,84 @@
 .message-container {
-    max-width: 60%;
-    padding: 12px;
-    border-radius: 8px;
-    margin: 8px 0;
-    display: inline-block;
+  max-width: 65%;
+  margin: 0.75rem 0;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.3s ease;
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
   }
-  
-  /* Sender (current user) styles */
-  .message-container.sender {
-    background-color: #d1f8d1;
-    color: #333;
-    text-align: right;
+
+  &.sender {
     align-self: flex-end;
+    align-items: flex-end;
+
+    .message-bubble {
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: white;
+      border-radius: 16px 16px 4px 16px;
+      box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
+      margin-left: auto;
+      
+      &:hover {
+        background: linear-gradient(135deg, #4338ca, #4f46e5);
+      }
+    }
+
+    .message-sender {
+      padding-right: 0.5rem;
+      text-align: right;
+      color: #6366f1;
+    }
   }
-  
-  /* Recipient styles */
-  .message-container.recipient {
-    background-color: #e1e1e1;
-    color: #555;
-    text-align: left;
+
+  &.recipient {
     align-self: flex-start;
+    align-items: flex-start;
+
+    .message-bubble {
+      background: white;
+      color: #1f2937;
+      border-radius: 16px 16px 16px 4px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      margin-right: auto;
+
+      &:hover {
+        background: #f8fafc;
+      }
+    }
+
+    .message-sender {
+      padding-left: 0.5rem;
+      color: #4b5563;
+    }
   }
-  
+
+  .message-bubble {
+    padding: 0.75rem 1rem;
+    transition: all 0.2s ease;
+    max-width: 100%;
+    word-wrap: break-word;
+  }
+
   .message-sender {
-    font-weight: bold;
-    margin-bottom: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    width: 100%;
   }
-  
+
   .message-text {
-    font-size: 14px;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    word-wrap: break-word;
   }
-  
-  
+
+  .message-time {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    margin-top: 0.25rem;
+  }
+}

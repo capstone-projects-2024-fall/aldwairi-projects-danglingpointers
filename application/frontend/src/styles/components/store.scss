@@ -1,14 +1,82 @@
 .store {
   display: flex;
-  flex-flow: column nowrap;
-  justify-content: start;
-  align-items: start;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.25rem;
+  height: 100%;
   overflow-y: auto;
+  background: linear-gradient(135deg, #fff 0%, #f8faff 100%);
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .store-item {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+  }
 }
 
 .store-details {
   display: flex;
-  flex-flow: row nowrap;
+  align-items: center;
   justify-content: space-between;
-  margin-right: 20px;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.02);
+  margin-bottom: 1rem;
+
+  .price {
+    font-weight: 600;
+    color: #2563eb;
+  }
+
+  .quantity {
+    color: #64748b;
+    font-size: 0.875rem;
+  }
+
+  button {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: none;
+    background: #2563eb;
+    color: white;
+    font-weight: 500;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
 }
