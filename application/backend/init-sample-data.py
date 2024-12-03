@@ -5,8 +5,6 @@ def run_shell_script():
         "python manage.py makemigrations",
         "python manage.py migrate",
         "python manage.py loaddata security_questions items_table",
-        # "python manage.py loaddata security_questions items_table users_table",
-        # "python manage.py loaddata games_table",
     ]
 
     for command in commands:

@@ -83,7 +83,7 @@ class CreateUserMetaDataView(generics.GenericAPIView):
             security_question = SecurityQuestion.objects.get(
                 id=security_question_id)
             security_answer = request.data.get('security_answer')
-            
+
             items = {
                 0: 1,
                 1: 1,
@@ -186,7 +186,6 @@ class UserMetaDataViewSet(viewsets.ModelViewSet):
         user_id = self.request.query_params.get('user_id')
         if user_id:
             queryset = queryset.filter(user__id=user_id)
-
         solo_games_played = self.request.query_params.get('solo_games_played')
         if solo_games_played:
             queryset = queryset.filter(
@@ -248,10 +247,22 @@ class GameViewSet(viewsets.ModelViewSet):
         queryset = self.queryset
         query_params = self.request.query_params
 
+        game_id = self.request.query_params.get('game_id')
+        if game_id:
+            queryset = queryset.filter(id=game_id)
+
         if 'watch' in query_params:
+            queryset = queryset.filter(status='Active')
             if 'preview' in query_params:
-                return queryset.filter(status='Active').order_by('-date')[:10]
-            return queryset.filter(status='Active').order_by('-date')
+                return queryset.order_by('-date')[:10]
+            if 'solo' in query_params:
+                return queryset.filter(mode='Solo').order_by('-date')
+            if 'versus' in query_params:
+                return queryset.filter(mode='Versus').order_by('-date')
+            if 'high_score' in query_params:
+                return queryset.annotate(max_score=Greatest(
+                    F('player_one_score'), F('player_two_score'))).order_by('-max_score')
+            return queryset.order_by('-date')
 
         if 'lobby' in query_params:
             if 'preview' in query_params:

@@ -1,0 +1,13 @@
+@use "../constants/constants";
+
+.watch-games {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.watch-grid {
+  width: 100%;
+  display: grid;
+  column-gap: 4rem;
+  grid-template-columns: repeat(3, 1fr);
+}
