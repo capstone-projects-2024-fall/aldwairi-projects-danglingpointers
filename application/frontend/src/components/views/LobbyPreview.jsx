@@ -1,13 +1,22 @@
+import useUserAuthStore from "../../stores/userAuthStore";
 import GameEntry from "../entries/GameEntry";
 
 export default function LobbyPreview({ lobbyGames, setIsCreateGame }) {
+  const { isLoggedIn } = useUserAuthStore();
 
   return (
     <article className="default-scrollbar">
       <div className="preview">
         <div className="link-flex">
           <h2>Lobby</h2>
-          <button className="btn-create-game-modal" onClick={() => setIsCreateGame(true)}>Create Versus Game</button>
+          {isLoggedIn && (
+            <button
+              className="btn-create-game-modal"
+              onClick={() => setIsCreateGame(true)}
+            >
+              Create Versus Game
+            </button>
+          )}
         </div>
         {lobbyGames.length > 0 ? (
           <ul>

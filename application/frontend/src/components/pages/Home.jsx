@@ -1,11 +1,11 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
+import { GAME_URL, HOST_PATH } from "../../scripts/constants";
+import CreateGameModal from "../CreateGameModal";
+import Loading from "../Loading";
 import LeaderboardsPreview from "../views/LeaderboardsPreview";
 import LobbyPreview from "../views/LobbyPreview";
 import WatchPreview from "../views/WatchPreview";
-import Loading from "../Loading";
-import { GAME_URL, HOST_PATH } from "../../scripts/constants";
-import axios from "axios";
-import CreateGameModal from "../CreateGameModal";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
