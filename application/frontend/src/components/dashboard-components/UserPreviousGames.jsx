@@ -19,7 +19,7 @@ export default function UserPreviousGames() {
           response.data.filter((game) => game.status === "Complete")
         );
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 
@@ -35,6 +35,7 @@ export default function UserPreviousGames() {
         {watchPreviews.map((game, index) => (
           <GameEntry
             key={index}
+            gameLength={game.game_length}
             users={[
               { id: game.player_one, name: "" },
               { id: game.player_two, name: "" },

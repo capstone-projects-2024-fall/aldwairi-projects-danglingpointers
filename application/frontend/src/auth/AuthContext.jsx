@@ -5,16 +5,14 @@ const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const { login } = useUserAuthStore();
-  const [userMoney, setUserMoney] = useState(0);
-  const [garbageCollectorColor, setGarbageCollectorColor] = useState("#0000FF");
+  const [profiles, setProfiles] = useState([]);
+
   return (
     <AuthContext.Provider
       value={{
         login,
-        garbageCollectorColor,
-        setGarbageCollectorColor,
-        userMoney,
-        setUserMoney,
+        profiles,
+        setProfiles,
       }}
     >
       {children}

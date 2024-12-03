@@ -1,7 +1,7 @@
 // Profile.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { HOST_PATH } from "../../scripts/constants";
+import { GAME_URL, HOST_PATH } from "../../scripts/constants";
 import GameEntry from "../entries/GameEntry";
 
 const Profile = ({ userId, username, dateJoined, lastLogin }) => {
@@ -37,6 +37,36 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
 
     fetchProfileData();
   }, [userId, username, dateJoined, lastLogin]);
+
+  useEffect(() => {
+    const ws = new WebSocket(GAME_URL);
+
+    ws.onopen = () => {
+      console.log("WebSocket connection to GameConsumer established");
+    };
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "connected")
+        console.log(message);
+      
+      if (message.type === "game") {
+        console.log("Received game message:", message);
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection to GameConsumer closed");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, []);
 
   if (loading) return <p className="mr-def">Loading profile...</p>;
   if (userNotFound)
@@ -82,6 +112,7 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
               {recentGames.map((game, index) => (
                 <GameEntry
                   key={index}
+                  gameLength={game.game_length}
                   users={[
                     { id: game.player_one, name: "" },
                     { id: game.player_two, name: "" },

@@ -1,8 +1,11 @@
-from .models import UserMetaData, Game, Item, SecurityQuestion
-from .serializers import UserSerializer, UserMetaDataSerializer, GameSerializer, ItemSerializer, SecurityQuestionSerializer
+from datetime import timezone
+from .models import *
+from .serializers import *
 from cryptography.fernet import Fernet
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.db.models import F
+from django.db.models.functions import Greatest
 import os
 from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
@@ -63,46 +66,99 @@ class CreateUserMetaDataView(generics.GenericAPIView):
         '''
 
         user_id = request.data.get('user_id')
-        security_question_id = request.data.get('security_question')
-        security_question = SecurityQuestion.objects.get(
-            id=security_question_id)
-        security_answer = request.data.get('security_answer')
+        user = User.objects.get(id=user_id)
+
+        if UserMetaData.objects.filter(user=user).exists():
+            userMetaData = UserMetaData.objects.get(user=user)
+            settings = request.data.get('settings')
+            user_points = request.data.get('user_points')
+
+            userMetaData.settings = settings
+            userMetaData.user_points = user_points if user_points is not None else 0
+            userMetaData.save()
+
+            return Response({"success": "success"}, status=status.HTTP_200_OK)
+        else:
+            security_question_id = request.data.get('security_question')
+            security_question = SecurityQuestion.objects.get(
+                id=security_question_id)
+            security_answer = request.data.get('security_answer')
+
+            items = {
+                0: 1,
+                1: 1,
+                2: 1,
+                3: 1,
+                4: 1,
+            }
+
+            settings = {
+                "garbageCollectorColor": "#0022ff",
+                "moveLeft": "ArrowLeft",
+                "moveRight": "ArrowRight",
+                "toggleNextItem": "Tab",
+                "useItem": "Enter",
+            }
+
+            userMetaData = UserMetaData.objects.create(
+                user=user,
+                security_question=security_question,
+                security_answer=security_answer,
+                items=items,
+                settings=settings,
+            )
+            userMetaData.save()
+
+            user_points = 0
+
+            return Response(
+                {
+                    'settings': settings,
+                    'user_points': user_points,
+                    'items': items,
+                },
+                status=status.HTTP_200_OK)
+
+
+class UpdateUserMetaDataView(generics.GenericAPIView):
+    def post(self, request):
+        '''
+        This method updates existing UserMetaData when a user navigates
+        between pages. This method returns a success message.
+        '''
+
+        user_id = request.data.get('user_id')
+        user_points = request.data.get('user_points')
+        settings = request.data.get('settings')
 
         user = User.objects.get(id=user_id)
-        items = Item.objects.all()
-        item_history = {}
-        settings = {
-            "garbageCollectorColor": "blue"
-        }
+        userMetaData = UserMetaData.objects.get(user=user)
 
-        userMetaData = UserMetaData.objects.create(
-            user=user,
-            security_question=security_question,
-            security_answer=security_answer,
-            item_history=item_history,
-            settings=settings,
-        )
-        userMetaData.items.add(*items)
+        userMetaData.user_points = user_points
+        userMetaData.settings = settings
+
         userMetaData.save()
 
         return Response(
             {
-                'settings': settings,
+                'success': 'success',
             },
             status=status.HTTP_200_OK)
 
 
+class UserCountView(generics.GenericAPIView):
+    def get(self, request):
+        user_count = User.objects.count()
+        return Response({'user_count': user_count})
+
+
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects
     serializer_class = UserSerializer
 
     def get_queryset(self):
         queryset = self.queryset
-        
-        profiles = self.request.query_params.get('profiles')
-        if profiles:
-            return queryset
-        
+
         user_id = self.request.query_params.get('user_id')
         if user_id:
             queryset = queryset.filter(id=user_id)
@@ -117,7 +173,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class UserMetaDataViewSet(viewsets.ModelViewSet):
-    queryset = UserMetaData.objects.all()
+    queryset = UserMetaData.objects
     serializer_class = UserMetaDataSerializer
 
     def get_queryset(self):
@@ -130,7 +186,6 @@ class UserMetaDataViewSet(viewsets.ModelViewSet):
         user_id = self.request.query_params.get('user_id')
         if user_id:
             queryset = queryset.filter(user__id=user_id)
-
         solo_games_played = self.request.query_params.get('solo_games_played')
         if solo_games_played:
             queryset = queryset.filter(
@@ -185,24 +240,51 @@ class UserMetaDataViewSet(viewsets.ModelViewSet):
 
 
 class GameViewSet(viewsets.ModelViewSet):
-    queryset = Game.objects.all()
+    queryset = Game.objects
     serializer_class = GameSerializer
 
     def get_queryset(self):
         queryset = self.queryset
         query_params = self.request.query_params
 
+        game_id = self.request.query_params.get('game_id')
+        if game_id:
+            queryset = queryset.filter(id=game_id)
+
         if 'watch' in query_params:
-            return queryset.filter(status='Active').order_by('-date')
+            queryset = queryset.filter(status='Active')
+            if 'preview' in query_params:
+                return queryset.order_by('-date')[:10]
+            if 'solo' in query_params:
+                return queryset.filter(mode='Solo').order_by('-date')
+            if 'versus' in query_params:
+                return queryset.filter(mode='Versus').order_by('-date')
+            if 'high_score' in query_params:
+                return queryset.annotate(max_score=Greatest(
+                    F('player_one_score'), F('player_two_score'))).order_by('-max_score')
+            return queryset.order_by('-date')
 
         if 'lobby' in query_params:
+            if 'preview' in query_params:
+                return queryset.filter(mode='Versus', status='Pending').order_by('-date')[:10]
             return queryset.filter(mode='Versus', status='Pending').order_by('-date')
 
         if 'leaderboards_solo' in query_params:
-            return queryset.filter(mode='Solo', status='Complete').order_by('-player_one_score')[:10]
+            queryset = queryset.filter(
+                mode='Solo', status='Complete').order_by('-player_one_score')
+            if 'preview' in query_params:
+                return queryset[:10]
+            return queryset[:20]
 
         if 'leaderboards_versus' in query_params:
-            return queryset.filter(mode='Versus', status='Complete').order_by('-player_one_score', '-player_two_score')[:10]
+            queryset = queryset.filter(mode='Versus').annotate(max_score=Greatest(
+                F('player_one_score'), F('player_two_score'))).order_by('-max_score')
+            if 'preview' in query_params:
+                return queryset[:10]
+            return queryset[:20]
+
+        if 'longest_games' in query_params:
+            return queryset.order_by('-game_length')[:20]
 
         # Query for recently played games on the profile
         if 'recent_games' in query_params:
@@ -215,16 +297,67 @@ class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
 
+
+class SecurityQuestionViewSet(viewsets.ModelViewSet):
+    queryset = SecurityQuestion.objects.all()
+    serializer_class = SecurityQuestionSerializer
+
+
+class FriendshipViewSet(viewsets.ModelViewSet):
+    queryset = Friendship.objects
+    serializer_class = FriendshipSerializer
+
     def get_queryset(self):
         queryset = self.queryset
 
         user_id = self.request.query_params.get('user_id')
         if user_id:
-            queryset = queryset.filter(id=user_id)
+            queryset = queryset.filter(user__id=user_id)
+
+            username = self.request.query_params.get('username')
+            # TODO: Pending, Active
+
+            if username:
+                queryset = queryset.filter(friend__username=username)
 
         return queryset
 
 
-class SecurityQuestionViewSet(viewsets.ModelViewSet):
-    queryset = SecurityQuestion.objects.all()
-    serializer_class = SecurityQuestionSerializer
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+
+        user_id = self.request.query_params.get('user_id')
+        if user_id:
+            queryset = queryset.filter(user__id=user_id)
+
+            game = self.request.query_params.get('game')
+            user = self.request.query_params.get('user')
+
+            if user:
+                queryset = queryset.filter(comment_type='User')
+            elif game:
+                queryset = queryset.filter(comment_type='Game')
+
+        return queryset.order_by('-date')
+
+
+class ChatMessageViewSet(viewsets.ModelViewSet):
+    queryset = ChatMessage.objects
+    serializer_class = ChatMessageSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+
+        user_id = self.request.query_params.get('user_id')
+        if user_id:
+            queryset = queryset.filter(user__id=user_id)
+
+            recipient = self.request.query_params.get('friend')
+            if recipient:
+                queryset = queryset.filter(recipient__username=recipient)
+
+        return queryset.order_by('-date')

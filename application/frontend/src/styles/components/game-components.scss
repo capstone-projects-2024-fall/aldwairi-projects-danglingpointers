@@ -21,9 +21,20 @@
       padding: 5px;
     }
 
-    .game-details {
+    .game-details,
+    .start-game {
       display: flex;
       flex-flow: column nowrap;
+      width: 300px;
+
+      button {
+        width: 125px;
+      }
+    }
+
+    .start-game {
+      gap: 10px;
+      align-items: end;
     }
 
     .user-items {
@@ -120,7 +131,6 @@
 
 .garbage-collector {
   height: 25px;
-  width: 75px;
   border: 1px solid black;
   position: relative;
   bottom: 15px;

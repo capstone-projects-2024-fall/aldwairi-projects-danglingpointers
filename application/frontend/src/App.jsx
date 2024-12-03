@@ -4,7 +4,6 @@ import Dashboard from "./components/pages/Dashboard";
 import Game from "./components/pages/Game";
 import Home from "./components/pages/Home";
 import Leaderboards from "./components/pages/Leaderboards";
-import Lobby from "./components/pages/Lobby";
 import Profile from "./components/pages/Profile";
 import Watch from "./components/pages/Watch";
 import { GameProvider } from "./context/GameContext";
@@ -13,18 +12,23 @@ import useUserAuthStore from "./stores/userAuthStore";
 import "./styles/App.scss";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { HOST_PATH } from "./scripts/constants";
+import { GAME_URL, HOST_PATH, USER_URL } from "./scripts/constants";
 import ErrorPage from "./components/pages/ErrorPage";
+import useUserMetaDataStore from "./stores/userMetaDataStore";
 
 export default function App() {
-  const { isLoggedIn } = useUserAuthStore();
+  const { isLoggedIn, userId } = useUserAuthStore();
+  const { isMetaDataSet } = useUserMetaDataStore();
+  const [games, setGames] = useState(null);
   const [profiles, setProfiles] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
-    const fetchUserItems = async () => {
+    const fetchUsers = async () => {
       try {
-        const usersResponse = await axios.get(`${HOST_PATH}/users?profiles=true`);
+        const usersResponse = await axios.get(
+          `${HOST_PATH}/users/?profiles=true`
+        );
         const users = usersResponse.data;
         setProfiles(users);
       } catch (error) {
@@ -32,8 +36,77 @@ export default function App() {
       }
     };
 
-    fetchUserItems();
+    fetchUsers();
+
+    const ws = new WebSocket(USER_URL);
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      // console.log("WebSocket message received:", data);
+
+      if (data.message === "New user created") {
+        fetchUsers();
+      }
+    };
+
+    return () => {
+      ws.close();
+    };
   }, [location.pathname]);
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        const usersResponse = await axios.get(`${HOST_PATH}/games`);
+        const games = usersResponse.data;
+        setGames(games);
+      } catch (error) {
+        console.error("Error fetching games:", error);
+      }
+    };
+
+    fetchGames();
+
+    const ws = new WebSocket(GAME_URL);
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      // console.log("WebSocket message received:", data);
+
+      if (data.message === "New game created") {
+        fetchGames();
+      }
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, [location.pathname]);
+
+  // Save before logged in user leaves website
+  useEffect(() => {
+    if (!userId || !isMetaDataSet) return;
+
+    const handleUserMetaData = async () => {
+      const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+      const formData = {
+        user_id: userId,
+        settings: store.state.settings,
+        user_points: store.state.points,
+        items: store.state.items,
+      };
+
+      try {
+        await axios.post(`${HOST_PATH}/update-user-metadata/`, formData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    window.addEventListener("beforeunload", handleUserMetaData);
+    return () => {
+      window.removeEventListener("beforeunload", handleUserMetaData);
+    };
+  }, [isMetaDataSet, userId]);
 
   return (
     <Routes>
@@ -41,7 +114,6 @@ export default function App() {
         <Route path="*" element={<ErrorPage />} />
         <Route index element={<Home />} />
         <Route path="leaderboards" element={<Leaderboards />} />
-        <Route path="lobby" element={<Lobby />} />
         <Route path="watch" element={<Watch />} />
 
         <Route
@@ -74,7 +146,21 @@ export default function App() {
               />
             ))
           : null}
-          
+
+        {games
+          ? Object.entries(games).map(([key, value]) => (
+              <Route
+                path={`game/game_id_${value.id}`}
+                key={key}
+                element={
+                  <GameProvider>
+                    <Game />
+                  </GameProvider>
+                }
+              />
+            ))
+          : null}
+
         <Route path="profile" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
