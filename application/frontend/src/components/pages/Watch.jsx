@@ -1,22 +1,25 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Watchlist from "../views/Watchlist";
 import { GAME_URL, HOST_PATH } from "../../scripts/constants";
 
+
 export default function Watch() {
-  const [watchGames, setWatchGames] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchGames = async () => {
+    setIsLoading(true);
+    const fetchWatchlist = async () => {
       try {
-        const watchResponse = await axios.get(`${HOST_PATH}/games?watch=true`);
-
-        setWatchGames(watchResponse.data ? watchResponse.data : []);
-      } catch (error) {
-        console.error("Error fetching games data:", error);
+        await axios.get(`${HOST_PATH}/api/watchlist`);
+        setIsLoading(false);
+      } catch (err) {
+        setError('Failed to load watchlist');
+        setIsLoading(false);
       }
     };
-
-    fetchGames();
+    fetchWatchlist();
   }, []);
 
   // Game Socket
@@ -49,19 +52,12 @@ export default function Watch() {
 
   return (
     <main className="main-default main-watch">
-      <article className="watch-games default-scrollbar">
-        <h2>Watch</h2>
-        {watchGames.length > 0 ? (
-          <ul className="max-height">
-            {watchGames.map((game, index) => (
-              <li key={index}>
-                Mode: {game.mode}, Score: {game.player_one_score} vs{" "}
-                {game.player_two_score || "N/A"}
-              </li>
-            ))}
-          </ul>
+      <article className="watch-container">
+        {error && <div className="error-message">{error}</div>}
+        {isLoading ? (
+          <div className="loading">Loading watchlist...</div>
         ) : (
-          <p>No active games available.</p>
+          <Watchlist />
         )}
       </article>
     </main>
