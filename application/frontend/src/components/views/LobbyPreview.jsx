@@ -1,30 +1,66 @@
+import { useState } from "react";
 import GameEntry from "../entries/GameEntry";
+import useUserAuthStore from "../../stores/userAuthStore";
+import CreateGameEntry from "../entries/CreateGameEntry";
 
-export default function LobbyPreview({ lobbyGames, setIsCreateGame }) {
+export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
+  const [isCreateGame, setIsCreateGame] = useState(false);
+  const { userId, username } = useUserAuthStore();
+  const handleCreateGame = async () => {
+    if (isCreateGame) return;
+
+    setIsCreateGame(true);
+    const newGame = {
+      player_one: username,
+      player_two: null,
+      status: "Create",
+      mode: "Versus",
+    };
+    const games = lobbyGames;
+    games.unshift(newGame);
+    setLobbyGames(games);
+    console.log(games);
+  };
+
+  // const handlePostGame = async () => {
+  //   if (!isCreateGame) return;
+
+  //   setIsCreateGame(false);
+  // };
 
   return (
     <article className="default-scrollbar">
       <div className="preview">
         <div className="link-flex">
           <h2>Lobby</h2>
-          <button className="btn-create-game-modal" onClick={() => setIsCreateGame(true)}>Create Versus Game</button>
+          <button
+            className="btn-create-game-modal"
+            onClick={userId ? handleCreateGame : null}
+            style={{ cursor: userId ? "default" : "not-allowed" }}
+          >
+            Create Versus Game
+          </button>
         </div>
         {lobbyGames.length > 0 ? (
           <ul>
-            {lobbyGames.map((game, index) => (
-              <GameEntry
-                key={index}
-                gameLength={game.game_length}
-                users={[
-                  { id: game.player_one, name: "" },
-                  { id: game.player_two, name: "" },
-                ]}
-                status={game.status}
-                gameId={game.id}
-                mode={game.mode}
-                scores={[game.player_one_score, game.player_two_score]}
-              />
-            ))}
+            {lobbyGames.map((game, index) =>
+              game.status === "Create" ? (
+                <CreateGameEntry key={index}/>
+              ) : (
+                <GameEntry
+                  key={index}
+                  gameLength={game.game_length}
+                  users={[
+                    { id: game.player_one, name: "" },
+                    { id: game.player_two, name: "" },
+                  ]}
+                  status={game.status}
+                  gameId={game.id}
+                  mode={game.mode}
+                  scores={[game.player_one_score, game.player_two_score]}
+                />
+              )
+            )}
           </ul>
         ) : (
           <p>No pending games available.</p>
