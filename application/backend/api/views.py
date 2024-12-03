@@ -306,20 +306,35 @@ class SecurityQuestionViewSet(viewsets.ModelViewSet):
     queryset = SecurityQuestion.objects.all()
     serializer_class = SecurityQuestionSerializer
 
-
 class FriendshipViewSet(viewsets.ModelViewSet):
-    queryset = Friendship.objects
+    queryset = Friendship.objects.all()  # Use `.all()` to return all records
     serializer_class = FriendshipSerializer
-    permission_classes = [AllowAny]  # Ensures only logged-in users can access this view
+    def get_queryset(self):
+        queryset = self.queryset
 
-    def create(self, request, *args, **kwargs):
-        user = request.user  # Authenticated user
-        friend_id = request.data.get("friend_id")
-        if not request.user.is_authenticated:
-            return Response(
-                {"error": "Authentication required to create a friendship."},
-                status=status.HTTP_401_UNAUTHORIZED,
-        )
+        user_id = self.request.query_params.get('user_id')
+        if user_id:
+            queryset = queryset.filter(user__id=user_id)
+
+            username = self.request.query_params.get('username')
+            # TODO: Pending, Active
+
+            if username:
+                queryset = queryset.filter(friend__username=username)
+
+        return queryset
+
+
+class ManageFriendship(generics.GenericAPIView):
+    
+    def post(self, request):
+        user_id = request.data.get("user_Id")
+        friend_id = request.data.get("profile_User_Id")
+
+        user = User.objects.get(id=user_id)
+        friend = User.objects.get(id=friend_id)
+
+        
         if not friend_id:
             return Response(
                 {"error": "Friend ID is required."},
@@ -348,7 +363,7 @@ class FriendshipViewSet(viewsets.ModelViewSet):
             FriendshipSerializer(friendship).data, status=status.HTTP_201_CREATED
         )
     
-    def update(self, request, *args, **kwargs):
+    def update(self, request):
         # Handle friendship status update
         instance = self.get_object()
         status = request.data.get('status')

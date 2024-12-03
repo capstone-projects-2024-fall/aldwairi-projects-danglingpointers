@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { GAME_URL, HOST_PATH } from "../../scripts/constants";
 import GameEntry from "../entries/GameEntry";
+import useUserAuthStore from "../../stores/userAuthStore";
 
-const Profile = ({ userId, username, dateJoined, lastLogin }) => {
+const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
   const [profileData, setProfileData] = useState(null);
   const [recentGames, setRecentGames] = useState([]);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
   const [userNotFound, setUserNotFound] = useState(false);
+  const { userId } = useUserAuthStore();
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -42,15 +44,12 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
 
   const handleFriendRequest = async () => {
     try {
-        const token = localStorage.getItem("access_token"); // Get the token
+      console.log(userId)
+      console.log(profileUserId)
         await axios.post(
             `${HOST_PATH}/friendships/`,
-            { friend_id: userId },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`, // Add token to headers
-                },
-            }
+            { profile_User_Id: profileUserId, user_Id: userId },
+           
         );
         alert("Friend request sent!");
     } catch (error) {
