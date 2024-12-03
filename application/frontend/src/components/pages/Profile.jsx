@@ -1,4 +1,3 @@
-// Profile.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { GAME_URL, HOST_PATH } from "../../scripts/constants";
@@ -7,6 +6,8 @@ import GameEntry from "../entries/GameEntry";
 const Profile = ({ userId, username, dateJoined, lastLogin }) => {
   const [profileData, setProfileData] = useState(null);
   const [recentGames, setRecentGames] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
   const [userNotFound, setUserNotFound] = useState(false);
 
@@ -16,6 +17,7 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
         const gamesResponse = await axios.get(
           `${HOST_PATH}/games?recent_games=true&user_id=${userId}`
         );
+        const commentsResponse = await axios.get(`${HOST_PATH}/comments?user_id=${userId}`);
 
         setProfileData({
           username: username,
@@ -26,7 +28,7 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
         setRecentGames(
           gamesResponse.data.filter((game) => game.status === "Complete") || []
         );
-
+        setComments(commentsResponse.data || []);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -38,103 +40,119 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
     fetchProfileData();
   }, [userId, username, dateJoined, lastLogin]);
 
-  useEffect(() => {
-    const ws = new WebSocket(GAME_URL);
+  const handleFriendRequest = async () => {
+    try {
+        const token = localStorage.getItem("access_token"); // Get the token
+        await axios.post(
+            `${HOST_PATH}/friendships/`,
+            { friend_id: userId },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`, // Add token to headers
+                },
+            }
+        );
+        alert("Friend request sent!");
+    } catch (error) {
+        console.error("Error sending friend request:", error);
+    }
+};
 
-    ws.onopen = () => {
-      console.log("WebSocket connection to GameConsumer established");
-    };
+  const handleRemoveFriend = async (friendshipId) => {
+    try {
+      await axios.patch(`${HOST_PATH}/friendships/${friendshipId}/`, {
+        status: "Inactive",
+      });
+      alert("Friend removed successfully!");
+    } catch (error) {
+      console.error("Error removing friend:", error);
+    }
+  };
 
-    ws.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      if (message.type === "connected")
-        console.log(message);
-      
-      if (message.type === "game") {
-        console.log("Received game message:", message);
-      }
-    };
+  const handleAddComment = async () => {
+    try {
+      await axios.post(`${HOST_PATH}/comments/`, {
+        user_id: userId, // The current user's ID
+        text: newComment,
+      });
+      setComments((prevComments) => [...prevComments, { user: username, text: newComment }]);
+      setNewComment("");
+    } catch (error) {
+      console.error("Error posting comment:", error);
+    }
+  };
 
-    ws.onclose = () => {
-      console.log("WebSocket connection to GameConsumer closed");
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    return () => {
-      ws.close();
-    };
-  }, []);
-
-  if (loading) return <p className="mr-def">Loading profile...</p>;
-  if (userNotFound)
-    return <p className="mr-def">User not found in the database.</p>;
-
-  // Mock data for the comment wall
-  const comments = [
-    { id: 1, user: "MockUser1", text: "Great profile!" },
-    { id: 2, user: "MockUser2", text: "Looking forward to playing again!" },
-    { id: 3, user: "MockUser3", text: "Nice scores on your last games!" },
-  ];
+  if (loading) return <p>Loading profile...</p>;
+  if (userNotFound) return <p>User not found in the database.</p>;
 
   return (
     <main className="main-profile">
-      <div className="profile-info">
-        <h1>User Profile</h1>
-        <div className="profile-header">
-          <div className="profile-pic-container">
-            <img
-              src="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/1966.png" //placeholder to fix later
-              alt="Profile"
-              className="profile-pic"
-            />
-          </div>
+      <div className="profile-columns">
+        <div className="left-column">
+          <h1>User Profile</h1>
           <div className="profile-details">
-            <div>
+            <p>
               <strong>Username:</strong> {profileData.username}
-              <span className="online-status" />
-            </div>
-            <div>
+            </p>
+            <p>
               <strong>Date Joined:</strong> {profileData.dateJoined}
+            </p>
+            <p>
+              <strong>Last Login:</strong> {profileData.lastLogin || profileData.dateJoined}
+            </p>
+          </div>
+          <button onClick={handleFriendRequest}>Request</button>
+          <button>
+            Friends
+            <div className="dropdown">
+              <button
+                onClick={() => {
+                  const friendshipId = "FRIENDSHIP_ID_PLACEHOLDER"; // Replace with actual ID
+                  handleRemoveFriend(friendshipId);
+                }}
+              >
+                Remove Friend
+              </button>
             </div>
-            <div>
-              <strong>Last Login:</strong>{" "}
-              {profileData.lastLogin || profileData.dateJoined}
-            </div>
+          </button>
+          <div className="recent-games">
+            <h2>Recent Games</h2>
+            {recentGames.length > 0 ? (
+              <ul>
+                {recentGames.map((game, index) => (
+                  <GameEntry
+                    key={index}
+                    gameLength={game.game_length}
+                    users={[
+                      { id: game.player_one, name: "" },
+                      { id: game.player_two, name: "" },
+                    ]}
+                    status={game.status}
+                    scores={[game.player_one_score, game.player_two_score]}
+                  />
+                ))}
+              </ul>
+            ) : (
+              <p>No recent games available.</p>
+            )}
           </div>
         </div>
-        <div className="recent-games">
-          <h2>Recent Games</h2>
-          {recentGames.length > 0 ? (
+        <div className="right-column">
+          <div className="comment-wall">
+            <h2>Comment Wall</h2>
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+            />
+            <button onClick={handleAddComment}>Post Comment</button>
             <ul>
-              {recentGames.map((game, index) => (
-                <GameEntry
-                  key={index}
-                  gameLength={game.game_length}
-                  users={[
-                    { id: game.player_one, name: "" },
-                    { id: game.player_two, name: "" },
-                  ]}
-                  status={game.status}
-                  scores={[game.player_one_score, game.player_two_score]}
-                />
+              {comments.map((comment, index) => (
+                <li key={index}>
+                  <strong>{comment.user}:</strong> {comment.text}
+                </li>
               ))}
             </ul>
-          ) : (
-            <p>No recent games available.</p>
-          )}
-        </div>
-        <div className="comment-wall">
-          <h2>Comment Wall</h2>
-          <ul>
-            {comments.map((comment) => (
-              <li key={comment.id}>
-                <strong>{comment.user}:</strong> {comment.text}
-              </li>
-            ))}
-          </ul>
+          </div>
         </div>
       </div>
     </main>

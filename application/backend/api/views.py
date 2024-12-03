@@ -10,6 +10,10 @@ import os
 from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
+
+
 
 
 class CreateOrLoginView(generics.GenericAPIView):
@@ -306,7 +310,54 @@ class SecurityQuestionViewSet(viewsets.ModelViewSet):
 class FriendshipViewSet(viewsets.ModelViewSet):
     queryset = Friendship.objects
     serializer_class = FriendshipSerializer
+    permission_classes = [AllowAny]  # Ensures only logged-in users can access this view
 
+    def create(self, request, *args, **kwargs):
+        user = request.user  # Authenticated user
+        friend_id = request.data.get("friend_id")
+        if not request.user.is_authenticated:
+            return Response(
+                {"error": "Authentication required to create a friendship."},
+                status=status.HTTP_401_UNAUTHORIZED,
+        )
+        if not friend_id:
+            return Response(
+                {"error": "Friend ID is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            friend = User.objects.get(id=friend_id)
+        except User.DoesNotExist:
+            return Response(
+                {"error": "Friend does not exist."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # Check for duplicate friendship or create a new one
+        friendship, created = Friendship.objects.get_or_create(
+            user=user, friend=friend, defaults={"status": "Pending"}
+        )
+        if not created:
+            return Response(
+                {"error": "Friendship already exists."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Response(
+            FriendshipSerializer(friendship).data, status=status.HTTP_201_CREATED
+        )
+    
+    def update(self, request, *args, **kwargs):
+        # Handle friendship status update
+        instance = self.get_object()
+        status = request.data.get('status')
+        if status not in ['Pending', 'Accepted', 'Inactive']:
+            return Response({"error": "Invalid status."}, status=status.HTTP_400_BAD_REQUEST)
+        instance.status = status
+        instance.save()
+        return Response(FriendshipSerializer(instance).data)
+    
     def get_queryset(self):
         queryset = self.queryset
 
@@ -343,6 +394,15 @@ class CommentViewSet(viewsets.ModelViewSet):
                 queryset = queryset.filter(comment_type='Game')
 
         return queryset.order_by('-date')
+    
+    def create(self, request, *args, **kwargs):
+        # Handle comment creation
+        user = request.user
+        text = request.data.get('text')
+        if not text:
+            return Response({"error": "Comment text is required."}, status=status.HTTP_400_BAD_REQUEST)
+        comment = Comment.objects.create(user=user, text=text)
+        return Response(CommentSerializer(comment).data, status=status.HTTP_201_CREATED)
 
 
 class ChatMessageViewSet(viewsets.ModelViewSet):
