@@ -6,17 +6,17 @@ import GameEntry from "../entries/GameEntry";
 export default function Watch() {
   const [watchGames, setWatchGames] = useState([]);
 
+  const fetchGames = async () => {
+    try {
+      const watchResponse = await axios.get(`${HOST_PATH}/games?watch=true`);
+
+      setWatchGames(watchResponse.data ? watchResponse.data : []);
+    } catch (error) {
+      console.error("Error fetching games data:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        const watchResponse = await axios.get(`${HOST_PATH}/games?watch=true`);
-
-        setWatchGames(watchResponse.data ? watchResponse.data : []);
-      } catch (error) {
-        console.error("Error fetching games data:", error);
-      }
-    };
-
     fetchGames();
   }, []);
 
@@ -32,6 +32,9 @@ export default function Watch() {
       const message = JSON.parse(event.data);
       if (message.type === "game") {
         console.log("Received game message:", message);
+
+        // Refresh watch games to get the actual game objects
+        fetchGames();
       }
     };
 

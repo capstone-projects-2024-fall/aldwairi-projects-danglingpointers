@@ -118,6 +118,14 @@ export default function Game() {
         if (response.data && response.data.id) {
           setCurrGameId(response.data.id);
           console.log("Active game data posted, gameId:", response.data.id);
+
+          // Send WebSocket message
+          if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+            wsRef.current.send(JSON.stringify({
+              type: "game",
+              game_id: response.data.id
+            }));
+          }
         } else {
           console.error("Game ID not found in response");
         }
@@ -207,6 +215,14 @@ export default function Game() {
               "user-metadata-state",
               JSON.stringify(store)
             );
+          }
+
+          // Send WebSocket message
+          if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+            wsRef.current.send(JSON.stringify({
+              type: "game",
+              game_id: currGameId
+            }));
           }
         } catch (error) {
           console.error("Error posting game data:", error);
