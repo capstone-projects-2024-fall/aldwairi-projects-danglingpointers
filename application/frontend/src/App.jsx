@@ -137,7 +137,7 @@ export default function App() {
                 key={key}
                 element={
                   <Profile
-                    userId={value.id}
+                    profileUserId={value.id}
                     username={value.username}
                     dateJoined={value.date_joined}
                     lastLogin={value.last_login}
