@@ -121,10 +121,12 @@ export default function Game() {
 
           // Send WebSocket message
           if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-            wsRef.current.send(JSON.stringify({
-              type: "game",
-              game_id: response.data.id
-            }));
+            wsRef.current.send(
+              JSON.stringify({
+                type: "game",
+                game_id: response.data.id,
+              })
+            );
           }
         } else {
           console.error("Game ID not found in response");
@@ -218,12 +220,12 @@ export default function Game() {
           }
 
           // Send WebSocket message
-          if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-            wsRef.current.send(JSON.stringify({
+          wsRef.current.send(
+            JSON.stringify({
               type: "game",
-              game_id: currGameId
-            }));
-          }
+              game_id: currGameId,
+            })
+          );
         } catch (error) {
           console.error("Error posting game data:", error);
         }
@@ -411,7 +413,9 @@ export default function Game() {
                 <span className="item-icon">
                   {userItems[selectedIndex].item.icon}
                 </span>
-                <span style={{marginBottom: "7.5px"}}>{userItems[selectedIndex].quantity} remaining</span>
+                <span style={{ marginBottom: "7.5px" }}>
+                  {userItems[selectedIndex].quantity} remaining
+                </span>
               </>
             ) : userId ? (
               <p className="item-warning">You are out of items!</p>
