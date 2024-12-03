@@ -6,21 +6,52 @@
   justify-content: space-between;
   align-items: center;
   height: calc(100vh - constants.$navigation-height);
+
   .details-container {
     display: flex;
-    flex-flow: column nowrap;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    min-width: 1200px;
+    max-width: 1200px;
     gap: 10px;
+
+    .start-round-button {
+      border: 1px black solid;
+      border-radius: 3px;
+      padding: 5px;
+    }
+
+    .game-details,
+    .start-game {
+      display: flex;
+      flex-flow: column nowrap;
+      width: 300px;
+
+      button {
+        width: 125px;
+      }
+    }
+
+    .start-game {
+      gap: 10px;
+      align-items: end;
+    }
+
     .user-items {
+      max-width: 300px;
+      min-width: 300px;
+
       .selected-item {
         align-items: center;
         display: flex;
         flex-flow: column nowrap;
         gap: 5px;
         height: 70px;
-        justify-content: flex-start;
+        justify-content: center;
         background-color: whitesmoke;
         border: 1px black solid;
         padding: 5px;
+
         .item-icon {
           font-size: 36px;
         }
@@ -43,13 +74,6 @@
   margin-bottom: 20px;
   border: 2px black solid;
   border-radius: 5px;
-}
-
-.game-details {
-  display: flex;
-  flex-flow: row nowrap;
-  gap: 20px;
-  justify-content: space-between;
 }
 
 .stack {
@@ -107,7 +131,6 @@
 
 .garbage-collector {
   height: 25px;
-  width: 75px;
   border: 1px solid black;
   position: relative;
   bottom: 15px;
@@ -127,11 +150,12 @@
 
 .recycling-bin {
   height: 100px;
-  width: 150px;
+  width: 175px;
   font-size: 48px;
   background-color: lightgray;
   display: grid;
   place-items: center;
+  z-index: 10000;
 }
 
 .button {

@@ -22,7 +22,7 @@ export default function UserSetup({ setUserNeedsMetaData }) {
 
         setSecurityQuestions(questions);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
     fetchSecurityQuestions();
@@ -46,7 +46,7 @@ export default function UserSetup({ setUserNeedsMetaData }) {
     try {
       await createUserMetaData(formData);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setUserNeedsMetaData(false);
     }

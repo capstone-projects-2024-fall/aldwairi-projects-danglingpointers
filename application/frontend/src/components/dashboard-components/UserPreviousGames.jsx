@@ -12,10 +12,14 @@ export default function UserPreviousGames() {
     // Simulate fetching data
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${HOST_PATH}/games?recent_games=true&user_id=${userId}`);
-        setWatchPreviews(response.data.filter((game) => game.status === "Complete"));
+        const response = await axios.get(
+          `${HOST_PATH}/games?recent_games=true&user_id=${userId}`
+        );
+        setWatchPreviews(
+          response.data.filter((game) => game.status === "Complete")
+        );
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 
@@ -23,23 +27,23 @@ export default function UserPreviousGames() {
   }, [userId]);
 
   return (
-    <div className="user-previous-games">
-      <h1 className="watchtitle">Game Replays</h1>
+    <div className="user-previous-games default-scrollbar mb-def">
+      <div>
+        <h1 className="watchtitle">Game Replays</h1>
+      </div>
       <article className="watchlist-container">
-        <section></section>
-        <section className="watchlist">
         {watchPreviews.map((game, index) => (
-              <GameEntry
-                key={index}
-                users={[
-                  { id: game.player_one, name: "" },
-                  { id: game.player_two, name: "" },
-                ]}
-                status={game.status}
-                scores={[game.player_one_score, game.player_two_score]}
-              />
-            ))}
-        </section>
+          <GameEntry
+            key={index}
+            gameLength={game.game_length}
+            users={[
+              { id: game.player_one, name: "" },
+              { id: game.player_two, name: "" },
+            ]}
+            status={game.status}
+            scores={[game.player_one_score, game.player_two_score]}
+          />
+        ))}
       </article>
     </div>
   );

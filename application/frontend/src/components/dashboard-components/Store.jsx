@@ -1,55 +1,49 @@
+import axios from "axios";
 import ItemEntry from "../entries/ItemEntry";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { HOST_PATH } from "../../scripts/constants";
 
 export default function Store() {
-  const [userMoney, setUserMoney] = useState(10);
+  const [itemsList, setItemsList] = useState();
+  const [userMoney, setUserMoney] = useState(null);
 
-  function handleClick(increment) {
-    let money = userMoney;
-    increment ? (money += 1) : (money -= 1);
-    money > 0 ? setUserMoney(money) : setUserMoney(0);
-  }
+  useEffect(() => {
+    const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+    setUserMoney(store.state.points);
+
+    const fetchItems = async () => {
+      try {
+        const itemsResponse = await axios.get(`${HOST_PATH}/items/`);
+        setItemsList(itemsResponse.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchItems();
+  }, []);
 
   return (
     <div className="store-container default-scrollbar mb-def">
-      <div>
+      <div className="store-details">
         <h1 className="store-title">Store</h1>
-        <p className="store-description">Buy an item from the list above!</p>
-        <p className="user-money">You have ${userMoney}</p>
-        <button onClick={() => handleClick(true)}>+</button>
-        <button onClick={() => handleClick(false)}>-</button>
+        <h1 className="user-money">{userMoney ? `$${userMoney}` : "$0"}</h1>
       </div>
       <article className="store">
-        <ItemEntry
-          itemName={"Item 1"}
-          itemDescription={"This is a generic description of item 1"}
-          itemCost={10}
-          userMoney={userMoney}
-        />
-        <ItemEntry
-          itemName={"Item 2"}
-          itemDescription={"This is a generic description of item 2"}
-          itemCost={12}
-          userMoney={userMoney}
-        />
-        <ItemEntry
-          itemName={"Item 3"}
-          itemDescription={"This is a generic description of item 3"}
-          itemCost={8}
-          userMoney={userMoney}
-        />
-        <ItemEntry
-          itemName={"Item 4"}
-          itemDescription={"This is a generic description of item 4"}
-          itemCost={20}
-          userMoney={userMoney}
-        />
-        <ItemEntry
-          itemName={"Item 5"}
-          itemDescription={"This is a generic description of item 5"}
-          itemCost={15}
-          userMoney={userMoney}
-        />
+        {itemsList
+          ? Object.entries(itemsList).map(([key, item]) => (
+              <ItemEntry
+                key={key}
+                itemId={item.id}
+                itemName={item.name}
+                itemDescription={item.description}
+                itemIcon={item.icon}
+                itemCost={item.cost}
+                userMoney={userMoney}
+                setUserMoney={setUserMoney}
+              />
+            ))
+          : null}
       </article>
     </div>
   );

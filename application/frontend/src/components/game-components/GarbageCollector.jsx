@@ -1,53 +1,66 @@
-import {
-  forwardRef,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { forwardRef, useContext, useEffect, useRef, useState } from "react";
 import {
   checkLeftBoundary,
   checkRightBoundary,
 } from "../../scripts/check-boundaries";
+import { DEFAULT_SETTINGS, ITEMS } from "../../scripts/constants";
+import GameContext from "../../context/GameContext";
 import useUserAuthStore from "../../stores/userAuthStore";
 
 const GarbageCollector = forwardRef((_, ref) => {
   const { userId } = useUserAuthStore();
-  const [styleLeft, setStyleLeft] = useState("1px");
-  const [garbageCollectorColor, setGarbageCollectorColor] = useState("");
-  const intervalRef = useRef(null);
+  const {
+    isSpeedUp,
+    isSuperCollector,
+  } = useContext(GameContext);
 
-  useLayoutEffect(() => {
-    if (userId) {
-      const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
-      const color = store.state.settings.garbageCollectorColor;
-      if (color) setGarbageCollectorColor(color);
-      else setGarbageCollectorColor("green");
-    } else setGarbageCollectorColor("red");
+  const [styleLeft, setStyleLeft] = useState("1px");
+  const intervalRef = useRef(null);
+  const garbageCollectorColor = useRef(null);
+  const arrowLeft = useRef(null);
+  const arrowRight = useRef(null);
+
+  useEffect(() => {
+    const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+    if (store) {
+      const settings = store.state.settings;
+      garbageCollectorColor.current = settings.garbageCollectorColor;
+      arrowLeft.current = settings.moveLeft;
+      arrowRight.current = settings.moveRight;
+    } else {
+      garbageCollectorColor.current = DEFAULT_SETTINGS.garbageCollectorColor;
+      arrowLeft.current = DEFAULT_SETTINGS.moveLeft;
+      arrowRight.current = DEFAULT_SETTINGS.moveRight;
+    }
   }, [userId]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === "ArrowLeft") {
+      if (event.key === arrowLeft.current) {
         clearInterval(intervalRef.current);
-        intervalRef.current = setInterval(() => {
-          setStyleLeft((prevLeft) => {
-            if (
-              checkLeftBoundary(
-                document
-                  .querySelector(".garbage-collector")
-                  .getBoundingClientRect(),
-                document.querySelector(".stack").getBoundingClientRect()
+        intervalRef.current = setInterval(
+          () => {
+            setStyleLeft((prevLeft) => {
+              if (
+                checkLeftBoundary(
+                  document
+                    .querySelector(".garbage-collector")
+                    .getBoundingClientRect(),
+                  document.querySelector(".stack").getBoundingClientRect()
+                )
               )
-            )
-              return parseInt(prevLeft) - 10 + "px";
-            else {
-              clearInterval(intervalRef.current);
-              return prevLeft;
-            }
-          });
-        }, 10);
-      } else if (event.key === "ArrowRight") {
+                return parseInt(prevLeft) - 10 + "px";
+              else {
+                clearInterval(intervalRef.current);
+                return prevLeft;
+              }
+            });
+          },
+          isSpeedUp
+            ? ITEMS.speedUpGarbageCollector
+            : ITEMS.defaultSpeedGarbageCollector
+        );
+      } else if (event.key === arrowRight.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = setInterval(() => {
           setStyleLeft((prevLeft) => {
@@ -80,14 +93,20 @@ const GarbageCollector = forwardRef((_, ref) => {
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("keyup", handleKeyUp);
     };
-  }, []);
+  }, [isSpeedUp]);
 
   return (
     <>
       <section
         className="garbage-collector"
         ref={ref}
-        style={{ left: styleLeft, background: garbageCollectorColor }}
+        style={{
+          left: styleLeft,
+          background: garbageCollectorColor.current,
+          width: isSuperCollector
+            ? ITEMS.superWidthGarbageCollector
+            : ITEMS.defaultWidthGarbageCollector,
+        }}
       ></section>
     </>
   );

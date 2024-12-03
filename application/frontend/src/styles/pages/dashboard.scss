@@ -39,42 +39,76 @@
   grid-auto-flow: column;
   margin: 0 constants.$default-margin 0 0;
 
+  h1 {
+    margin-top: 0;
+  }
+
   .inbox {
     grid-column-start: 1;
     grid-column-end: 4;
     grid-row-start: 1;
     grid-row-end: -1;
+    padding: 0 constants.$default-margin;
   }
 
   .settings {
-    grid-column-start: 15;
-    grid-column-end: -1;
+    grid-column-start: 14;
+    grid-column-end: 20;
     grid-row-start: 1;
-    grid-row-end: 4;
+    grid-row-end: 5;
+    overflow-y: scroll;
+    padding-right: 10px;
+    .no-cursor:focus {
+      caret-color: transparent;
+    }
   }
 
   .store-container {
-    grid-column-start: 15;
-    grid-column-end: -1;
-    grid-row-start: 4;
+    grid-column-start: 14;
+    grid-column-end: 20;
+    grid-row-start: 5;
     grid-row-end: -1;
     display: flex;
     flex-flow: column nowrap;
     gap: 20px;
     overflow-y: hidden;
+
+    h1 {
+      margin-top: 20px;
+    }
+  }
+
+  .store {
+    padding-right: 10px;
   }
 
   .user-previous-games {
     grid-column-start: 5;
-    grid-column-end: 14;
+    grid-column-end: 11;
     grid-row-start: 1;
     grid-row-end: -1;
+    display: flex;
+    flex-flow: column nowrap;
+    overflow-y: hidden;
+  }
+
+  .watchlist-container {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 10px;
+    justify-content: start;
+    align-items: start;
+    overflow-y: auto;
+    section {
+      width: 93%;
+    }
   }
 }
 
 .li-setting {
   display: flex;
   flex-flow: row nowrap;
+  justify-content: space-between;
   gap: 10px;
 
   input {

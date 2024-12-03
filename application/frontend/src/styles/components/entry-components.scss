@@ -1,62 +1,63 @@
+@use "../constants/constants";
+
 .base-entry {
-    width: 400px;
-    background-color: lightgray;
-    border: 1px solid black;
-    border-radius: 5px;
-    padding: 10px;
+  background-color: lightgray;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 10px;
 }
 
 .item-entry {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: start;
+  width: 95%;
+
+  .item-img-container {
     display: flex;
     flex-flow: row nowrap;
-    align-items: start;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 20px;
+  }
+
+  .item-name {
+    margin: 0;
+    margin-top: 10px;
+    font-size: 2rem;
+  }
+
+  .item-description-container {
+    display: flex;
+    flex-flow: row nowrap;
     justify-content: space-between;
-    gap: 25px;
+    align-items: flex-end;
+    height: 70px;
+    padding: 2.5px 5px;
+    width: 100%;
 
-    .item-img-container {
-        display: flex;
-        flex-flow: column;
-        align-items: start;
-        justify-content: start;
+    .item-description {
+      max-width: 80%;
+      text-align: justify;
+      hyphens: auto;
     }
 
-    .item-name {
-        font-size: 14px;
+    .btn-item-cost {
+      width: 60px;
+      height: 25px;
+      color: white;
     }
 
-    .item-description-container {
-        display: flex;
-        flex-flow: column nowrap;
-        justify-content: space-between;
-        align-items: flex-end;
-        border: 1px solid gray;
-        padding: 3px;
-        height: 70px;
-        
-        .item-description {
-            text-align: justify;
-            hyphens: auto;
-        }
-
-        .btn-item-cost {
-            width: 60px;
-            height: 25px;
-            color: white;
-        }
-
-        .btn-item-cost.blue {
-            background: blue;
-        }
-
-        .btn-item-cost.red {
-            background: red;
-        }
+    .btn-item-cost.green {
+      background: green;
     }
 
+    .btn-item-cost.red {
+      background: red;
+    }
+  }
 }
 
 .item-img {
-    height: 40px;
-    width: auto;
+  font-size: 2.5rem;
 }
-

@@ -1,17 +1,30 @@
 import { forwardRef, useContext, useEffect, useState } from "react";
 import Pointer from "./Pointer";
+import getRandomColor from "../../scripts/get-random-color";
 import GameContext from "../../context/GameContext";
 import getStackInterval from "../../scripts/get-stack-interval";
+import { ITEMS } from "../../scripts/constants";
 
 const Stack = forwardRef((_, ref) => {
-  const [totalPointerCounter, setTotalPointerCounter] = useState(0);
-  const [currentPointerCounter, setCurrentPointerCounter] = useState(0);
+  const {
+    setCurrentPointerCounter,
+    totalPointerCounter,
+    setTotalPointerCounter,
+    isSlowDown,
+  } = useContext(GameContext);
   const [pointers, setPointers] = useState([]);
-  const { setUserScore, setUserLives, userLivesCount, setUserLivesCount, gameStarted, setPointersCleared } =
-    useContext(GameContext);
+  const {
+    setUserScore,
+    setUserLives,
+    userLivesCount,
+    setUserLivesCount,
+    gameStarted,
+    isPractice,
+    setPointersCleared,
+  } = useContext(GameContext);
 
   useEffect(() => {
-    if (!gameStarted || userLivesCount === 0) return;
+    if ((!gameStarted && !isPractice) || userLivesCount === 0) return;
 
     // Reset pointers cleared state when the game starts
     setPointersCleared(false);
@@ -25,13 +38,14 @@ const Stack = forwardRef((_, ref) => {
         <Pointer
           key={totalPointerCounter}
           id={totalPointerCounter}
+          color={getRandomColor()}
           onAnimationIteration={() => {
             const thisPointer = pointerContainer.querySelector(
               `.pointer-${totalPointerCounter}`
             );
 
             if (thisPointer.classList.contains("animation-four")) {
-              setUserScore((score) => score + 1);
+              setUserScore((prevScore) => prevScore + ITEMS.doubleScore);
             } else {
               setUserLives((lives) => {
                 let newLives = [...lives];
@@ -46,7 +60,7 @@ const Stack = forwardRef((_, ref) => {
               const newCounter = prevCounter - 1;
               // Check if all pointers are removed
               if (newCounter === 0) {
-                setTimeout(() => setPointersCleared(true), 0);   //queue this as to not console log error
+                setTimeout(() => setPointersCleared(true), 0); //queue this as to not console log error
               }
               return newCounter;
             });
@@ -69,7 +83,16 @@ const Stack = forwardRef((_, ref) => {
         container.appendChild(firstChild);
       }
     };
-    const random = getStackInterval(3250, 75);
+
+    const base = isSlowDown
+      ? ITEMS.slowDownStackBase
+      : ITEMS.defaultSpeedStackBase;
+
+    const mod = isSlowDown
+      ? ITEMS.slowDownStackMod
+      : ITEMS.defaultSpeedStackMod;
+      
+    const random = getStackInterval(base, mod);
     const intervalId = setInterval(updateStack, random);
 
     return () => clearInterval(intervalId);
@@ -80,8 +103,12 @@ const Stack = forwardRef((_, ref) => {
     setUserScore,
     userLivesCount,
     gameStarted,
+    isPractice,
+    isSlowDown,
     setPointersCleared,
+    setCurrentPointerCounter,
     totalPointerCounter,
+    setTotalPointerCounter,
   ]);
 
   return (
@@ -89,13 +116,7 @@ const Stack = forwardRef((_, ref) => {
       <section className="pointer-container">{pointers}</section>
       <section className="stack" id="stack">
         {Array.from({ length: 8 }, (_, index) => (
-          <div key={index} className={`memory memory${index + 1}`}>
-            {(
-              totalPointerCounter *
-              parseFloat(`0.2${index}`) *
-              parseFloat(`0.1${currentPointerCounter}`)
-            ).toFixed(5)}
-          </div>
+          <div key={index} className={`memory memory${index + 1}`}></div>
         ))}
       </section>
     </div>

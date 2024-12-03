@@ -8,16 +8,19 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "axios": "^1.7.7",
     "react": "^18.3.1",
+    "react-color": "^2.19.3",
     "react-dom": "^18.3.1",
     "react-grid-layout": "^1.5.0",
     "react-router-dom": "^6.26.2",
     "react-select": "^5.8.1",
     "react-tabs": "^6.0.2",
+    "react-use-websocket": "^4.11.1",
     "selenium-webdriver": "^4.25.0",
     "socket.io-client": "^4.8.1",
     "use-image": "^1.1.1",
@@ -29,6 +32,7 @@
     "@types/react": "^18.3.10",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react-swc": "^3.7.1",
+    "@vitest/coverage-istanbul": "^2.1.5",
     "eslint": "^9.11.1",
     "eslint-plugin-react": "^7.37.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
@@ -37,6 +41,6 @@
     "sass": "^1.79.5",
     "sass-loader": "^16.0.2",
     "vite": "^5.4.8",
-    "vitest": "^2.1.2"
+    "vitest": "^2.1.5"
   }
 }

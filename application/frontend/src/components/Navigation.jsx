@@ -3,9 +3,20 @@ import Button from "./Button"; // Custom Button component
 import Search from "./Search"; // Import Search component
 import Login from "./Login"; // Import Login component
 import useUserAuthStore from "../stores/userAuthStore";
+import useUserMetaDataStore from "../stores/userMetaDataStore";
 
 export default function Navigation() {
   const { isLoggedIn, logout } = useUserAuthStore();
+  const { logoutUserMetaData } = useUserMetaDataStore();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      await logoutUserMetaData();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <nav className="navigation">
@@ -13,21 +24,15 @@ export default function Navigation() {
         <h1>Dangling Pointers</h1>
       </Link>
       <ul className="ul-default">
-        <li className="li-home">
-        </li>
+        <li className="li-home"></li>
         <li>
           <Link to="/leaderboards">
             <Button text="Leaderboards" />
           </Link>
         </li>
         <li>
-          <Link to="/lobby">
-            <Button text="Lobby" />
-          </Link>
-        </li>
-        <li>
-          <Link to="/practice">
-            <Button text="Practice" />
+          <Link to="/play">
+            <Button text="Play" />
           </Link>
         </li>
         <li>
@@ -46,7 +51,7 @@ export default function Navigation() {
               </Link>
             </li>
             <li>
-              <Button text="Logout" onClick={logout} />
+              <Button text="Logout" onClick={handleLogout} />
             </li>
           </>
         ) : (

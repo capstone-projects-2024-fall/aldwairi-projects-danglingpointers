@@ -36,8 +36,8 @@
         "model": "api.Item",
         "pk":"3",
         "fields": {
-            "name" : "No Drops",
-            "description" : "Drops don't subtract from your lives.",
+            "name" : "Super Collector",
+            "description" : "Double the width of the garbage collector.",
             "icon": "🔮",
             "cost" : "15"
         }

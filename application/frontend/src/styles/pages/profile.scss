@@ -1,37 +1,63 @@
-@use "../constants/constants";
-
 .main-profile {
-  margin: 0 constants.$default-margin;
-}
-
-.profile-info {
   display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  font-family: Arial, sans-serif;
 }
 
-.username,
-.profile-picture,
-.recent-games,
-.additional-info {
-  margin-bottom: constants.$default-margin;
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
 }
 
-.profile-picture img {
-  width: 150px;
-  height: 150px;
+.profile-pic-container {
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
   border-radius: 50%;
+  border: 2px solid #ccc;
 }
 
-.recent-games ul {
-  list-style-type: none;
+.profile-pic {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.online-status {
+  width: 10px;
+  height: 10px;
+  background-color: green; /* Use red for offline */
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.recent-games,
+.comment-wall {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.comment-wall ul {
+  list-style: none;
   padding: 0;
 }
 
-.recent-games li {
+.comment-wall li {
   margin-bottom: 10px;
+  background-color: #f0f8ff; /* Light blue background for comments */
+  padding: 10px;
+  border-radius: 5px;
 }
 
-.mr-def {
-  margin-left: constants.$default-margin;
+.comment-wall li strong {
+  color: #1a73e8; /* Darker blue for the username */
+}
+
+.comment-wall li {
+  color: #1a73e8; /* Blue color for the comment text */
 }

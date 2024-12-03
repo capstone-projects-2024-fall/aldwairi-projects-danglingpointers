@@ -1,7 +1,7 @@
 // Profile.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { HOST_PATH } from "../../scripts/constants";
+import { GAME_URL, HOST_PATH } from "../../scripts/constants";
 import GameEntry from "../entries/GameEntry";
 
 const Profile = ({ userId, username, dateJoined, lastLogin }) => {
@@ -38,24 +38,71 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
     fetchProfileData();
   }, [userId, username, dateJoined, lastLogin]);
 
+  useEffect(() => {
+    const ws = new WebSocket(GAME_URL);
+
+    ws.onopen = () => {
+      console.log("WebSocket connection to GameConsumer established");
+    };
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "connected")
+        console.log(message);
+      
+      if (message.type === "game") {
+        console.log("Received game message:", message);
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection to GameConsumer closed");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, []);
+
   if (loading) return <p className="mr-def">Loading profile...</p>;
   if (userNotFound)
     return <p className="mr-def">User not found in the database.</p>;
 
+  // Mock data for the comment wall
+  const comments = [
+    { id: 1, user: "MockUser1", text: "Great profile!" },
+    { id: 2, user: "MockUser2", text: "Looking forward to playing again!" },
+    { id: 3, user: "MockUser3", text: "Nice scores on your last games!" },
+  ];
+
   return (
     <main className="main-profile">
       <div className="profile-info">
-        <div>
-          <h1>User Profile</h1>
-          <div>
-            <strong>Username:</strong> {profileData.username}
+        <h1>User Profile</h1>
+        <div className="profile-header">
+          <div className="profile-pic-container">
+            <img
+              src="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/1966.png" //placeholder to fix later
+              alt="Profile"
+              className="profile-pic"
+            />
           </div>
-          <div>
-            <strong>Date Joined:</strong> {profileData.dateJoined}
-          </div>
-          <div>
-            <strong>Last Login:</strong>{" "}
-            {profileData.lastLogin || profileData.dateJoined}
+          <div className="profile-details">
+            <div>
+              <strong>Username:</strong> {profileData.username}
+              <span className="online-status" />
+            </div>
+            <div>
+              <strong>Date Joined:</strong> {profileData.dateJoined}
+            </div>
+            <div>
+              <strong>Last Login:</strong>{" "}
+              {profileData.lastLogin || profileData.dateJoined}
+            </div>
           </div>
         </div>
         <div className="recent-games">
@@ -65,6 +112,7 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
               {recentGames.map((game, index) => (
                 <GameEntry
                   key={index}
+                  gameLength={game.game_length}
                   users={[
                     { id: game.player_one, name: "" },
                     { id: game.player_two, name: "" },
@@ -77,6 +125,16 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
           ) : (
             <p>No recent games available.</p>
           )}
+        </div>
+        <div className="comment-wall">
+          <h2>Comment Wall</h2>
+          <ul>
+            {comments.map((comment) => (
+              <li key={comment.id}>
+                <strong>{comment.user}:</strong> {comment.text}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </main>

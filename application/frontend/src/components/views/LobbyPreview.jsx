@@ -1,45 +1,26 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { HOST_PATH } from "../../scripts/constants";
 import GameEntry from "../entries/GameEntry";
-import { Link } from "react-router-dom";
 
-export default function LobbyPreview() {
-  const [lobbyGames, setLobbyGames] = useState([]);
-
-  useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        const lobbyResponse = await axios.get(`${HOST_PATH}/games?lobby=true`);
-        setLobbyGames(lobbyResponse.data.slice(0, 10));
-      } catch (error) {
-        console.error("Error fetching games data:", error);
-      }
-    };
-
-    fetchGames();
-  }, []);
+export default function LobbyPreview({ lobbyGames, setIsCreateGame }) {
 
   return (
     <article className="default-scrollbar">
       <div className="preview">
         <div className="link-flex">
-          <Link to="/lobby">
-            <h2>Lobby</h2>
-          </Link>
-          <span></span>
+          <h2>Lobby</h2>
+          <button className="btn-create-game-modal" onClick={() => setIsCreateGame(true)}>Create Versus Game</button>
         </div>
         {lobbyGames.length > 0 ? (
           <ul>
             {lobbyGames.map((game, index) => (
               <GameEntry
                 key={index}
+                gameLength={game.game_length}
                 users={[
                   { id: game.player_one, name: "" },
                   { id: game.player_two, name: "" },
                 ]}
                 status={game.status}
-                gameLink={game.link}
+                gameId={game.id}
                 mode={game.mode}
                 scores={[game.player_one_score, game.player_two_score]}
               />
@@ -48,9 +29,6 @@ export default function LobbyPreview() {
         ) : (
           <p>No pending games available.</p>
         )}
-        <Link to="/lobby">
-          <p>View more pending games</p>
-        </Link>
       </div>
     </article>
   );
