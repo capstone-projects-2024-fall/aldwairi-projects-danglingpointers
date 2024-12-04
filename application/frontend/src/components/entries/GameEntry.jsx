@@ -47,7 +47,10 @@ export default function GameEntry({
   }, [status]);
 
   function handleClick() {
-    navigate(`game/game_id_${gameId}`);
+    if (status === "Pending")
+      console.log("Pending")
+    else  
+      navigate(`/game/game_id_${gameId}`);
   }
 
   return (

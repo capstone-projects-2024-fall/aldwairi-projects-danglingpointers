@@ -157,6 +157,7 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
                   <GameEntry
                     key={index}
                     gameLength={game.game_length}
+                    gameId={game.id}
                     users={[
                       { id: game.player_one, name: "" },
                       { id: game.player_two, name: "" },

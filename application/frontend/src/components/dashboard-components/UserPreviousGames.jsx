@@ -29,13 +29,14 @@ export default function UserPreviousGames({ isInboxOpen }) {
   return (
     <div className="user-previous-games default-scrollbar mb-def" style={isInboxOpen ? {display: "none"}: null}>
       <div>
-        <h1 className="watchtitle">Game Replays</h1>
+        <h1 className="watchtitle">Game History</h1>
       </div>
       <article className="watchlist-container">
         {watchPreviews.map((game, index) => (
           <GameEntry
             key={index}
             gameLength={game.game_length}
+            gameId={game.id}
             users={[
               { id: game.player_one, name: "" },
               { id: game.player_two, name: "" },
