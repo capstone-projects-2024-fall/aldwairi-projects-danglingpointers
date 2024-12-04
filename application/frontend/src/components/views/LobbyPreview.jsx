@@ -6,23 +6,22 @@ import CreateGameEntry from "../entries/CreateGameEntry";
 export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
   const [isCreateGame, setIsCreateGame] = useState(false);
   const { isLoggedIn, username } = useUserAuthStore();
-  
   const handleCreateGame = async () => {
-    if (isCreateGame) return;
-
-    setIsCreateGame(true);
+    const games = lobbyGames;
     const newGame = {
       player_one: username,
       player_two: null,
       status: "Create",
       mode: "Versus",
     };
+    if (isCreateGame) {
+      games.pop();
+    } else {
+      games.unshift(newGame);
+      setLobbyGames(games);
+    }
 
-    const games = lobbyGames;
-    games.unshift(newGame);
-    
-    setLobbyGames(games);
-    console.log(games);
+    setIsCreateGame(!isCreateGame);
   };
 
   // const handlePostGame = async () => {
@@ -40,8 +39,9 @@ export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
             <button
               className="btn-create-game-modal"
               onClick={handleCreateGame}
+              style={{ background: isCreateGame ? "yellow" : "white" }}
             >
-              Create Versus Game
+              {isCreateGame ? "Cancel" : "Create Versus Game"}
             </button>
           )}
         </div>
