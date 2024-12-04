@@ -57,42 +57,6 @@ export default function Game() {
   const [currGameId, setCurrGameId] = useState(null);
 
   useEffect(() => {
-    const ws = new WebSocket(GAME_URL);
-    wsRef.current = ws;
-
-    return () => {
-      ws.close();
-    };
-  }, []);
-
-  useEffect(() => {
-    const ws = new WebSocket(CHAT_URL);
-
-    ws.onopen = () => {
-      console.log("WebSocket connection to ChatConsumer established");
-    };
-
-    ws.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      if (message.type === "chat") {
-        console.log("Received chat message:", message);
-      }
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket connection to ChatConsumer closed");
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    return () => {
-      ws.close();
-    };
-  }, []);
-
-  useEffect(() => {
     const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
     if (store) {
       const points = store.state.points;

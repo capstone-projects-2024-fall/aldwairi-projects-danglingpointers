@@ -16,6 +16,7 @@ import { GAME_URL, HOST_PATH, USER_URL } from "./scripts/constants";
 import ErrorPage from "./components/pages/ErrorPage";
 import useUserMetaDataStore from "./stores/userMetaDataStore";
 import GameReview from "./components/pages/GameReview";
+import GameVersus from "./components/pages/GameVersus";
 
 export default function App() {
   const { isLoggedIn, userId } = useUserAuthStore();
@@ -127,6 +128,15 @@ export default function App() {
           element={
             <GameProvider>
               <Game />
+            </GameProvider>
+          }
+        />
+
+        <Route
+          path="versus"
+          element={
+            <GameProvider>
+              <GameVersus />
             </GameProvider>
           }
         />
