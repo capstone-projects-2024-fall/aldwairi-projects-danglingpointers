@@ -103,7 +103,6 @@ export default function Watch() {
   return (
     <main className="main-default main-watch">
       <div className="watch-games default-scrollbar">
-        <h2>Watch</h2>
         <div className="watch-grid">
           <WatchSolo watchSoloGames={watchSoloGames} />
           <WatchVersus watchVersusGames={watchVersusGames} />

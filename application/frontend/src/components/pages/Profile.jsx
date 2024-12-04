@@ -17,7 +17,10 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
     const fetchProfileData = async () => {
       try {
         const gamesResponse = await axios.get(
-          `${HOST_PATH}/games?recent_games=true&user_id=${userId}`
+          `${HOST_PATH}/games?recent_games=true&user_id=${profileUserId}`
+        );
+        const commentsResponse = await axios.get(
+          `${HOST_PATH}/comments?user_id=${profileUserId}`
         );
         const commentsResponse = await axios.get(`${HOST_PATH}/comments?user_id=${userId}`);
 
@@ -30,6 +33,7 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
         setRecentGames(
           gamesResponse.data.filter((game) => game.status === "Complete") || []
         );
+
         setComments(commentsResponse.data || []);
         setLoading(false);
       } catch (error) {
@@ -40,7 +44,7 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
     };
 
     fetchProfileData();
-  }, [userId, username, dateJoined, lastLogin]);
+  }, [profileUserId, username, dateJoined, lastLogin]);
 
   const handleFriendRequest = async () => {
     try {
@@ -67,18 +71,67 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
     }
   };
 
+  useEffect(() => {
+    const ws = new WebSocket(GAME_URL);
+
+    ws.onopen = () => {
+      console.log("WebSocket connection to GameConsumer established");
+    };
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "connected") console.log(message);
+
+      if (message.type === "game") {
+        console.log("Received game message:", message);
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection to GameConsumer closed");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, []);
+
+  const handleFriendRequest = async () => {
+    try {
+      console.log(userId);
+      console.log(profileUserId);
+      await axios.post(`${HOST_PATH}/friendships/`, {
+        profile_User_Id: profileUserId,
+        user_Id: userId,
+      });
+      alert("Friend request sent!");
+    } catch (error) {
+      console.error("Error sending friend request:", error);
+    }
+  };
+
   const handleAddComment = async () => {
     try {
       await axios.post(`${HOST_PATH}/comments/`, {
         user_id: userId, // The current user's ID
         text: newComment,
       });
-      setComments((prevComments) => [...prevComments, { user: username, text: newComment }]);
+
+      setComments((prevComments) => [
+        ...prevComments,
+        { user: username, text: newComment },
+      ]);
+
       setNewComment("");
     } catch (error) {
       console.error("Error posting comment:", error);
     }
   };
+
 
   if (loading) return <p>Loading profile...</p>;
   if (userNotFound) return <p>User not found in the database.</p>;
@@ -134,6 +187,7 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
               <p>No recent games available.</p>
             )}
           </div>
+          <button onClick={handleFriendRequest}>Request</button>
         </div>
         <div className="right-column">
           <div className="comment-wall">

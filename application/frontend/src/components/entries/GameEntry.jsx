@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import convertSecondsToMinutes from "../../scripts/convert-seconds-to-minutes";
 
