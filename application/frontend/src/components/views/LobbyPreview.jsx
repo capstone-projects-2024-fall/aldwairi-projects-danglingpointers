@@ -9,10 +9,7 @@ export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
   const handleCreateGame = async () => {
     const games = lobbyGames;
     const newGame = {
-      player_one: username,
-      player_two: null,
       status: "Create",
-      mode: "Versus",
     };
     if (isCreateGame) {
       games.pop();
@@ -23,12 +20,6 @@ export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
 
     setIsCreateGame(!isCreateGame);
   };
-
-  // const handlePostGame = async () => {
-  //   if (!isCreateGame) return;
-
-  //   setIsCreateGame(false);
-  // };
 
   return (
     <article className="default-scrollbar">
@@ -49,7 +40,7 @@ export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
           <ul>
             {lobbyGames.map((game, index) =>
               game.status === "Create" ? (
-                <CreateGameEntry key={index} status={game.status} />
+                <CreateGameEntry key={index} />
               ) : (
                 <GameEntry
                   key={index}
