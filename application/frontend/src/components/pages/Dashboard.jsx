@@ -127,7 +127,7 @@ export default function Dashboard() {
             <ul>
               {friends.map((friend) => (
                 <li key={friend.id}>
-                  <Link to={`/profile/${friend.id}`}>{friend.username}</Link>
+                  <Link to={`/profile/${friend.username}`}>{friend.username}</Link>
                 </li>
               ))}
             </ul>
