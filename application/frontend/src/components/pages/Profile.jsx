@@ -56,16 +56,31 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
   };
   
 
-  const handleRemoveFriend = async (friendshipId) => {
+  const handleRemoveFriend = async () => {
     try {
-      await axios.patch(`${HOST_PATH}/friendships/${friendshipId}/`, {
+      // Fetch the friendship ID dynamically
+      const response = await axios.get(`${HOST_PATH}/friendship/`, {
+        params: { user_id: userId, friend_id: profileUserId, status: "Accepted" },
+      });
+  
+      if (response.data.length === 0) {
+        alert("No active friendship found!");
+        return;
+      }
+  
+      const friendshipId = response.data[0].id;
+  
+      // Remove the friendship
+      await axios.patch(`${HOST_PATH}/friendship/${friendshipId}/`, {
         status: "Inactive",
       });
+  
       alert("Friend removed successfully!");
     } catch (error) {
-      console.error("Error removing friend:", error);
+      console.error("Error removing friend:", error.response?.data || error);
     }
   };
+  
 
   const handleAddComment = async () => {
     try {
