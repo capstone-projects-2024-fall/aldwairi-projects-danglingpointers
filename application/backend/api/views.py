@@ -489,8 +489,8 @@ class ManageFriendship(generics.GenericAPIView):
 class ManageFriendship(generics.GenericAPIView):
 
     def post(self, request):
-        user_id = request.data.get("user_Id")
-        friend_id = request.data.get("profile_User_Id")
+        user_id = request.data.get("user_id")
+        friend_id = request.data.get("friend_id")
 
         user = User.objects.get(id=user_id)
         friend = User.objects.get(id=friend_id)
