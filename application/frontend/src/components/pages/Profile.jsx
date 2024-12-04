@@ -22,7 +22,6 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
         const commentsResponse = await axios.get(
           `${HOST_PATH}/comments?user_id=${profileUserId}`
         );
-        const commentsResponse = await axios.get(`${HOST_PATH}/comments?user_id=${userId}`);
 
         setProfileData({
           username: username,
@@ -58,7 +57,6 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
       console.error("Error sending friend request:", error.response?.data || error);
     }
   };
-  
 
   const handleRemoveFriend = async (friendshipId) => {
     try {
@@ -99,20 +97,6 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
       ws.close();
     };
   }, []);
-
-  const handleFriendRequest = async () => {
-    try {
-      console.log(userId);
-      console.log(profileUserId);
-      await axios.post(`${HOST_PATH}/friendships/`, {
-        profile_User_Id: profileUserId,
-        user_Id: userId,
-      });
-      alert("Friend request sent!");
-    } catch (error) {
-      console.error("Error sending friend request:", error);
-    }
-  };
 
   const handleAddComment = async () => {
     try {
