@@ -6,6 +6,7 @@ import CreateGameEntry from "../entries/CreateGameEntry";
 export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
   const [isCreateGame, setIsCreateGame] = useState(false);
   const { isLoggedIn, username } = useUserAuthStore();
+  
   const handleCreateGame = async () => {
     if (isCreateGame) return;
 
@@ -16,8 +17,10 @@ export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
       status: "Create",
       mode: "Versus",
     };
+
     const games = lobbyGames;
     games.unshift(newGame);
+    
     setLobbyGames(games);
     console.log(games);
   };
@@ -46,7 +49,7 @@ export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
           <ul>
             {lobbyGames.map((game, index) =>
               game.status === "Create" ? (
-                <CreateGameEntry key={index} />
+                <CreateGameEntry key={index} status={game.status} />
               ) : (
                 <GameEntry
                   key={index}
