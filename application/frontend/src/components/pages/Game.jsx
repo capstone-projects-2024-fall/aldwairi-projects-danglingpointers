@@ -1,10 +1,6 @@
-import GarbageCollector from "../game-components/GarbageCollector";
-import RecyclingBin from "../game-components/RecyclingBin";
-import Stack from "../game-components/Stack";
-import convertSecondsToMinutes from "../../scripts/convert-seconds-to-minutes";
-import { useEffect, useRef, useContext, useState } from "react";
-import GameContext from "../../context/GameContext";
 import axios from "axios";
+import { useContext, useEffect, useRef, useState } from "react";
+import GameContext from "../../context/GameContext";
 import {
   CHAT_URL,
   DEFAULT_SETTINGS,
@@ -12,8 +8,12 @@ import {
   HOST_PATH,
   ITEM_URL,
 } from "../../scripts/constants";
+import convertSecondsToMinutes from "../../scripts/convert-seconds-to-minutes";
 import setTemporaryItemState from "../../scripts/set-temp-item-state";
 import useUserAuthStore from "../../stores/userAuthStore";
+import GarbageCollector from "../game-components/GarbageCollector";
+import RecyclingBin from "../game-components/RecyclingBin";
+import Stack from "../game-components/Stack";
 
 export default function Game() {
   const {
@@ -338,8 +338,21 @@ export default function Game() {
         setSelectedIndex(newIndex);
       } else if ((gameStarted || isPractice) && event.key === useItem.current) {
         event.preventDefault();
-        decrementItemInStorage(selectedIndex);
-
+    
+        const currentQuantity = isPractice
+          ? practiceItems[selectedIndex]?.quantity || 0
+          : userItems[selectedIndex]?.quantity || 0;
+    
+        if (!isPractice && currentQuantity <= 0) {
+          alert("You do not have enough of this item to use it.");
+          return;
+        }
+    
+        // Only decrement item quantity if not in practice mode
+        if (!isPractice) {
+          decrementItemInStorage(selectedIndex);
+        }
+    
         switch (selectedIndex) {
           case 0:
             setTemporaryItemState(setItemInUse, setIsSlowDown);
@@ -422,15 +435,15 @@ export default function Game() {
           <div className="selected-item">
             {isPractice ? (
               <span className="item-icon">
-                {practiceItems[selectedIndex].icon}
+                {practiceItems[selectedIndex]?.icon}
               </span>
             ) : userId && Object.keys(userItems).length > 0 ? (
               <>
                 <span className="item-icon">
-                  {userItems[selectedIndex].item.icon}
+                  {userItems[selectedIndex]?.item.icon}
                 </span>
                 <span style={{ marginBottom: "7.5px" }}>
-                  {userItems[selectedIndex].quantity} remaining
+                  {userItems[selectedIndex]?.quantity} remaining
                 </span>
               </>
             ) : userId ? (

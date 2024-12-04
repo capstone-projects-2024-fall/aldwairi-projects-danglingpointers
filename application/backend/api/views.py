@@ -10,6 +10,12 @@ import os
 from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
+from rest_framework.views import APIView
+
+
+
 
 
 class CreateOrLoginView(generics.GenericAPIView):
@@ -303,10 +309,167 @@ class SecurityQuestionViewSet(viewsets.ModelViewSet):
     serializer_class = SecurityQuestionSerializer
 
 
+from rest_framework.permissions import AllowAny
+
+class FriendsListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        """
+        Return a list of friends for the logged-in user.
+        If authentication is removed, user ID must be provided in the query.
+        """
+        user_id = request.query_params.get('user_id')
+
+        if not user_id:
+            return Response(
+                {"error": "User ID is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Fetch all accepted friendships involving the user
+        friendships = Friendship.objects.filter(
+            (models.Q(user__id=user_id) | models.Q(friend__id=user_id)) & models.Q(status="Accepted")
+        )
+
+        # Serialize the data
+        friends_data = []
+        for friendship in friendships:
+            friend = friendship.friend if str(friendship.user.id) == user_id else friendship.user
+            friends_data.append({
+                "id": friend.id,
+                "username": friend.username,
+            })
+
+        return Response(friends_data, status=status.HTTP_200_OK)
+
 class FriendshipViewSet(viewsets.ModelViewSet):
     queryset = Friendship.objects.all()
     serializer_class = FriendshipSerializer
 
+    def get_queryset(self):
+        user_id = self.request.query_params.get("user_id")
+        status_filter = self.request.query_params.get("status")
+
+        # Start with the base queryset
+        queryset = self.queryset
+
+        if user_id:
+            if status_filter == "Pending":
+                # Pending requests where the user is the recipient
+                queryset = queryset.filter(friend__id=user_id, status="Pending")
+            elif status_filter == "Accepted":
+                # Accepted friendships where the user is either the sender or the recipient
+                queryset = queryset.filter(
+                    models.Q(user__id=user_id) | models.Q(friend__id=user_id),
+                    status="Accepted"
+                )
+            else:
+                # General filter for user as the sender
+                queryset = queryset.filter(user__id=user_id)
+
+        return queryset
+    
+    def update(self, request, *args, **kwargs):
+        """Handle PATCH requests for updating the friendship status."""
+        try:
+            friendship = self.get_object()  # Get the specific friendship instance
+            new_status = request.data.get("status")  # Avoid shadowing 'status' module
+
+            if new_status not in ["Pending", "Accepted", "Inactive"]:
+                return Response(
+                    {"error": "Invalid status."}, status=status.HTTP_400_BAD_REQUEST
+                )
+
+            friendship.status = new_status
+            friendship.save()
+            return Response(
+                self.serializer_class(friendship).data, status=status.HTTP_200_OK
+            )
+        except Friendship.DoesNotExist:
+            return Response(
+                {"error": "Friendship not found."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
+
+
+
+class ManageFriendship(generics.GenericAPIView):
+    serializer_class = FriendshipSerializer
+
+    def get(self, request, *args, **kwargs):
+        user_id = request.query_params.get("user_id")
+        if not user_id:
+            return Response(
+                {"error": "User ID is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Filter friendships where the logged-in user is the recipient
+        friendships = Friendship.objects.filter(friend__id=user_id, status="Pending")
+        serializer = self.serializer_class(friendships, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, *args, **kwargs):
+        friendship_id = kwargs.get("pk")
+        status = request.data.get("status")
+
+        if status not in ["Pending", "Accepted", "Inactive"]:
+            return Response({"error": "Invalid status."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            friendship = Friendship.objects.get(id=friendship_id)
+            friendship.status = status
+            friendship.save()
+            return Response(FriendshipSerializer(friendship).data, status=status.HTTP_200_OK)
+        except Friendship.DoesNotExist:
+            return Response({"error": "Friendship not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+    def post(self, request):
+        user_id = request.data.get("user_id")  # Consistent field names
+        friend_id = request.data.get("friend_id")
+
+        if not user_id or not friend_id:
+            return Response(
+                {"error": "Both user_id and friend_id are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            user = User.objects.get(id=user_id)
+            friend = User.objects.get(id=friend_id)
+        except User.DoesNotExist:
+            return Response(
+                {"error": "Invalid user_id or friend_id provided."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # Check for duplicate friendship or create a new one
+        friendship, created = Friendship.objects.get_or_create(
+            user=user, friend=friend, defaults={"status": "Pending"}
+        )
+        if not created:
+            return Response(
+                {"error": "Friendship already exists."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Response(
+            FriendshipSerializer(friendship).data, status=status.HTTP_201_CREATED
+        )
+
+        
+    def update(self, request):
+        # Handle friendship status update
+        instance = self.get_object()
+        status = request.data.get('status')
+        if status not in ['Pending', 'Accepted', 'Inactive']:
+            return Response({"error": "Invalid status."}, status=status.HTTP_400_BAD_REQUEST)
+        instance.status = status
+        instance.save()
+        return Response(FriendshipSerializer(instance).data)
+    
     def get_queryset(self):
         queryset = self.queryset
 
@@ -392,6 +555,15 @@ class CommentViewSet(viewsets.ModelViewSet):
                 queryset = queryset.filter(comment_type='Game')
 
         return queryset.order_by('-date')
+    
+    def create(self, request, *args, **kwargs):
+        # Handle comment creation
+        user = request.user
+        text = request.data.get('text')
+        if not text:
+            return Response({"error": "Comment text is required."}, status=status.HTTP_400_BAD_REQUEST)
+        comment = Comment.objects.create(user=user, text=text)
+        return Response(CommentSerializer(comment).data, status=status.HTTP_201_CREATED)
 
 
 class ChatMessageViewSet(viewsets.ModelViewSet):
