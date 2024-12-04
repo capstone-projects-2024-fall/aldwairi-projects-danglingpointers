@@ -1,12 +1,21 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
+import { HOST_PATH } from "../../scripts/constants";
 
 export default function CreateGameEntry() {
-  const [friends, setFriends] = useState(["friend1", "friend2"]);
+  const [friends, setFriends] = useState([]);
   const [isFriendsChecked, setIsFriendsChecked] = useState(false);
-  const handleCreatePendingGame = async () => {};
+
+  const handleCreatePendingGame = async () => {
+    try {
+      const response = await axios.post(`${HOST_PATH}/games/?game_id`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    console.log("get friends list here!");
+    setFriends(["friend1", "friend2"]);
   }, []);
 
   return (
