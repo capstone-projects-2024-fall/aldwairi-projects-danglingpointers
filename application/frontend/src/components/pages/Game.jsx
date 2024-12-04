@@ -338,18 +338,21 @@ export default function Game() {
         setSelectedIndex(newIndex);
       } else if ((gameStarted || isPractice) && event.key === useItem.current) {
         event.preventDefault();
-
+    
         const currentQuantity = isPractice
           ? practiceItems[selectedIndex]?.quantity || 0
           : userItems[selectedIndex]?.quantity || 0;
-
-        if (currentQuantity <= 0) {
+    
+        if (!isPractice && currentQuantity <= 0) {
           alert("You do not have enough of this item to use it.");
           return;
         }
-
-        decrementItemInStorage(selectedIndex);
-
+    
+        // Only decrement item quantity if not in practice mode
+        if (!isPractice) {
+          decrementItemInStorage(selectedIndex);
+        }
+    
         switch (selectedIndex) {
           case 0:
             setTemporaryItemState(setItemInUse, setIsSlowDown);
