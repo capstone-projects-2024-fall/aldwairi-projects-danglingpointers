@@ -69,6 +69,24 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
     }
   };
 
+  const handleAddComment = async () => {
+    try {
+      await axios.post(`${HOST_PATH}/comments/`, {
+        user_id: userId, // The current user's ID
+        text: newComment,
+      });
+
+      setComments((prevComments) => [
+        ...prevComments,
+        { user: username, text: newComment },
+      ]);
+
+      setNewComment("");
+    } catch (error) {
+      console.error("Error posting comment:", error);
+    }
+  };
+
   useEffect(() => {
     const ws = new WebSocket(GAME_URL);
 
@@ -97,25 +115,6 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
       ws.close();
     };
   }, []);
-
-  const handleAddComment = async () => {
-    try {
-      await axios.post(`${HOST_PATH}/comments/`, {
-        user_id: userId, // The current user's ID
-        text: newComment,
-      });
-
-      setComments((prevComments) => [
-        ...prevComments,
-        { user: username, text: newComment },
-      ]);
-
-      setNewComment("");
-    } catch (error) {
-      console.error("Error posting comment:", error);
-    }
-  };
-
 
   if (loading) return <p>Loading profile...</p>;
   if (userNotFound) return <p>User not found in the database.</p>;

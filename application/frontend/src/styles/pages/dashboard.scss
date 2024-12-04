@@ -47,15 +47,22 @@
     grid-column-start: 1;
     grid-column-end: 4;
     grid-row-start: 1;
-    grid-row-end: 4; /* Reduce height to fit more sections */
+    grid-row-end: -1;
     padding: 0 constants.$default-margin;
     overflow-y: auto;
   }
 
+  .inbox-flex {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   .friend-sections {
-    grid-column-start: 1;
-    grid-column-end: 4;
-    grid-row-start: 4;
+    grid-column-start: 5;
+    grid-column-end: 11;
+    grid-row-start: 6;
     grid-row-end: -1;
     display: flex;
     flex-direction: column;
@@ -166,7 +173,7 @@
     grid-column-start: 5;
     grid-column-end: 11;
     grid-row-start: 1;
-    grid-row-end: -1;
+    grid-row-end: 5;
     display: flex;
     flex-flow: column nowrap;
     overflow-y: hidden;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { SliderPicker } from "react-color";
 
-export default function Settings() {
+export default function Settings({ isInboxOpen }) {
   const [keys, setKeys] = useState([]);
   const [values, setValues] = useState([]);
   const [editSettings, setEditSettings] = useState(false);
@@ -53,7 +53,7 @@ export default function Settings() {
   }, [values]);
 
   return (
-    <div className="settings">
+    <div className="settings" style={isInboxOpen ? {display: "none"}: null}>
       <div className="settings-header flex-row-container">
         <h1>Settings</h1>
         <button

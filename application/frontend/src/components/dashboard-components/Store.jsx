@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { HOST_PATH } from "../../scripts/constants";
 import ItemEntry from "../entries/ItemEntry";
 
-export default function Store() {
+export default function Store({ isInboxOpen }) {
   const [itemsList, setItemsList] = useState();
   const [userMoney, setUserMoney] = useState(null);
   const [userItems, setUserItems] = useState({});
@@ -39,7 +39,7 @@ export default function Store() {
   };
 
   return (
-    <div className="store-container default-scrollbar mb-def">
+    <div className="store-container default-scrollbar mb-def" style={isInboxOpen ? {display: "none"}: null}>
       <div className="store-details">
         <h1 className="store-title">Store</h1>
         <h1 className="user-money">{userMoney ? `$${userMoney}` : "$0"}</h1>
