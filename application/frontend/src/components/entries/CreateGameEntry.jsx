@@ -6,7 +6,6 @@ import useUserAuthStore from "../../stores/userAuthStore";
 export default function CreateGameEntry({ status, lobbyGames, setLobbyGames }) {
   const [friends, setFriends] = useState([]);
   const [selectedFriend, setSelectedFriend] = useState();
-  const [selectedFriend, setSelectedFriend] = useState();
   const [isFriendsChecked, setIsFriendsChecked] = useState(false);
   const { userId } = useUserAuthStore();
 
