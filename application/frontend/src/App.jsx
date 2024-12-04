@@ -135,9 +135,13 @@ export default function App() {
         <Route
           path="versus"
           element={
-            <GameProvider>
-              <GameVersus />
-            </GameProvider>
+            isLoggedIn ? (
+              <GameProvider>
+                <GameVersus />
+              </GameProvider>
+            ) : (
+              <ErrorPage />
+            )
           }
         />
 
@@ -163,9 +167,7 @@ export default function App() {
               <Route
                 path={`game/game_id_${value.id}`}
                 key={key}
-                element={
-                  <GameReview />
-                }
+                element={<GameReview />}
               />
             ))
           : null}
