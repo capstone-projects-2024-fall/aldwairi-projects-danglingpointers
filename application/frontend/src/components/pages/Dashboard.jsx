@@ -11,7 +11,7 @@ import axios from "axios";
 import { CHAT_URL, GAME_URL, HOST_PATH } from "../../scripts/constants";
 
 export default function Dashboard() {
-  const { userId } = useUserAuthStore();
+  const { userId, username } = useUserAuthStore();
   const { isMetaDataSet, setUserMetaData } = useUserMetaDataStore();
   const [userNeedsMetaData, setUserNeedsMetaData] = useState(true);
   const [pendingRequests, setPendingRequests] = useState([]);
@@ -21,13 +21,14 @@ export default function Dashboard() {
   const fetchPendingRequests = async () => {
     try {
       const response = await axios.get(`${HOST_PATH}/friendship/`, {
-        params: { user_id: userId, status: "Pending" },
+        params: { user_id: userId, status: "Pending", exclude_requestor: true },
       });
       setPendingRequests(response.data);
     } catch (error) {
       console.error("Error fetching pending requests:", error);
     }
   };
+  
   
 
   // Fetch friends list
@@ -101,41 +102,25 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="main-dashboard default-scrollbar">
+    <main className="main-dashboard">
+      {/* "My Profile" button */}
+      <div className="profile-button-container">
+        <Link to={`/profile/${username}`}>
+          <button className="profile-button">My Profile</button>
+        </Link>
+      </div>
+
+      {/* Dashboard sections */}
       <Inbox />
       <div className="friend-sections">
         <div className="section pending-requests">
           <h3>Pending Friend Requests</h3>
-          {pendingRequests.length > 0 ? (
-            <ul>
-              {pendingRequests.map((request) => (
-                <li key={request.id}>
-                  <Link to={`/profile/${request.user_username}`}>{request.user_username}</Link>
-                  <button onClick={() => handleAcceptRequest(request.id)}>
-                    Accept
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No pending friend requests</p>
-          )}
+          {/* Content for pending requests */}
         </div>
         <div className="section friends-list">
           <h3>Friends</h3>
-          {friends.length > 0 ? (
-            <ul>
-              {friends.map((friend) => (
-                <li key={friend.id}>
-                  <Link to={`/profile/${friend.username}`}>{friend.username}</Link>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>You have no friends yet</p>
-          )}
+          {/* Content for friends list */}
         </div>
-
       </div>
       <Store />
       <Settings />

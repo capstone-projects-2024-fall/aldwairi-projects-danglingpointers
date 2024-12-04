@@ -350,25 +350,28 @@ class FriendshipViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user_id = self.request.query_params.get("user_id")
         status_filter = self.request.query_params.get("status")
+        exclude_requestor = self.request.query_params.get("exclude_requestor") == "true"
 
-        # Start with the base queryset
         queryset = self.queryset
 
         if user_id:
             if status_filter == "Pending":
-                # Pending requests where the user is the recipient
+                # Fetch pending requests where the user is the recipient
                 queryset = queryset.filter(friend__id=user_id, status="Pending")
+                if exclude_requestor:
+                    queryset = queryset.exclude(requestor_id=user_id)
             elif status_filter == "Accepted":
-                # Accepted friendships where the user is either the sender or the recipient
+                # Fetch accepted friendships involving the user
                 queryset = queryset.filter(
                     models.Q(user__id=user_id) | models.Q(friend__id=user_id),
                     status="Accepted"
                 )
             else:
-                # General filter for user as the sender
+                # General filter for friendships where the user is the requestor
                 queryset = queryset.filter(user__id=user_id)
 
         return queryset
+
     
     def update(self, request, *args, **kwargs):
         """Handle PATCH requests for updating the friendship status."""
@@ -425,9 +428,9 @@ class ManageFriendship(generics.GenericAPIView):
             return Response(FriendshipSerializer(friendship).data, status=status.HTTP_200_OK)
         except Friendship.DoesNotExist:
             return Response({"error": "Friendship not found."}, status=status.HTTP_404_NOT_FOUND)
-    
+        
     def post(self, request):
-        user_id = request.data.get("user_id")  # Consistent field names
+        user_id = request.data.get("user_id")
         friend_id = request.data.get("friend_id")
 
         if not user_id or not friend_id:
@@ -445,19 +448,40 @@ class ManageFriendship(generics.GenericAPIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # Check for duplicate friendship or create a new one
-        friendship, created = Friendship.objects.get_or_create(
-            user=user, friend=friend, defaults={"status": "Pending"}
-        )
-        if not created:
-            return Response(
-                {"error": "Friendship already exists."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        # Check for existing friendships
+        friendship = Friendship.objects.filter(
+            models.Q(user=user, friend=friend) | models.Q(user=friend, friend=user)
+        ).first()
 
+        if friendship:
+            if friendship.status == "Inactive":
+                # Reactivate friendship and set to Pending
+                friendship.status = "Pending"
+                friendship.requestor = user  # Update the requestor to the current user
+                friendship.save()
+                return Response(
+                    {"success": "Friendship reactivated and set to Pending."},
+                    status=status.HTTP_200_OK,
+                )
+            elif friendship.status == "Pending":
+                return Response(
+                    {"error": "Friendship is already pending approval."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            else:
+                return Response(
+                    {"error": "Friendship already exists."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        # Create a new friendship if none exists
+        Friendship.objects.create(user=user, friend=friend, requestor=user, status="Pending")
         return Response(
-            FriendshipSerializer(friendship).data, status=status.HTTP_201_CREATED
+            {"success": "Friendship request sent."},
+            status=status.HTTP_201_CREATED,
         )
+
+
 
         
     def update(self, request):

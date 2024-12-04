@@ -45,15 +45,23 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
   const handleFriendRequest = async () => {
     try {
       console.log("Sending friend request from:", userId, "to:", profileUserId);
-      await axios.post(`${HOST_PATH}/friendships/`, {
-        user_id: userId, 
-        friend_id: profileUserId, 
+      const response = await axios.post(`${HOST_PATH}/friendships/`, {
+        user_id: userId,
+        friend_id: profileUserId,
       });
-      alert("Friend request sent!");
+      alert(response.data.success || "Friend request sent!");
     } catch (error) {
-      console.error("Error sending friend request:", error.response?.data || error);
+      const errorMessage = error.response?.data?.error || "An error occurred.";
+      if (errorMessage === "Friendship already exists.") {
+        alert("This friendship is already active.");
+      } else if (errorMessage === "Friendship is already pending approval.") {
+        alert("This friendship request is already pending.");
+      } else {
+        console.error("Error sending friend request:", errorMessage);
+      }
     }
   };
+  
   
 
   const handleRemoveFriend = async () => {

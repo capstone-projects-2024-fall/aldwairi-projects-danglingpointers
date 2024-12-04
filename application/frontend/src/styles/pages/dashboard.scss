@@ -133,8 +133,8 @@
   .settings {
     grid-column-start: 14;
     grid-column-end: 20;
-    grid-row-start: 1;
-    grid-row-end: 5;
+    grid-row-start: 2;
+    grid-row-end: 6;
     overflow-y: scroll;
     padding-right: 10px;
 
@@ -146,7 +146,7 @@
   .store-container {
     grid-column-start: 14;
     grid-column-end: 20;
-    grid-row-start: 5;
+    grid-row-start: 6;
     grid-row-end: -1;
     display: flex;
     flex-flow: column nowrap;
@@ -185,6 +185,32 @@
     section {
       width: 93%;
     }
+  }
+
+  .profile-button-container {
+    grid-column-start: 16;
+    grid-column-end: 21; 
+    grid-row-start: 1;
+    grid-row-end: 2; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+  }
+  
+  .profile-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .profile-button:hover {
+    background-color: #0056b3;
   }
 }
 

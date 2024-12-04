@@ -18,15 +18,23 @@ class Item(models.Model):
 
 class Friendship(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='target_user')
+        User, on_delete=models.CASCADE, related_name='target_user'
+    )
     friend = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='target_user_friend')
-    status = models.CharField(max_length=10, choices=(
-        ('Pending', 'Pending'),
-        ('Accepted', 'Accepted'),
-        ('Rejected', 'Rejected'),
-        ('Inactive', 'Inactive'),
-    ))
+        User, on_delete=models.CASCADE, related_name='target_user_friend'
+    )
+    requestor = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='friendship_requests'
+    )  # This tracks who initiated the request
+    status = models.CharField(
+        max_length=10,
+        choices=(
+            ('Pending', 'Pending'),
+            ('Accepted', 'Accepted'),
+            ('Rejected', 'Rejected'),
+            ('Inactive', 'Inactive'),
+        )
+    )
     date_request = models.DateTimeField(auto_now_add=True)
     date_response = models.DateTimeField(null=True, blank=True)
 
@@ -37,6 +45,8 @@ class Friendship(models.Model):
     @property
     def user_username(self):
         return self.user.username
+
+
 
 
 class UserMetaData(models.Model):
