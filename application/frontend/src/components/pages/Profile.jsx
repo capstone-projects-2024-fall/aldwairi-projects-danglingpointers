@@ -11,6 +11,7 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
   const [userNotFound, setUserNotFound] = useState(false);
+  const [isOnline, setIsOnline] = useState(false);
   const { userId } = useUserAuthStore();
 
   useEffect(() => {
@@ -22,6 +23,11 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
         const commentsResponse = await axios.get(
           `${HOST_PATH}/comments?user_id=${profileUserId}`
         );
+        const userMetaDataResponse = await axios.get(
+          `${HOST_PATH}/user-metadata?user_id=${profileUserId}`
+        )
+
+        setIsOnline(userMetaDataResponse.data[0].is_online)
 
         setProfileData({
           username: username,
@@ -126,7 +132,7 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
           <h1>User Profile</h1>
           <div className="profile-details">
             <p>
-              <strong>Username:</strong> {profileData.username}
+              <strong>Username:</strong> {profileData.username}<span>{isOnline ? "🟢" : "🔴"}</span>
             </p>
             <p>
               <strong>Date Joined:</strong> {profileData.dateJoined}

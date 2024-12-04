@@ -34,7 +34,11 @@ export default function CreateGameEntry({
       oldGames.shift();
 
       if (!isFriendsChecked) setLobbyGames([newGame, ...oldGames]);
-      else setLobbyGames(oldGames);
+      else {
+        // Ping user dashboard
+        setLobbyGames(oldGames);
+      }
+
       setIsCreateGame(false);
     }
   };
