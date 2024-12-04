@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import convertSecondsToMinutes from "../../scripts/convert-seconds-to-minutes";
 
@@ -49,7 +49,7 @@ export default function GameEntry({
             {status === "Pending" ? "Join Game" : status}
           </button>
         </div>
-        <div>Length: {gameLength ? convertSecondsToMinutes(gameLength) : 0}</div>
+        <div>{gameLength ? `Length: ${convertSecondsToMinutes(gameLength)}` : ""}</div>
       </div>
     </section>
   );

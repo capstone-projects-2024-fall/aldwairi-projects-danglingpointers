@@ -9,7 +9,7 @@ router.register(r'user-metadata', UserMetaDataViewSet)
 router.register(r'games', GameViewSet)
 router.register(r'items', ItemViewSet)
 router.register(r'security-questions', SecurityQuestionViewSet)
-router.register(r'friendships', FriendshipViewSet)
+router.register(r'friendship', FriendshipViewSet)
 router.register(r'comments', CommentViewSet)
 router.register(r'chat-messages', ChatMessageViewSet)
 
@@ -20,6 +20,7 @@ urlpatterns = [
     path('create-user-metadata/', CreateUserMetaDataView.as_view()),
     path('update-user-metadata/', UpdateUserMetaDataView.as_view()),
     path('user-count/', UserCountView.as_view()),
+    path('friendships/', ManageFriendship.as_view()),
     path('token/', TokenObtainPairView.as_view()),
     path('token/refresh/', TokenRefreshView.as_view()),
     path('token/verify/', TokenVerifyView.as_view()),

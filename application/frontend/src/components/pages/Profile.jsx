@@ -3,18 +3,25 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { GAME_URL, HOST_PATH } from "../../scripts/constants";
 import GameEntry from "../entries/GameEntry";
+import useUserAuthStore from "../../stores/userAuthStore";
 
-const Profile = ({ userId, username, dateJoined, lastLogin }) => {
+const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
   const [profileData, setProfileData] = useState(null);
   const [recentGames, setRecentGames] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
   const [userNotFound, setUserNotFound] = useState(false);
+  const { userId } = useUserAuthStore();
 
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
         const gamesResponse = await axios.get(
-          `${HOST_PATH}/games?recent_games=true&user_id=${userId}`
+          `${HOST_PATH}/games?recent_games=true&user_id=${profileUserId}`
+        );
+        const commentsResponse = await axios.get(
+          `${HOST_PATH}/comments?user_id=${profileUserId}`
         );
 
         setProfileData({
@@ -27,6 +34,7 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
           gamesResponse.data.filter((game) => game.status === "Complete") || []
         );
 
+        setComments(commentsResponse.data || []);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -36,7 +44,7 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
     };
 
     fetchProfileData();
-  }, [userId, username, dateJoined, lastLogin]);
+  }, [profileUserId, username, dateJoined, lastLogin]);
 
   useEffect(() => {
     const ws = new WebSocket(GAME_URL);
@@ -47,9 +55,8 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
 
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      if (message.type === "connected")
-        console.log(message);
-      
+      if (message.type === "connected") console.log(message);
+
       if (message.type === "game") {
         console.log("Received game message:", message);
       }
@@ -68,42 +75,69 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
     };
   }, []);
 
+  const handleFriendRequest = async () => {
+    try {
+      console.log(userId);
+      console.log(profileUserId);
+      await axios.post(`${HOST_PATH}/friendships/`, {
+        profile_User_Id: profileUserId,
+        user_Id: userId,
+      });
+      alert("Friend request sent!");
+    } catch (error) {
+      console.error("Error sending friend request:", error);
+    }
+  };
+
+  // const handleRemoveFriend = async (friendshipId) => {
+  //   try {
+  //     await axios.patch(`${HOST_PATH}/friendships/${friendshipId}/`, {
+  //       status: "Inactive",
+  //     });
+  //     alert("Friend removed successfully!");
+  //   } catch (error) {
+  //     console.error("Error removing friend:", error);
+  //   }
+  // };
+
+  const handleAddComment = async () => {
+    try {
+      await axios.post(`${HOST_PATH}/comments/`, {
+        user_id: userId, // The current user's ID
+        text: newComment,
+      });
+      setComments((prevComments) => [
+        ...prevComments,
+        { user: username, text: newComment },
+      ]);
+      setNewComment("");
+    } catch (error) {
+      console.error("Error posting comment:", error);
+    }
+  };
+
   if (loading) return <p className="mr-def">Loading profile...</p>;
   if (userNotFound)
     return <p className="mr-def">User not found in the database.</p>;
 
-  // Mock data for the comment wall
-  const comments = [
-    { id: 1, user: "MockUser1", text: "Great profile!" },
-    { id: 2, user: "MockUser2", text: "Looking forward to playing again!" },
-    { id: 3, user: "MockUser3", text: "Nice scores on your last games!" },
-  ];
-
   return (
     <main className="main-profile">
-      <div className="profile-info">
-        <h1>User Profile</h1>
-        <div className="profile-header">
-          <div className="profile-pic-container">
-            <img
-              src="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/1966.png" //placeholder to fix later
-              alt="Profile"
-              className="profile-pic"
-            />
-          </div>
+      <div className="profile-columns">
+        <div className="left-column">
+          <h1>User Profile</h1>
           <div className="profile-details">
-            <div>
+            <p>
               <strong>Username:</strong> {profileData.username}
-              <span className="online-status" />
-            </div>
-            <div>
+            </p>
+            <p>
               <strong>Date Joined:</strong> {profileData.dateJoined}
-            </div>
-            <div>
+            </p>
+            <p>
               <strong>Last Login:</strong>{" "}
               {profileData.lastLogin || profileData.dateJoined}
-            </div>
+            </p>
           </div>
+          <button onClick={handleFriendRequest}>Request</button>
         </div>
         <div className="recent-games">
           <h2>Recent Games</h2>
@@ -126,15 +160,22 @@ const Profile = ({ userId, username, dateJoined, lastLogin }) => {
             <p>No recent games available.</p>
           )}
         </div>
-        <div className="comment-wall">
-          <h2>Comment Wall</h2>
-          <ul>
-            {comments.map((comment) => (
-              <li key={comment.id}>
-                <strong>{comment.user}:</strong> {comment.text}
-              </li>
-            ))}
-          </ul>
+        <div className="right-column">
+          <div className="comment-wall">
+            <h2>Comment Wall</h2>
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+            />
+            <button onClick={handleAddComment}>Post Comment</button>
+            <ul>
+              {comments.map((comment, index) => (
+                <li key={index}>
+                  <strong>{comment.user}:</strong> {comment.text}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </main>

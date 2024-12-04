@@ -83,7 +83,7 @@ class CreateUserMetaDataView(generics.GenericAPIView):
             security_question = SecurityQuestion.objects.get(
                 id=security_question_id)
             security_answer = request.data.get('security_answer')
-            
+
             items = {
                 0: 1,
                 1: 1,
@@ -186,7 +186,6 @@ class UserMetaDataViewSet(viewsets.ModelViewSet):
         user_id = self.request.query_params.get('user_id')
         if user_id:
             queryset = queryset.filter(user__id=user_id)
-
         solo_games_played = self.request.query_params.get('solo_games_played')
         if solo_games_played:
             queryset = queryset.filter(
@@ -248,10 +247,22 @@ class GameViewSet(viewsets.ModelViewSet):
         queryset = self.queryset
         query_params = self.request.query_params
 
+        game_id = self.request.query_params.get('game_id')
+        if game_id:
+            queryset = queryset.filter(id=game_id)
+
         if 'watch' in query_params:
+            queryset = queryset.filter(status='Active')
             if 'preview' in query_params:
-                return queryset.filter(status='Active').order_by('-date')[:10]
-            return queryset.filter(status='Active').order_by('-date')
+                return queryset.order_by('-date')[:10]
+            if 'solo' in query_params:
+                return queryset.filter(mode='Solo').order_by('-date')
+            if 'versus' in query_params:
+                return queryset.filter(mode='Versus').order_by('-date')
+            if 'high_score' in query_params:
+                return queryset.annotate(max_score=Greatest(
+                    F('player_one_score'), F('player_two_score'))).order_by('-max_score')
+            return queryset.order_by('-date')
 
         if 'lobby' in query_params:
             if 'preview' in query_params:
@@ -293,7 +304,7 @@ class SecurityQuestionViewSet(viewsets.ModelViewSet):
 
 
 class FriendshipViewSet(viewsets.ModelViewSet):
-    queryset = Friendship.objects
+    queryset = Friendship.objects.all()
     serializer_class = FriendshipSerializer
 
     def get_queryset(self):
@@ -310,6 +321,55 @@ class FriendshipViewSet(viewsets.ModelViewSet):
                 queryset = queryset.filter(friend__username=username)
 
         return queryset
+
+
+class ManageFriendship(generics.GenericAPIView):
+
+    def post(self, request):
+        user_id = request.data.get("user_Id")
+        friend_id = request.data.get("profile_User_Id")
+
+        user = User.objects.get(id=user_id)
+        friend = User.objects.get(id=friend_id)
+
+        if not friend_id:
+            return Response(
+                {"error": "Friend ID is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            friend = User.objects.get(id=friend_id)
+        except User.DoesNotExist:
+            return Response(
+                {"error": "Friend does not exist."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # Check for duplicate friendship or create a new one
+        friendship, created = Friendship.objects.get_or_create(
+            user=user, friend=friend, defaults={"status": "Pending"}
+        )
+        if not created:
+            return Response(
+                {"error": "Friendship already exists."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Response(
+            FriendshipSerializer(
+                friendship).data, status=status.HTTP_201_CREATED
+        )
+
+    def update(self, request):
+        # Handle friendship status update
+        instance = self.get_object()
+        status = request.data.get('status')
+        if status not in ['Pending', 'Accepted', 'Inactive']:
+            return Response({"error": "Invalid status."}, status=status.HTTP_400_BAD_REQUEST)
+        instance.status = status
+        instance.save()
+        return Response(FriendshipSerializer(instance).data)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
