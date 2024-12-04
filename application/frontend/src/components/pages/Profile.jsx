@@ -110,9 +110,10 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
 
       // Update local comments state
       setComments((prevComments) => [
+        { username: username, comment: newComment, date: response.data.date },
         ...prevComments,
-        { user: username, text: newComment, date: response.data.date },
       ]);
+      
       setNewComment(""); // Clear input field
     } catch (error) {
       console.error("Error posting comment:", error);
