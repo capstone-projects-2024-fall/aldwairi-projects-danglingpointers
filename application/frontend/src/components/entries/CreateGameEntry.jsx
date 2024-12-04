@@ -3,7 +3,12 @@ import { useEffect, useState } from "react";
 import { HOST_PATH } from "../../scripts/constants";
 import useUserAuthStore from "../../stores/userAuthStore";
 
-export default function CreateGameEntry({ status, lobbyGames, setLobbyGames, setIsCreateGame }) {
+export default function CreateGameEntry({
+  status,
+  lobbyGames,
+  setLobbyGames,
+  setIsCreateGame,
+}) {
   const [friends, setFriends] = useState([]);
   const [selectedFriend, setSelectedFriend] = useState();
   const [isFriendsChecked, setIsFriendsChecked] = useState(false);
@@ -35,7 +40,18 @@ export default function CreateGameEntry({ status, lobbyGames, setLobbyGames, set
   };
 
   useEffect(() => {
-    setFriends(["friend1", "friend2"]);
+    const fetchFriends = async () => {
+      try {
+        const friendsResponse = await axios.get(`${HOST_PATH}/friends/`, {
+          params: { user_id: userId },
+        });
+        setFriends(friendsResponse.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchFriends();
   }, []);
 
   return (
@@ -59,8 +75,8 @@ export default function CreateGameEntry({ status, lobbyGames, setLobbyGames, set
             }}
           >
             <option>-Select-</option>
-            {friends.map((friend, index) => (
-              <option key={index}>{friend}</option>
+            {Object.keys(friends).map((key, index) => (
+              <option key={index}>{friends[key].username}</option>
             ))}
           </select>
         ) : null}
