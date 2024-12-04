@@ -9,7 +9,6 @@ export default function Inbox({ isInboxOpen, setIsInboxOpen }) {
   const [threads, setThreads] = useState([]);
   const [openThreads, setOpenThreads] = useState([]);
   const [messageInputs, setMessageInputs] = useState({});
-  const [isInboxExpanded, setIsInboxExpanded] = useState(false);
   const [ws, setWs] = useState(null);
 
   useEffect(() => {
