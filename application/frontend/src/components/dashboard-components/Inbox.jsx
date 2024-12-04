@@ -23,27 +23,28 @@ export default function Inbox({ isInboxOpen, setIsInboxOpen }) {
       if (message.type === "chat") {
         console.log("Received chat message:", message);
         const {
-          user_id,
+          user_id: senderId,
           message: newMessage,
           username: senderUsername,
+          recipient_id: recipientId,
         } = message;
-
-        // Update threads with the new message
+    
         setThreads((prevThreads) => {
-          const updatedThreads = [...prevThreads];
-          const threadIndex = updatedThreads.findIndex(
-            (thread) => thread.friendId === user_id
-          );
-          if (threadIndex !== -1) {
-            updatedThreads[threadIndex].messages.push({
-              sender: senderUsername,
-              text: newMessage,
-            });
-          }
-          return updatedThreads;
+          const updatedThreads = prevThreads.map((thread, index) => {
+            if (
+              (thread.friendId === senderId && recipientId === userId) || 
+              (thread.friendId === recipientId && senderId === userId)
+            ) {
+              const newMessages = [...thread.messages, { sender: senderUsername, text: newMessage }];
+              return { ...thread, messages: newMessages }; // Update thread object
+            }
+            return thread; // No change for other threads
+          });
+    
+          return updatedThreads; // Force React to update the UI
         });
       }
-    };
+    };                    
 
     socket.onclose = () => {
       console.log("WebSocket connection closed");
@@ -86,31 +87,34 @@ export default function Inbox({ isInboxOpen, setIsInboxOpen }) {
 
   const fetchMessages = async (friendId, index) => {
     try {
-        const response = await axios.get(`http://localhost:8000/api/chat-messages/`, {
-            params: {
-                sender: userId,
-                recipient: friendId,
-            },
-        });
-
-        // Sort messages by date in ascending order
-        const sortedMessages = response.data.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-        // Update the thread with sorted messages
-        setThreads((prevThreads) => {
-            const updatedThreads = [...prevThreads];
-            updatedThreads[index].messages = sortedMessages.map((message) => ({
-                sender: message.sender === userId ? username : updatedThreads[index].friendName,
-                text: message.message,
-            }));
-            return updatedThreads;
-        });
+      const response = await axios.get("http://localhost:8000/api/chat-messages/", {
+        params: {
+          sender: userId,
+          recipient: friendId,
+        },
+      });
+  
+      const sortedMessages = response.data
+        .filter((message) => 
+          (message.sender === userId && message.recipient === friendId) ||
+          (message.sender === friendId && message.recipient === userId)
+        )
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+      setThreads((prevThreads) => {
+        const updatedThreads = [...prevThreads];
+        updatedThreads[index].messages = sortedMessages.map((message) => ({
+          sender: message.sender === userId ? username : updatedThreads[index].friendName,
+          text: message.message,
+        }));
+        return updatedThreads;
+      });
     } catch (error) {
-        console.error("Error fetching messages:", error);
+      console.error("Error fetching messages:", error);
     }
-};
+  };  
 
-const handleInboxClick = async (index) => {
+  const handleInboxClick = async (index) => {
     const friendId = threads[index].friendId;
 
     // If the thread is not already open, fetch its messages
@@ -123,8 +127,7 @@ const handleInboxClick = async (index) => {
             ? prevOpenThreads.filter((i) => i !== index)
             : [...prevOpenThreads, index]
     );
-};
-
+  };
 
   const handleInputChange = (index, value) => {
     setMessageInputs((prevInputs) => ({
@@ -182,7 +185,7 @@ const handleInboxClick = async (index) => {
             console.error("Error saving or sending message:", error);
         }
     }
-};
+  };
 
   return (
     <div
