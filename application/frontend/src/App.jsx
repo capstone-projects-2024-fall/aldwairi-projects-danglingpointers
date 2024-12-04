@@ -15,6 +15,7 @@ import axios from "axios";
 import { GAME_URL, HOST_PATH, USER_URL } from "./scripts/constants";
 import ErrorPage from "./components/pages/ErrorPage";
 import useUserMetaDataStore from "./stores/userMetaDataStore";
+import GameReview from "./components/pages/GameReview";
 
 export default function App() {
   const { isLoggedIn, userId } = useUserAuthStore();
@@ -153,9 +154,7 @@ export default function App() {
                 path={`game/game_id_${value.id}`}
                 key={key}
                 element={
-                  <GameProvider>
-                    <Game />
-                  </GameProvider>
+                  <GameReview />
                 }
               />
             ))

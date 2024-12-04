@@ -5,28 +5,21 @@ import CreateGameEntry from "../entries/CreateGameEntry";
 
 export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
   const [isCreateGame, setIsCreateGame] = useState(false);
-  const { isLoggedIn, username } = useUserAuthStore();
+  const { isLoggedIn } = useUserAuthStore();
   const handleCreateGame = async () => {
-    if (isCreateGame) return;
-
-    setIsCreateGame(true);
-    const newGame = {
-      player_one: username,
-      player_two: null,
-      status: "Create",
-      mode: "Versus",
-    };
     const games = lobbyGames;
-    games.unshift(newGame);
-    setLobbyGames(games);
-    console.log(games);
+    const newGame = {
+      status: "Create",
+    };
+    if (isCreateGame) {
+      games.shift();
+    } else {
+      games.unshift(newGame);
+      setLobbyGames(games);
+    }
+
+    setIsCreateGame(!isCreateGame);
   };
-
-  // const handlePostGame = async () => {
-  //   if (!isCreateGame) return;
-
-  //   setIsCreateGame(false);
-  // };
 
   return (
     <article className="default-scrollbar">
@@ -37,8 +30,9 @@ export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
             <button
               className="btn-create-game-modal"
               onClick={handleCreateGame}
+              style={{ background: isCreateGame ? "yellow" : "white" }}
             >
-              Create Versus Game
+              {isCreateGame ? "Cancel" : "Create Versus Game"}
             </button>
           )}
         </div>
@@ -46,7 +40,7 @@ export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
           <ul>
             {lobbyGames.map((game, index) =>
               game.status === "Create" ? (
-                <CreateGameEntry key={index} />
+                <CreateGameEntry key={index} status={game.status} setIsCreateGame={setIsCreateGame} lobbyGames={lobbyGames} setLobbyGames={setLobbyGames} />
               ) : (
                 <GameEntry
                   key={index}
