@@ -110,7 +110,7 @@ export default function Dashboard() {
             <ul>
               {pendingRequests.map((request) => (
                 <li key={request.id}>
-                  <span>{request.user_username}</span>
+                  <Link to={`/profile/${request.user_username}`}>{request.user_username}</Link>
                   <button onClick={() => handleAcceptRequest(request.id)}>
                     Accept
                   </button>
