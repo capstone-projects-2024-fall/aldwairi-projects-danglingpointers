@@ -84,13 +84,47 @@ export default function Inbox({ isInboxOpen, setIsInboxOpen }) {
     fetchFriends();
   }, [userId]);
 
-  const handleInboxClick = (index) => {
+  const fetchMessages = async (friendId, index) => {
+    try {
+        const response = await axios.get(`http://localhost:8000/api/chat-messages/`, {
+            params: {
+                sender: userId,
+                recipient: friendId,
+            },
+        });
+
+        // Sort messages by date in ascending order
+        const sortedMessages = response.data.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        // Update the thread with sorted messages
+        setThreads((prevThreads) => {
+            const updatedThreads = [...prevThreads];
+            updatedThreads[index].messages = sortedMessages.map((message) => ({
+                sender: message.sender === userId ? username : updatedThreads[index].friendName,
+                text: message.message,
+            }));
+            return updatedThreads;
+        });
+    } catch (error) {
+        console.error("Error fetching messages:", error);
+    }
+};
+
+const handleInboxClick = async (index) => {
+    const friendId = threads[index].friendId;
+
+    // If the thread is not already open, fetch its messages
+    if (!openThreads.includes(index)) {
+        await fetchMessages(friendId, index);
+    }
+
     setOpenThreads((prevOpenThreads) =>
-      prevOpenThreads.includes(index)
-        ? prevOpenThreads.filter((i) => i !== index)
-        : [...prevOpenThreads, index]
+        prevOpenThreads.includes(index)
+            ? prevOpenThreads.filter((i) => i !== index)
+            : [...prevOpenThreads, index]
     );
-  };
+};
+
 
   const handleInputChange = (index, value) => {
     setMessageInputs((prevInputs) => ({
@@ -99,35 +133,56 @@ export default function Inbox({ isInboxOpen, setIsInboxOpen }) {
     }));
   };
 
-  const handleSendMessage = (index) => {
+  const handleSendMessage = async (index) => {
     if (messageInputs[index]?.trim()) {
-      const message = messageInputs[index].trim();
-      const recipientId = threads[index].friendId;
+        const message = messageInputs[index].trim();
+        const recipientId = threads[index].friendId;
 
-      ws.send(
-        JSON.stringify({
-          type: "chat",
-          user_id: userId,
-          message,
-          username,
-        })
-      );
+        // Create the message object
+        const messagePayload = {
+            sender: userId,        // Your current user's ID
+            recipient: recipientId, // The recipient's ID
+            message: message,       // The message content
+        };
 
-      setThreads((prevThreads) => {
-        const newThreads = [...prevThreads];
-        newThreads[index].messages.push({
-          sender: username,
-          text: message,
-        });
-        return newThreads;
-      });
+        try {
+            // Save the message to the API
+            const response = await axios.post(
+                'http://localhost:8000/api/chat-messages/',
+                messagePayload
+            );
+            const savedMessage = response.data; // The saved message returned by the API
 
-      setMessageInputs((prevInputs) => ({
-        ...prevInputs,
-        [index]: "",
-      }));
+            // Send the message via WebSocket
+            ws.send(
+                JSON.stringify({
+                    type: 'chat',
+                    user_id: userId,
+                    message: savedMessage.message, // Use savedMessage to ensure consistency
+                    username,
+                })
+            );
+
+            // Update the local state with the saved message
+            setThreads((prevThreads) => {
+                const newThreads = [...prevThreads];
+                newThreads[index].messages.push({
+                    sender: username, // Your username
+                    text: savedMessage.message, // The message content
+                });
+                return newThreads;
+            });
+
+            // Clear the input field
+            setMessageInputs((prevInputs) => ({
+                ...prevInputs,
+                [index]: '',
+            }));
+        } catch (error) {
+            console.error("Error saving or sending message:", error);
+        }
     }
-  };
+};
 
   return (
     <div
