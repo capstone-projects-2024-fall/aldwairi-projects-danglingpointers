@@ -6,6 +6,7 @@ import useUserAuthStore from "../../stores/userAuthStore";
 export default function CreateGameEntry({ status, lobbyGames, setLobbyGames }) {
   const [friends, setFriends] = useState([]);
   const [selectedFriend, setSelectedFriend] = useState();
+  const [selectedFriend, setSelectedFriend] = useState();
   const [isFriendsChecked, setIsFriendsChecked] = useState(false);
   const { userId } = useUserAuthStore();
 
@@ -32,7 +33,8 @@ export default function CreateGameEntry({ status, lobbyGames, setLobbyGames }) {
 
   useEffect(() => {
     setFriends(["friend1", "friend2"]);
-  }, []);
+    setSelectedFriend(friends[0])
+  }, [friends]);
 
   return (
     <section className="base-entry create-game-entry">
