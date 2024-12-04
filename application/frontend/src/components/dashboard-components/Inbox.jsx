@@ -81,13 +81,46 @@ export default function Inbox() {
         fetchFriends();
     }, [userId]);
 
-    const handleInboxClick = (index) => {
+    const fetchMessages = async (friendId, index) => {
+        try {
+            const response = await axios.get(`http://localhost:8000/api/chat-messages/`, {
+                params: {
+                    sender: userId,
+                    recipient: friendId,
+                },
+            });
+    
+            // Sort messages by date in ascending order
+            const sortedMessages = response.data.sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+            // Update the thread with sorted messages
+            setThreads((prevThreads) => {
+                const updatedThreads = [...prevThreads];
+                updatedThreads[index].messages = sortedMessages.map((message) => ({
+                    sender: message.sender === userId ? username : updatedThreads[index].friendName,
+                    text: message.message,
+                }));
+                return updatedThreads;
+            });
+        } catch (error) {
+            console.error("Error fetching messages:", error);
+        }
+    };    
+    
+    const handleInboxClick = async (index) => {
+        const friendId = threads[index].friendId;
+    
+        // If the thread is not already open, fetch its messages
+        if (!openThreads.includes(index)) {
+            await fetchMessages(friendId, index);
+        }
+    
         setOpenThreads((prevOpenThreads) =>
             prevOpenThreads.includes(index)
                 ? prevOpenThreads.filter((i) => i !== index)
                 : [...prevOpenThreads, index]
         );
-    };
+    };    
 
     const handleInputChange = (index, value) => {
         setMessageInputs((prevInputs) => ({
