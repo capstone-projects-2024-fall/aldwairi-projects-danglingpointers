@@ -25,6 +25,19 @@ export default function Store() {
     fetchItems();
   }, []);
 
+  // Function to update user items after purchase
+  const updateUserItems = (itemId, newQuantity) => {
+    setUserItems((prevItems) => ({
+      ...prevItems,
+      [itemId]: newQuantity,
+    }));
+
+    // Update sessionStorage to persist the change
+    const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+    store.state.items[itemId] = newQuantity;
+    sessionStorage.setItem("user-metadata-state", JSON.stringify(store));
+  };
+
   return (
     <div className="store-container default-scrollbar mb-def">
       <div className="store-details">
@@ -44,6 +57,7 @@ export default function Store() {
                 userMoney={userMoney}
                 setUserMoney={setUserMoney}
                 itemQuantity={userItems[item.id] || 0} // Pass the quantity
+                updateUserItems={updateUserItems} // Pass the updater function
               />
             ))
           : null}

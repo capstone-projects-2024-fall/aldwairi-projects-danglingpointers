@@ -9,6 +9,7 @@ export default function ItemEntry({
   userMoney,
   setUserMoney,
   itemQuantity,
+  updateUserItems, // Receive the updater function
 }) {
   const [btnColor, setBtnColor] = useState("blue");
 
@@ -22,6 +23,7 @@ export default function ItemEntry({
       return;
     }
 
+    // Update sessionStorage and state
     const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
 
     let points = store.state.points;
@@ -29,34 +31,35 @@ export default function ItemEntry({
     store.state.points = points;
 
     const items = store.state.items;
-    items[itemId] = (items[itemId] || 0) + 1;
+    const newQuantity = (items[itemId] || 0) + 1;
+    items[itemId] = newQuantity;
     store.state.items = items;
 
     setUserMoney((prevMoney) => prevMoney - itemCost);
     sessionStorage.setItem("user-metadata-state", JSON.stringify(store));
+
+    // Update userItems state in the parent
+    updateUserItems(itemId, newQuantity);
 
     alert(`You successfully purchased ${itemName}!`);
   };
 
   return (
     <section className={`${itemName} base-entry item-entry`}>
+      <div className="item-quantity-badge">Current Amount: x{itemQuantity}</div>
       <div className="item-img-container">
         <span className="item-img">{itemIcon}</span>
         <h1 className="item-name">{itemName}</h1>
-        <h1 className="item-quantity">  Amount: {itemQuantity}</h1>
-
       </div>
       <div className="item-description-container">
         <p className="item-description">{itemDescription}</p>
-        <div className="item-info">
-          <button
-            id="btnItemCost"
-            onClick={handlePurchase}
-            className={`btn-item-cost ${btnColor}`}
-          >
-            ${itemCost}
-          </button>
-        </div>
+        <button
+          id="btnItemCost"
+          onClick={handlePurchase}
+          className={`btn-item-cost ${btnColor}`}
+        >
+          ${itemCost}
+        </button>
       </div>
     </section>
   );
