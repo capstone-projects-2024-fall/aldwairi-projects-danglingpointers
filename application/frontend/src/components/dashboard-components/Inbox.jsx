@@ -1,12 +1,13 @@
 import InboxComponent from './InboxComponent'
+import useUserAuthStore from '../../stores/userAuthStore';
 import { useState } from "react";
 
 export default function Inbox() {
-    var currUser = 'Alice'
+    var { username } = useUserAuthStore();
 
     var threads = [
-        [{sender: 'Alice', text: 'hey'}, {sender: 'Bobby', text: 'hi'}],
-        [{sender: 'Alice', text: 'hello'}, {sender: 'Carla', text: 'hey!'}]
+        [{sender: username, text: 'hey'}, {sender: 'Bobby', text: 'hi'}],
+        [{sender: username, text: 'hello'}, {sender: 'Carla', text: 'hey!'}]
     ];
 
     const [openThreads, setOpenThreads] = useState([]);
@@ -28,7 +29,7 @@ export default function Inbox() {
                         sender={thread[thread.length - 1].sender}
                         latestMsg={thread[thread.length - 1].text}
                         messages={thread}
-                        currentUser={currUser}
+                        currentUser={username}
                         isThreadVisible={openThreads.includes(index)}
                         onClick={() => handleInboxClick(index)}
                     />
