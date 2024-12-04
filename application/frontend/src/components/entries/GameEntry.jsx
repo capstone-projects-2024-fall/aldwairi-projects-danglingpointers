@@ -53,7 +53,7 @@ export default function GameEntry({
   return (
     <section className="base-entry game-entry">
       {currentUsers.map((user, i) => (
-        <p key={i}>{user.username}</p>
+        <p key={i}>Player {i+1}: {user.username}</p>
       ))}
       <div className="game-scores">
         {scores.map((score, index) => (

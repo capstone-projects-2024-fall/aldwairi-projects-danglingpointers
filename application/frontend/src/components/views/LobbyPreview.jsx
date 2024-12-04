@@ -12,7 +12,7 @@ export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
       status: "Create",
     };
     if (isCreateGame) {
-      games.pop();
+      games.shift();
     } else {
       games.unshift(newGame);
       setLobbyGames(games);
@@ -40,7 +40,7 @@ export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
           <ul>
             {lobbyGames.map((game, index) =>
               game.status === "Create" ? (
-                <CreateGameEntry key={index} status={game.status} lobbyGames={lobbyGames} setLobbyGames={setLobbyGames} />
+                <CreateGameEntry key={index} status={game.status} setIsCreateGame={setIsCreateGame} lobbyGames={lobbyGames} setLobbyGames={setLobbyGames} />
               ) : (
                 <GameEntry
                   key={index}

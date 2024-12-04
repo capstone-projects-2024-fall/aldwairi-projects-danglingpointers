@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { HOST_PATH } from "../../scripts/constants";
 import useUserAuthStore from "../../stores/userAuthStore";
 
-export default function CreateGameEntry({ status, lobbyGames, setLobbyGames }) {
+export default function CreateGameEntry({ status, lobbyGames, setLobbyGames, setIsCreateGame }) {
   const [friends, setFriends] = useState([]);
   const [selectedFriend, setSelectedFriend] = useState();
   const [isFriendsChecked, setIsFriendsChecked] = useState(false);
@@ -11,7 +11,7 @@ export default function CreateGameEntry({ status, lobbyGames, setLobbyGames }) {
 
   const handleCreatePendingGame = async () => {
     if (isFriendsChecked && !selectedFriend) return;
-    
+
     status = "Pending";
     const newGame = {
       player_one: userId,
@@ -25,8 +25,12 @@ export default function CreateGameEntry({ status, lobbyGames, setLobbyGames }) {
     } catch (error) {
       console.error(error);
     } finally {
-      setLobbyGames([...lobbyGames.slice(1)])
-      if (!isFriendsChecked) setLobbyGames([newGame, ...lobbyGames])
+      const oldGames = lobbyGames;
+      oldGames.shift();
+
+      if (!isFriendsChecked) setLobbyGames([newGame, ...oldGames]);
+      else setLobbyGames(oldGames);
+      setIsCreateGame(false);
     }
   };
 
@@ -49,7 +53,10 @@ export default function CreateGameEntry({ status, lobbyGames, setLobbyGames }) {
           <select
             className="select-friends"
             value={selectedFriend}
-            onChange={(e) => setSelectedFriend(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value === "-Select-") setSelectedFriend("");
+              else setSelectedFriend(e.target.value);
+            }}
           >
             <option>-Select-</option>
             {friends.map((friend, index) => (
@@ -60,10 +67,20 @@ export default function CreateGameEntry({ status, lobbyGames, setLobbyGames }) {
       </div>
       <button
         className="btn-status"
-        style={{ background: "purple" }}
+        style={{
+          background: "purple",
+          cursor:
+            (selectedFriend && isFriendsChecked) || !isFriendsChecked
+              ? "pointer"
+              : "not-allowed",
+        }}
         onClick={handleCreatePendingGame}
       >
-        {isFriendsChecked && selectedFriend ? `Play with ${selectedFriend}` : isFriendsChecked ? `Select a Friend` : "Play Random"}
+        {isFriendsChecked && selectedFriend
+          ? `Play with ${selectedFriend}`
+          : isFriendsChecked
+          ? `Select a Friend`
+          : "Play Random"}
       </button>
     </section>
   );
