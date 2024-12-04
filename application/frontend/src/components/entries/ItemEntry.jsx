@@ -28,7 +28,7 @@ export default function ItemEntry({
     store.state.points = points;
 
     const items = store.state.items;
-    items[itemId] = (items[itemId] || 0) + 1; 
+    items[itemId] = (items[itemId] || 0) + 1;
     store.state.items = items;
 
     setUserMoney((prevMoney) => prevMoney - itemCost);
@@ -49,7 +49,6 @@ export default function ItemEntry({
           id="btnItemCost"
           onClick={handlePurchase}
           className={`btn-item-cost ${btnColor}`}
-          disabled={userMoney < itemCost}
         >
           ${itemCost}
         </button>
