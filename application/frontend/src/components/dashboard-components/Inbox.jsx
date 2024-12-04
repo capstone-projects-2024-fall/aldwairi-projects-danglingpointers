@@ -96,35 +96,56 @@ export default function Inbox() {
         }));
     };
 
-    const handleSendMessage = (index) => {
+    const handleSendMessage = async (index) => {
         if (messageInputs[index]?.trim()) {
             const message = messageInputs[index].trim();
             const recipientId = threads[index].friendId;
-
-            ws.send(
-                JSON.stringify({
-                    type: 'chat',
-                    user_id: userId,
-                    message,
-                    username,
-                })
-            );
-
-            setThreads((prevThreads) => {
-                const newThreads = [...prevThreads];
-                newThreads[index].messages.push({
-                    sender: username,
-                    text: message,
+    
+            // Create the message object
+            const messagePayload = {
+                sender: userId,        // Your current user's ID
+                recipient: recipientId, // The recipient's ID
+                message: message,       // The message content
+            };
+    
+            try {
+                // Save the message to the API
+                const response = await axios.post(
+                    'http://localhost:8000/api/chat-messages/',
+                    messagePayload
+                );
+                const savedMessage = response.data; // The saved message returned by the API
+    
+                // Send the message via WebSocket
+                ws.send(
+                    JSON.stringify({
+                        type: 'chat',
+                        user_id: userId,
+                        message: savedMessage.message, // Use savedMessage to ensure consistency
+                        username,
+                    })
+                );
+    
+                // Update the local state with the saved message
+                setThreads((prevThreads) => {
+                    const newThreads = [...prevThreads];
+                    newThreads[index].messages.push({
+                        sender: username, // Your username
+                        text: savedMessage.message, // The message content
+                    });
+                    return newThreads;
                 });
-                return newThreads;
-            });
-
-            setMessageInputs((prevInputs) => ({
-                ...prevInputs,
-                [index]: '',
-            }));
+    
+                // Clear the input field
+                setMessageInputs((prevInputs) => ({
+                    ...prevInputs,
+                    [index]: '',
+                }));
+            } catch (error) {
+                console.error("Error saving or sending message:", error);
+            }
         }
-    };
+    };     
 
     return (
         <div key="inbox" className="inbox" style={{ background: "grey" }}>
