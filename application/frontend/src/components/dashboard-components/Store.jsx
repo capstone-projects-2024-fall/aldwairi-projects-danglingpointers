@@ -1,15 +1,17 @@
 import axios from "axios";
-import ItemEntry from "../entries/ItemEntry";
 import { useEffect, useState } from "react";
 import { HOST_PATH } from "../../scripts/constants";
+import ItemEntry from "../entries/ItemEntry";
 
 export default function Store() {
   const [itemsList, setItemsList] = useState();
   const [userMoney, setUserMoney] = useState(null);
+  const [userItems, setUserItems] = useState({});
 
   useEffect(() => {
     const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
     setUserMoney(store.state.points);
+    setUserItems(store.state.items || {});
 
     const fetchItems = async () => {
       try {
@@ -41,6 +43,7 @@ export default function Store() {
                 itemCost={item.cost}
                 userMoney={userMoney}
                 setUserMoney={setUserMoney}
+                itemQuantity={userItems[item.id] || 0} // Pass the quantity
               />
             ))
           : null}

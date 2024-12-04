@@ -8,6 +8,7 @@ export default function ItemEntry({
   itemIcon,
   userMoney,
   setUserMoney,
+  itemQuantity,
 }) {
   const [btnColor, setBtnColor] = useState("blue");
 
@@ -42,16 +43,20 @@ export default function ItemEntry({
       <div className="item-img-container">
         <span className="item-img">{itemIcon}</span>
         <h1 className="item-name">{itemName}</h1>
+        <h1 className="item-quantity">  Amount: {itemQuantity}</h1>
+
       </div>
       <div className="item-description-container">
         <p className="item-description">{itemDescription}</p>
-        <button
-          id="btnItemCost"
-          onClick={handlePurchase}
-          className={`btn-item-cost ${btnColor}`}
-        >
-          ${itemCost}
-        </button>
+        <div className="item-info">
+          <button
+            id="btnItemCost"
+            onClick={handlePurchase}
+            className={`btn-item-cost ${btnColor}`}
+          >
+            ${itemCost}
+          </button>
+        </div>
       </div>
     </section>
   );

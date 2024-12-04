@@ -55,8 +55,6 @@ export default function Game() {
   const useItem = useRef(null);
   const userPoints = useRef(null);
   const [currGameId, setCurrGameId] = useState(null);
-  const [notification, setNotification] = useState(null); 
-
 
   useEffect(() => {
     const ws = new WebSocket(GAME_URL);
@@ -345,10 +343,9 @@ export default function Game() {
           ? practiceItems[selectedIndex]?.quantity || 0
           : userItems[selectedIndex]?.quantity || 0;
 
-          if (currentQuantity <= 0) {
-            setNotification("You do not have enough of this item to use it.");
-            setTimeout(() => setNotification(null), 1000); // Auto-hide notification
-            return;
+        if (currentQuantity <= 0) {
+          alert("You do not have enough of this item to use it.");
+          return;
         }
 
         decrementItemInStorage(selectedIndex);
