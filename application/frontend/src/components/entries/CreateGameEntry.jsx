@@ -33,8 +33,7 @@ export default function CreateGameEntry({ status, lobbyGames, setLobbyGames }) {
 
   useEffect(() => {
     setFriends(["friend1", "friend2"]);
-    setSelectedFriend(friends[0])
-  }, [friends]);
+  }, []);
 
   return (
     <section className="base-entry create-game-entry">
