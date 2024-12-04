@@ -14,6 +14,7 @@ export default function Dashboard() {
   const { userId } = useUserAuthStore();
   const { isMetaDataSet, setUserMetaData } = useUserMetaDataStore();
   const [userNeedsMetaData, setUserNeedsMetaData] = useState(true);
+  const [isInboxOpen, setIsInboxOpen] = useState(false);
   const [pendingRequests, setPendingRequests] = useState([]);
   const [friends, setFriends] = useState([]); // State for friends
 
@@ -29,7 +30,6 @@ export default function Dashboard() {
     }
   };
   
-
   // Fetch friends list
   const fetchFriends = async () => {
     try {
@@ -43,11 +43,6 @@ export default function Dashboard() {
     }
   };
   
-  
-  
-  
-
-
   const handleAcceptRequest = async (friendshipId) => {
     try {
       console.log("Accepting request for friendshipId:", friendshipId);
@@ -62,8 +57,6 @@ export default function Dashboard() {
     }
   };
   
-  
-
   // Fetch user metadata on mount
   useEffect(() => {
     const fetchUserMetaData = async () => {
@@ -102,8 +95,8 @@ export default function Dashboard() {
 
   return (
     <main className="main-dashboard default-scrollbar">
-      <Inbox />
-      <div className="friend-sections">
+      <Inbox isInboxOpen={isInboxOpen} setIsInboxOpen={setIsInboxOpen}/>
+      <div className="friend-sections" style={isInboxOpen ? {display: "none"}: null}>
         <div className="section pending-requests">
           <h3>Pending Friend Requests</h3>
           {pendingRequests.length > 0 ? (
@@ -121,7 +114,7 @@ export default function Dashboard() {
             <p>No pending friend requests</p>
           )}
         </div>
-        <div className="section friends-list">
+        <div className="section friends-list" style={isInboxOpen ? {display: "none"}: null}>
           <h3>Friends</h3>
           {friends.length > 0 ? (
             <ul>
@@ -137,9 +130,9 @@ export default function Dashboard() {
         </div>
 
       </div>
-      <Store />
-      <Settings />
-      <UserPreviousGames />
+      <Store isInboxOpen={isInboxOpen}/>
+      <Settings isInboxOpen={isInboxOpen}/>
+      <UserPreviousGames isInboxOpen={isInboxOpen}/>
     </main>
   );
 }
