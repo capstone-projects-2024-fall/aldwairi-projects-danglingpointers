@@ -1,16 +1,61 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import InboxComponent from './InboxComponent';
 import useUserAuthStore from '../../stores/userAuthStore';
-import { useState } from "react";
 import axios from "axios";
-import { HOST_PATH } from "../../scripts/constants";
+import { HOST_PATH, CHAT_URL } from "../../scripts/constants";
 
 export default function Inbox() {
-    const { username, userId } = useUserAuthStore(); // Ensure `userId` is available
+    const { username, userId } = useUserAuthStore();
     const [threads, setThreads] = useState([]);
     const [openThreads, setOpenThreads] = useState([]);
     const [messageInputs, setMessageInputs] = useState({});
     const [isInboxExpanded, setIsInboxExpanded] = useState(false);
+    const [ws, setWs] = useState(null);
+
+    useEffect(() => {
+        const socket = new WebSocket(CHAT_URL);
+    
+        socket.onopen = () => {
+            console.log("WebSocket connection established");
+        };
+    
+        socket.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            if (message.type === "chat") {
+                console.log("Received chat message:", message);
+                const { user_id, message: newMessage, username: senderUsername } = message;
+    
+                // Update threads with the new message
+                setThreads((prevThreads) => {
+                    const updatedThreads = [...prevThreads];
+                    const threadIndex = updatedThreads.findIndex(
+                        (thread) => thread.friendId === user_id
+                    );
+                    if (threadIndex !== -1) {
+                        updatedThreads[threadIndex].messages.push({
+                            sender: senderUsername,
+                            text: newMessage,
+                        });
+                    }
+                    return updatedThreads;
+                });
+            }
+        };
+    
+        socket.onclose = () => {
+            console.log("WebSocket connection closed");
+        };
+    
+        socket.onerror = (error) => {
+            console.error("WebSocket error:", error);
+        };
+    
+        setWs(socket);
+    
+        return () => {
+            socket.close();
+        };
+    }, [userId, username]);    
 
     // Fetch friends list and initialize threads
     const fetchFriends = async () => {
@@ -20,11 +65,10 @@ export default function Inbox() {
             });
             console.log("Friends API Response:", response.data);
 
-            // Transform friends data into threads
-            const initializedThreads = response.data.map(friend => ({
+            const initializedThreads = response.data.map((friend) => ({
                 friendId: friend.id,
                 friendName: friend.username,
-                messages: [], // Initialize with an empty thread
+                messages: [],
             }));
 
             setThreads(initializedThreads);
@@ -34,8 +78,8 @@ export default function Inbox() {
     };
 
     useEffect(() => {
-        fetchFriends(); // Fetch friends when the component mounts
-    }, []);
+        fetchFriends();
+    }, [userId]);
 
     const handleInboxClick = (index) => {
         setOpenThreads((prevOpenThreads) =>
@@ -54,14 +98,27 @@ export default function Inbox() {
 
     const handleSendMessage = (index) => {
         if (messageInputs[index]?.trim()) {
+            const message = messageInputs[index].trim();
+            const recipientId = threads[index].friendId;
+
+            ws.send(
+                JSON.stringify({
+                    type: 'chat',
+                    user_id: userId,
+                    message,
+                    username,
+                })
+            );
+
             setThreads((prevThreads) => {
                 const newThreads = [...prevThreads];
-                newThreads[index].messages = [
-                    ...newThreads[index].messages,
-                    { sender: username, text: messageInputs[index].trim() },
-                ];
+                newThreads[index].messages.push({
+                    sender: username,
+                    text: message,
+                });
                 return newThreads;
             });
+
             setMessageInputs((prevInputs) => ({
                 ...prevInputs,
                 [index]: '',
@@ -117,4 +174,5 @@ export default function Inbox() {
         </div>
     );
 }
+
 
