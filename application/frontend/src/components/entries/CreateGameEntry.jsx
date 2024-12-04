@@ -1,19 +1,32 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { HOST_PATH } from "../../scripts/constants";
+import useUserAuthStore from "../../stores/userAuthStore";
 
-export default function CreateGameEntry() {
+export default function CreateGameEntry({ status, lobbyGames, setLobbyGames }) {
   const [friends, setFriends] = useState([]);
   const [selectedFriend, setSelectedFriend] = useState();
   const [isFriendsChecked, setIsFriendsChecked] = useState(false);
+  const { userId } = useUserAuthStore();
 
   const handleCreatePendingGame = async () => {
     if (isFriendsChecked && !selectedFriend) return;
-    console.log('anything');
+    
+    status = "Pending";
+    const newGame = {
+      player_one: userId,
+      mode: "Versus",
+      status: status,
+    };
+
     try {
-      // const response = await axios.post(`${HOST_PATH}/games/?game_id`);
+      const response = await axios.post(`${HOST_PATH}/games/`, newGame);
+      console.log("Response data:", response.data);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLobbyGames([...lobbyGames.slice(1)])
+      if (!isFriendsChecked) setLobbyGames([newGame, ...lobbyGames])
     }
   };
 

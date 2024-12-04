@@ -107,8 +107,6 @@ export default function Game() {
       try {
         const payload = {
           player_one: userId,
-          player_one_score: 0, // Initial score
-          game_length: 0, // Initial game length
           mode: mode,
           status: "Active",
         };
