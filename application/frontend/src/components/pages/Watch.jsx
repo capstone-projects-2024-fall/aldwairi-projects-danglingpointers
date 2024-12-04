@@ -16,9 +16,9 @@ export default function Watch() {
   const fetchGames = async () => {
     try {
       const [soloResponse, versusResponse, highScoreResponse] = await Promise.all([
-        axios.get(`${HOST_PATH}/games?watch_solo=true`),
-        axios.get(`${HOST_PATH}/games?watch_versus=true`),
-        axios.get(`${HOST_PATH}/games?watch_highscore=true`),
+        axios.get(`${HOST_PATH}/games?watch=true&solo=true`),
+        axios.get(`${HOST_PATH}/games?watch=true&versus=true`),
+        axios.get(`${HOST_PATH}/games?watch=true&high_score=true`),
       ]);
 
       setWatchSoloGames(soloResponse.data);
