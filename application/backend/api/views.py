@@ -283,7 +283,7 @@ class GameViewSet(viewsets.ModelViewSet):
             return queryset[:20]
 
         if 'leaderboards_versus' in query_params:
-            queryset = queryset.filter(mode='Versus').annotate(max_score=Greatest(
+            queryset = queryset.filter(mode='Versus', status='Complete').annotate(max_score=Greatest(
                 F('player_one_score'), F('player_two_score'))).order_by('-max_score')
             if 'preview' in query_params:
                 return queryset[:10]
