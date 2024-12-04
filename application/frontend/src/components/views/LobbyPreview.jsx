@@ -5,7 +5,8 @@ import CreateGameEntry from "../entries/CreateGameEntry";
 
 export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
   const [isCreateGame, setIsCreateGame] = useState(false);
-  const { isLoggedIn } = useUserAuthStore();
+  const { isLoggedIn, username } = useUserAuthStore();
+  
   const handleCreateGame = async () => {
     const games = lobbyGames;
     const newGame = {
