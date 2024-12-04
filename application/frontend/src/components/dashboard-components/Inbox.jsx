@@ -1,16 +1,41 @@
+import { useEffect } from "react";
 import InboxComponent from './InboxComponent';
 import useUserAuthStore from '../../stores/userAuthStore';
 import { useState } from "react";
+import axios from "axios";
+import { HOST_PATH } from "../../scripts/constants";
 
 export default function Inbox() {
-    const { username } = useUserAuthStore();
-    const [threads, setThreads] = useState([
-        [{ sender: 'Bobby', text: 'hi' }],
-        [{ sender: 'Carla', text: 'hey!' }]
-    ]);
+    const { username, userId } = useUserAuthStore(); // Ensure `userId` is available
+    const [threads, setThreads] = useState([]);
     const [openThreads, setOpenThreads] = useState([]);
     const [messageInputs, setMessageInputs] = useState({});
     const [isInboxExpanded, setIsInboxExpanded] = useState(false);
+
+    // Fetch friends list and initialize threads
+    const fetchFriends = async () => {
+        try {
+            const response = await axios.get(`${HOST_PATH}/friends/`, {
+                params: { user_id: userId },
+            });
+            console.log("Friends API Response:", response.data);
+
+            // Transform friends data into threads
+            const initializedThreads = response.data.map(friend => ({
+                friendId: friend.id,
+                friendName: friend.username,
+                messages: [], // Initialize with an empty thread
+            }));
+
+            setThreads(initializedThreads);
+        } catch (error) {
+            console.error("Error fetching friends list:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchFriends(); // Fetch friends when the component mounts
+    }, []);
 
     const handleInboxClick = (index) => {
         setOpenThreads((prevOpenThreads) =>
@@ -31,8 +56,8 @@ export default function Inbox() {
         if (messageInputs[index]?.trim()) {
             setThreads((prevThreads) => {
                 const newThreads = [...prevThreads];
-                newThreads[index] = [
-                    ...newThreads[index],
+                newThreads[index].messages = [
+                    ...newThreads[index].messages,
                     { sender: username, text: messageInputs[index].trim() },
                 ];
                 return newThreads;
@@ -59,9 +84,17 @@ export default function Inbox() {
                     {threads.map((thread, index) => (
                         <div key={index} className="thread">
                             <InboxComponent
-                                sender={thread[thread.length - 1].sender}
-                                latestMsg={thread[thread.length - 1].text}
-                                messages={thread}
+                                sender={
+                                    thread.messages.length
+                                        ? thread.messages[thread.messages.length - 1].sender
+                                        : thread.friendName
+                                }
+                                latestMsg={
+                                    thread.messages.length
+                                        ? thread.messages[thread.messages.length - 1].text
+                                        : "Start a conversation"
+                                }
+                                messages={thread.messages}
                                 currentUser={username}
                                 isThreadVisible={openThreads.includes(index)}
                                 onClick={() => handleInboxClick(index)}
@@ -84,3 +117,4 @@ export default function Inbox() {
         </div>
     );
 }
+
