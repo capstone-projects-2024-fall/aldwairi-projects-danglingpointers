@@ -5,11 +5,12 @@ import { useState } from "react";
 export default function Inbox() {
     const { username } = useUserAuthStore();
     const [threads, setThreads] = useState([
-        [{ sender: username, text: 'hey' }, { sender: 'Bobby', text: 'hi' }],
-        [{ sender: username, text: 'hello' }, { sender: 'Carla', text: 'hey!' }]
+        [{ sender: 'Bobby', text: 'hi' }],
+        [{ sender: 'Carla', text: 'hey!' }]
     ]);
     const [openThreads, setOpenThreads] = useState([]);
-    const [messageInputs, setMessageInputs] = useState({}); // Track input values for each thread
+    const [messageInputs, setMessageInputs] = useState({});
+    const [isInboxExpanded, setIsInboxExpanded] = useState(false);
 
     const handleInboxClick = (index) => {
         setOpenThreads((prevOpenThreads) =>
@@ -45,31 +46,41 @@ export default function Inbox() {
 
     return (
         <div key="inbox" className="inbox" style={{ background: "grey" }}>
-            <h2>Inbox</h2>
-            {threads.map((thread, index) => (
-                <div key={index} className="thread">
-                    <InboxComponent
-                        sender={thread[thread.length - 1].sender}
-                        latestMsg={thread[thread.length - 1].text}
-                        messages={thread}
-                        currentUser={username}
-                        isThreadVisible={openThreads.includes(index)}
-                        onClick={() => handleInboxClick(index)}
-                    />
-                    {openThreads.includes(index) && (
-                        <div className="message-input">
-                            <input
-                                type="text"
-                                value={messageInputs[index] || ''}
-                                onChange={(e) => handleInputChange(index, e.target.value)}
-                                placeholder="Type your message"
+            <div
+                onClick={() => setIsInboxExpanded(!isInboxExpanded)}
+                style={{ cursor: "pointer", margin: "10px 0" }}
+            >
+                {isInboxExpanded ? "▽ Inbox" : "▷ Inbox"}
+            </div>
+
+            {isInboxExpanded && (
+                <div>
+                    <h2>Inbox</h2>
+                    {threads.map((thread, index) => (
+                        <div key={index} className="thread">
+                            <InboxComponent
+                                sender={thread[thread.length - 1].sender}
+                                latestMsg={thread[thread.length - 1].text}
+                                messages={thread}
+                                currentUser={username}
+                                isThreadVisible={openThreads.includes(index)}
+                                onClick={() => handleInboxClick(index)}
                             />
-                            <button onClick={() => handleSendMessage(index)}>Send</button>
+                            {openThreads.includes(index) && (
+                                <div className="message-input">
+                                    <input
+                                        type="text"
+                                        value={messageInputs[index] || ''}
+                                        onChange={(e) => handleInputChange(index, e.target.value)}
+                                        placeholder="Type your message"
+                                    />
+                                    <button onClick={() => handleSendMessage(index)}>Send</button>
+                                </div>
+                            )}
                         </div>
-                    )}
+                    ))}
                 </div>
-            ))}
+            )}
         </div>
     );
-};
-
+}
