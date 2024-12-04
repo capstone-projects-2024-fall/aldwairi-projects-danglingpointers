@@ -532,14 +532,36 @@ class CommentViewSet(viewsets.ModelViewSet):
         return queryset.order_by('-date')
     
     def create(self, request, *args, **kwargs):
-        # Handle comment creation
-        user = request.user
+        # Fetch user_id from request data
+        user_id = request.data.get('user_id')
         text = request.data.get('text')
-        if not text:
-            return Response({"error": "Comment text is required."}, status=status.HTTP_400_BAD_REQUEST)
-        comment = Comment.objects.create(user=user, text=text)
-        return Response(CommentSerializer(comment).data, status=status.HTTP_201_CREATED)
+        content_id = request.data.get('content_id')  # The profile ID the comment is for
 
+        # Validate required fields
+        if not user_id or not text or not content_id:
+            return Response(
+                {"error": "user_id, text, and content_id are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            # Fetch the user instance using the provided user_id
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response(
+                {"error": f"User with id {user_id} does not exist."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # Create the comment
+        comment = Comment.objects.create(
+            user=user,
+            comment=text,
+            comment_type="User",
+            content_id=content_id,
+        )
+
+        return Response(CommentSerializer(comment).data, status=status.HTTP_201_CREATED)
 
 class ChatMessageViewSet(viewsets.ModelViewSet):
     queryset = ChatMessage.objects

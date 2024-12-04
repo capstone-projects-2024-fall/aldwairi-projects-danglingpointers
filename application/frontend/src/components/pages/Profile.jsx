@@ -19,17 +19,21 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
         const gamesResponse = await axios.get(
           `${HOST_PATH}/games?recent_games=true&user_id=${userId}`
         );
-        const commentsResponse = await axios.get(`${HOST_PATH}/comments?user_id=${userId}`);
-
+        const commentsResponse = await axios.get(`${HOST_PATH}/comments/`, {
+          params: { user_id: profileUserId, user: true }, // Fetch user-related comments
+        });
+    
         setProfileData({
           username: username,
           dateJoined: dateJoined,
           lastLogin: lastLogin,
         });
-
+    
         setRecentGames(
           gamesResponse.data.filter((game) => game.status === "Complete") || []
         );
+    
+        // Use comments with username
         setComments(commentsResponse.data || []);
         setLoading(false);
       } catch (error) {
@@ -38,6 +42,7 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
         setLoading(false);
       }
     };
+    
 
     fetchProfileData();
   }, [userId, username, dateJoined, lastLogin]);
@@ -89,15 +94,26 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
     }
   };
   
-
   const handleAddComment = async () => {
+    if (!newComment.trim()) {
+      alert("Comment cannot be empty!");
+      return;
+    }
+
     try {
-      await axios.post(`${HOST_PATH}/comments/`, {
-        user_id: userId, // The current user's ID
+      const response = await axios.post(`${HOST_PATH}/comments/`, {
+        user_id: userId, // ID of the user adding the comment
         text: newComment,
+        comment_type: "User", // Specify comment is for a user
+        content_id: profileUserId, // ID of the profile the comment is for
       });
-      setComments((prevComments) => [...prevComments, { user: username, text: newComment }]);
-      setNewComment("");
+
+      // Update local comments state
+      setComments((prevComments) => [
+        ...prevComments,
+        { user: username, text: newComment, date: response.data.date },
+      ]);
+      setNewComment(""); // Clear input field
     } catch (error) {
       console.error("Error posting comment:", error);
     }
@@ -164,12 +180,13 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Add a comment..."
             />
             <button onClick={handleAddComment}>Post Comment</button>
             <ul>
               {comments.map((comment, index) => (
                 <li key={index}>
-                  <strong>{comment.user}:</strong> {comment.text}
+                  <strong>{comment.username}:</strong> {comment.comment} <em>({comment.date})</em>
                 </li>
               ))}
             </ul>
