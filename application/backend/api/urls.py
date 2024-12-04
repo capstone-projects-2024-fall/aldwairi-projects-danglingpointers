@@ -21,6 +21,8 @@ urlpatterns = [
     path('update-user-metadata/', UpdateUserMetaDataView.as_view()),
     path('user-count/', UserCountView.as_view()),
     path('friendships/', ManageFriendship.as_view()),
+    path('friendships/pending/', ManageFriendship.as_view()),  # Pending friend requests
+    path('friends/', FriendsListView.as_view(), name='friends-list'),
     path('token/', TokenObtainPairView.as_view()),
     path('token/refresh/', TokenRefreshView.as_view()),
     path('token/verify/', TokenVerifyView.as_view()),

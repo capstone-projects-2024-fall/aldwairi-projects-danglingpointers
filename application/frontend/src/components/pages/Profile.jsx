@@ -44,18 +44,17 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
 
   const handleFriendRequest = async () => {
     try {
-      console.log(userId)
-      console.log(profileUserId)
-        await axios.post(
-            `${HOST_PATH}/friendships/`,
-            { profile_User_Id: profileUserId, user_Id: userId },
-           
-        );
-        alert("Friend request sent!");
+      console.log("Sending friend request from:", userId, "to:", profileUserId);
+      await axios.post(`${HOST_PATH}/friendships/`, {
+        user_id: userId, 
+        friend_id: profileUserId, 
+      });
+      alert("Friend request sent!");
     } catch (error) {
-        console.error("Error sending friend request:", error);
+      console.error("Error sending friend request:", error.response?.data || error);
     }
-};
+  };
+  
 
   const handleRemoveFriend = async (friendshipId) => {
     try {

@@ -30,6 +30,14 @@ class Friendship(models.Model):
     date_request = models.DateTimeField(auto_now_add=True)
     date_response = models.DateTimeField(null=True, blank=True)
 
+    @property
+    def friend_username(self):
+        return self.friend.username
+
+    @property
+    def user_username(self):
+        return self.user.username
+
 
 class UserMetaData(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
