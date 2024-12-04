@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import convertSecondsToMinutes from "../../scripts/convert-seconds-to-minutes";
 import { HOST_PATH } from "../../scripts/constants";
 import axios from "axios";
@@ -13,26 +13,40 @@ export default function GameEntry({
 }) {
   const [btnColor, setBtnColor] = useState("green");
   const [currentUsers, setCurrentUsers] = useState([]);
+  const [isOnline, setIsOnline] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
       const usersArray = [];
+      const onlineStatusArray = [];
       try {
         const userResponse = await axios.get(
           `${HOST_PATH}/users/?user_id=${users[0].id}`
         );
+
+        const userMetaDataResponse = await axios.get(
+          `${HOST_PATH}/user-metadata/?user_id=${users[0].id}`
+        );
+
         usersArray.push(userResponse.data[0]);
+        onlineStatusArray.push(userMetaDataResponse.data[0].is_online);
+
         if (users[1].id) {
           const opponentResponse = await axios.get(
             `${HOST_PATH}/users/?user_id=${users[1].id}`
           );
+          const opponentMetaDataResponse = await axios.get(
+            `${HOST_PATH}/user-metadata/?user_id=${users[1].id}`
+          );
           usersArray.push(opponentResponse.data[0]);
+          onlineStatusArray.push(opponentMetaDataResponse.data[0].is_online);
         }
       } catch (error) {
         console.log(error);
       }
       setCurrentUsers(usersArray);
+      setIsOnline(onlineStatusArray);
     };
 
     fetchUsers();
@@ -47,16 +61,17 @@ export default function GameEntry({
   }, [status]);
 
   function handleClick() {
-    if (status === "Pending")
-      console.log("Pending")
-    else  
-      navigate(`/game/game_id_${gameId}`);
+    if (status === "Pending") console.log("Pending");
+    else navigate(`/game/game_id_${gameId}`);
   }
 
   return (
     <section className="base-entry game-entry">
       {currentUsers.map((user, i) => (
-        <p key={i}>Player {i+1}: {user.username}</p>
+        <p key={i}>
+          <Link to={`/profile/${user.username}`}>{user.username}</Link>
+          <span>{isOnline[i] ? " 🟢" : " 🔴"}</span>
+        </p>
       ))}
       <div className="game-scores">
         {scores.map((score, index) => (
