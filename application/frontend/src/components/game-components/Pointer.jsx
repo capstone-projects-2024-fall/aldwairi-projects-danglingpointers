@@ -1,15 +1,51 @@
 import { useEffect, useRef, useState, useContext } from "react";
 import GameContext from "../../context/GameContext";
 import checkForCollision from "../../scripts/check-for-collision";
-import { ITEMS } from "../../scripts/constants";
+import { GAME_URL, ITEMS } from "../../scripts/constants";
+import useUserAuthStore from "../../stores/userAuthStore";
 
 export default function Pointer({ color, id, onAnimationIteration }) {
-  const { gameStarted, isPractice, isDoubleScore, setUserScore, userLives } = useContext(GameContext);
+  const {
+    gameStarted,
+    isPractice,
+    isDoubleScore,
+    setUserScore,
+    userLives,
+    gameMode,
+    pendingGame,
+  } = useContext(GameContext);
   const pointerRef = useRef(null);
   const [pointerLeft, setPointerLeft] = useState(0);
-  // const [collisionCount, setCollisionCount] = useState(0);
+  const wsGameRef = useRef(null);
   const [shouldAnimate, setShouldAnimate] = useState(true);
+  const { userId } = useUserAuthStore();
   const requestRef = useRef(null);
+
+  useEffect(() => {
+    const ws = new WebSocket(GAME_URL);
+    wsGameRef.current = ws;
+
+    ws.onopen = () => {
+      console.log("WebSocket connection to GameConsumer established");
+    };
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      console.log(message);
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection to GameConsumer closed");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, []);
 
   // Pointer Creation
   useEffect(() => {
@@ -57,10 +93,24 @@ export default function Pointer({ color, id, onAnimationIteration }) {
           checkForCollision(pointerRect, garbageCollectorRect) &&
           !userLives.includes("💀")
         ) {
-
           setUserScore((prevScore) => {
-            if (isDoubleScore) return prevScore + ITEMS.doubleScore;
-            else return prevScore + ITEMS.defaultScore;
+            const newScore = isDoubleScore
+              ? prevScore + ITEMS.doubleScore
+              : prevScore + ITEMS.defaultScore;
+            if (
+              gameMode === "Versus" &&
+              wsGameRef.current &&
+              wsGameRef.current.readyState === WebSocket.OPEN
+            ) {
+              wsGameRef.current.send(
+                JSON.stringify({
+                  type: "game",
+                  game_id: `score_${pendingGame.id}_${userId}_${newScore}`,
+                })
+              );
+            }
+
+            return newScore;
           });
           if (pointer.classList.contains("animation-three")) {
             pointer.classList.replace("animation-three", "animation-four");
