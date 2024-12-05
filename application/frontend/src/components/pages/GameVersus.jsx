@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useContext, useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import GameContext from "../../context/GameContext";
 import useUserAuthStore from "../../stores/userAuthStore";
 import { GAME_URL, HOST_PATH, ITEM_URL } from "../../scripts/constants";
@@ -58,6 +58,7 @@ export default function GameVersus() {
   const [isWinner, setIsWinner] = useState(false);
   const [currGameId, setCurrGameId] = useState(null);
   const { search } = useLocation();
+  const navigate = useNavigate();
 
   // Set player one and player two, notify opponent with websocket
   useEffect(() => {
@@ -379,9 +380,9 @@ export default function GameVersus() {
     };
 
     if (pointersCleared && userLivesCount === 0) {
-      console.log("in here");
       postGameData();
       setGameStarted(false);
+      navigate("/");
     }
   }, [
     currGameId,
