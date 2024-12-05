@@ -26,7 +26,7 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
         const metadata = response.data[0];
         console.log("Received metadata:", metadata);
   
-        setProfilePicture(metadata.profile_picture || "");
+        setProfilePicture(metadata.profile_picture || "https://upload.wikimedia.org/wikipedia/en/thumb/7/73/Trollface.png/220px-Trollface.png");
         // Update sessionStorage
         const storedData = JSON.parse(sessionStorage.getItem("user-metadata-state")) || {};
         storedData.state = storedData.state || {};
