@@ -31,13 +31,14 @@ export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
         );
         const data = gameResponse.data[0];
 
-        const match = lobbyGames.find(x => x.id === data.id)
+        const match = lobbyGames.find((x) => x.id === data.id);
+        console.log(match);
 
         if (data.status === "Pending" && !match) {
-          setWatchGames([data, ...lobbyGames]);
-        } else if (data.status === "Complete") {
+          setLobbyGames([data, ...lobbyGames]);
+        } else if (data.status === "Active") {
           const newGames = lobbyGames;
-          setWatchGames(newGames.filter((x) => x.id !== data.id));
+          setLobbyGames(newGames.filter((x) => x.id !== data.id));
         }
       } catch (error) {
         console.error(error);
@@ -54,7 +55,14 @@ export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
       const message = JSON.parse(event.data);
       if (message.type === "game") {
         console.log("Received game message:", message);
-        fetchGame(message.game_id);
+        const gid = message.game_id.toString();
+        if (gid.includes("_")) {
+          const parts = message.game_id.split("_");
+          const socketGameId = parts[0];
+          fetchGame(socketGameId);
+        } else {
+          fetchGame(gid);
+        }
       }
     };
 
@@ -90,7 +98,13 @@ export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
           <ul>
             {lobbyGames.map((game, index) =>
               game.status === "Create" ? (
-                <CreateGameEntry key={index} status={game.status} setIsCreateGame={setIsCreateGame} lobbyGames={lobbyGames} setLobbyGames={setLobbyGames} />
+                <CreateGameEntry
+                  key={index}
+                  status={game.status}
+                  setIsCreateGame={setIsCreateGame}
+                  lobbyGames={lobbyGames}
+                  setLobbyGames={setLobbyGames}
+                />
               ) : (
                 <GameEntry
                   key={index}
