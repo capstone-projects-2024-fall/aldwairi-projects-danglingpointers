@@ -70,14 +70,16 @@ export default function Dashboard() {
         console.error("Error fetching user metadata:", error);
       }
     };
-
+    console.log(1)
     if (!userId) return;
-
+    
+    console.log(2)
     if (isMetaDataSet) {
       setUserNeedsMetaData(false);
       return;
     }
-
+    
+    console.log(3)
     fetchUserMetaData();
   }, [userId, isMetaDataSet, setUserMetaData]);
 

@@ -30,7 +30,6 @@ const useUserAuthStore = create(
           userId: null,
           username: null,
         }));
-        sessionStorage.removeItem("user-metadata-state");
       },
     }),
     {
