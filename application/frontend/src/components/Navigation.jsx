@@ -12,6 +12,8 @@ export default function Navigation() {
   const handleLogout = async () => {
     try {
       const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+      console.log("User Metadata State:", store);
+
       const formData = {
         user_id: userId,
         settings: store.state.settings,
