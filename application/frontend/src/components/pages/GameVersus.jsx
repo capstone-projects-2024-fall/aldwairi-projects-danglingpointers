@@ -44,58 +44,53 @@ export default function GameVersus() {
   const recyclingBinRef = useRef(null);
   const wsItemRef = useRef(null);
   const wsGameRef = useRef(null);
+  const wsVersusGameRef = useRef(null);
   const toggleNextItem = useRef(null);
   const useItem = useRef(null);
   const userPoints = useRef(null);
   const [pendingGame, setPendingGame] = useState({});
-  const [isOtherUser, setIsOtherUser] = useState(false);
+  const [isPlayerOne, setIsPlayerOne] = useState(false);
+  const [isPlayerTwo, setIsPlayerTwo] = useState(false);
+  const [isOpponentPresent, setIsOpponentPresent] = useState(false);
+  const [playerTwoId, setPlayerTwoId] = useState(null);
+  const [playerTwoUserName, setPlayerTwoUserName] = useState(null);
+  const [playerTwoScore, setPlayerTwoScore] = useState(0);
+  const [playerTwoLives, setPlayerTwoLives] = useState(null);
+  const [isWinner, setIsWinner] = useState(false);
   const [currGameId, setCurrGameId] = useState(null);
   const { search } = useLocation();
 
-  //!! ALWAYS FIRST !!
-  useEffect(() => {
-    const queryParams = new URLSearchParams(search);
-    setCurrGameId(queryParams.get('game_id'))
-  }, []);
-
-  // Versus mode game confirmation web socket
-  useEffect(() => {
-    const ws = new WebSocket(GAME_URL);
-    wsGameRef.current = ws;
-
-    ws.onopen = () => {
-      console.log("WebSocket connection to GameConsumer established");
-    };
-
-    ws.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      if (message.type === "game") {
-        console.log("Received game message:", message);
-      }
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket connection to GameConsumer closed");
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    return () => {
-      ws.close();
-    };
-  }, []);
-
+  // Set player one and player two, notify opponent with websocket
   useEffect(() => {
     const fetchPendingGames = async () => {
+      const queryParams = new URLSearchParams(search);
+      const newGameId = queryParams.get("game_id");
+      setCurrGameId(newGameId);
+
       try {
         const response = await axios.get(`${HOST_PATH}/games/?lobby=true`);
-        const filteredPendingGames = response.data.filter(
-          (x) => x.player_one === userId
+        const findGameByQueryString = response.data.find(
+          (x) => x.id == newGameId
         );
-        console.log(filteredPendingGames);
-        setPendingGame(filteredPendingGames[0]);
+
+        const initiator = findGameByQueryString.player_one;
+
+        if (initiator == userId) setIsPlayerOne(true);
+        else setIsPlayerTwo(true);
+
+        setPendingGame(findGameByQueryString);
+
+        if (
+          wsGameRef.current &&
+          wsGameRef.current.readyState === WebSocket.OPEN
+        ) {
+          wsGameRef.current.send(
+            JSON.stringify({
+              type: "game",
+              game_id: `${newGameId}_${initiator}_${userId}`,
+            })
+          );
+        }
       } catch (error) {
         console.log(error);
       }
@@ -103,6 +98,79 @@ export default function GameVersus() {
 
     fetchPendingGames();
   }, []);
+
+  // Listen for opponent to be present in session
+  useEffect(() => {
+    const putActiveGameData = async (mode) => {
+      try {
+        const payload = {
+          player_one: userId,
+          player_two: playerTwoId,
+          mode: mode,
+          status: "Active",
+        };
+
+        const response = await axios.put(
+          `${HOST_PATH}/games/${currGameId}/`,
+          payload
+        );
+
+        if (response.data && response.data.id) {
+          console.log("Active game data posted, gameId:", response.data.id);
+
+          // Send WebSocket message
+          if (
+            wsGameRef.current &&
+            wsGameRef.current.readyState === WebSocket.OPEN
+          ) {
+            wsGameRef.current.send(
+              JSON.stringify({
+                type: "game",
+                game_id: currGameId,
+              })
+            );
+          }
+        } else {
+          console.error("Game ID not found in response");
+        }
+      } catch (error) {
+        console.error("Error posting active game data:", error);
+        if (error.response) {
+          console.error("Response data:", error.response.data);
+        }
+      }
+    };
+
+    // Function to initialize a new round
+    const initializeRound = async (mode) => {
+      if (gameStarted) return; // Prevent starting if game is already in progress
+      setTimer(0);
+      setUserScore(0);
+      setUserLives(["❤️", "❤️", "❤️"]);
+      setUserLivesCount(3);
+      setGameMode(mode);
+      setGameStarted(true);
+      setPointersCleared(false); // Reset pointers cleared state when starting a new round
+
+      if (userId == pendingGame.player_one) putActiveGameData(mode);
+    };
+
+    if (
+      pendingGame &&
+      (isPlayerOne || isPlayerTwo) &&
+      isOpponentPresent &&
+      playerTwoId &&
+      currGameId
+    )
+      initializeRound("Versus");
+  }, [
+    pendingGame,
+    isPlayerOne,
+    isPlayerTwo,
+    isOpponentPresent,
+    playerTwoId,
+    currGameId,
+  ]);
 
   // Game Timer
   useEffect(() => {
@@ -267,6 +335,116 @@ export default function GameVersus() {
     allItems,
   ]);
 
+  //   End game after all pointers are off-screen
+  useEffect(() => {
+    // Function to post game data to the backend after the round ends
+    const postGameData = async () => {
+      if (userId == pendingGame.player_one && currGameId) {
+        const payload = {
+          player_one: userId,
+          player_one_score: userScore,
+          player_two: playerTwoId,
+          player_two_score: playerTwoScore,
+          game_length: finalTimer,
+          mode: gameMode,
+          winner: isWinner ? userId : playerTwoId,
+          status: "Complete",
+        };
+
+        console.log(payload);
+
+        try {
+          await axios.put(`${HOST_PATH}/games/${currGameId}/`, payload);
+        } catch (error) {
+          console.error("Error posting game data:", error);
+        }
+      }
+
+      if (userId && currGameId) {
+        const prevPoints = userPoints.current;
+        const newPoints = prevPoints + userScore;
+
+        const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+
+        if (store) {
+          store.state.points = newPoints;
+          sessionStorage.setItem("user-metadata-state", JSON.stringify(store));
+        }
+
+        // Send WebSocket message
+        wsGameRef.current.send(
+          JSON.stringify({
+            type: "game",
+            game_id: currGameId,
+          })
+        );
+      }
+    };
+
+    if (pointersCleared && userLivesCount === 0) {
+      console.log("in here");
+      postGameData();
+      setGameStarted(false);
+    }
+  }, [
+    currGameId,
+    pointersCleared,
+    totalPointerCount,
+    setGameStarted,
+    userLivesCount,
+    gameMode,
+    finalTimer,
+    userId,
+    userPoints,
+    userScore,
+  ]);
+
+  // Game web socket
+  useEffect(() => {
+    const ws = new WebSocket(GAME_URL);
+    wsGameRef.current = ws;
+
+    ws.onopen = () => {
+      console.log("WebSocket connection to GameConsumer established");
+    };
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "game" && message.game_id.includes("_")) {
+        const parts = message.game_id.split("_");
+        const socketGameId = parts[0];
+        const initiatorId = parts[1];
+        const senderId = parts[2];
+
+        if (senderId != userId) {
+          const queryParams = new URLSearchParams(search);
+          const newGameId = queryParams.get("game_id");
+          setCurrGameId(newGameId);
+
+          if (socketGameId == newGameId) {
+            setPlayerTwoId(senderId);
+            setIsOpponentPresent(true);
+          }
+        } else if (senderId != initiatorId) {
+          setPlayerTwoId(initiatorId);
+          setIsOpponentPresent(true);
+        }
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection to GameConsumer closed");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, []);
+
   // Versus mode item websocket
   useEffect(() => {
     const ws = new WebSocket(ITEM_URL);
@@ -295,118 +473,6 @@ export default function GameVersus() {
       ws.close();
     };
   }, []);
-
-  // End game after all pointers are off-screen
-  //   useEffect(() => {
-  //     // Function to post game data to the backend after the round ends
-  //     const postGameData = async () => {
-  //       if (userId && currGameId) {
-  //         try {
-  //           await axios.put(`${HOST_PATH}/games/${currGameId}/`, {
-  //             player_one: userId,
-  //             player_one_score: userScore,
-  //             // player_two:
-  //             // player_two_score:
-  //             game_length: finalTimer,
-  //             mode: gameMode,
-  //             status: "Complete",
-  //           });
-  //           const prevPoints = userPoints.current;
-  //           const newPoints = prevPoints + userScore;
-
-  //           const store = JSON.parse(
-  //             sessionStorage.getItem("user-metadata-state")
-  //           );
-
-  //           if (store) {
-  //             store.state.points = newPoints;
-  //             sessionStorage.setItem(
-  //               "user-metadata-state",
-  //               JSON.stringify(store)
-  //             );
-  //           }
-
-  //           // Send WebSocket message
-  //           wsRef.current.send(
-  //             JSON.stringify({
-  //               type: "game",
-  //               game_id: currGameId,
-  //             })
-  //           );
-  //         } catch (error) {
-  //           console.error("Error posting game data:", error);
-  //         }
-  //       }
-  //     };
-
-  //     if (pointersCleared && userLivesCount === 0) {
-  //       postGameData();
-  //       setGameStarted(false);
-  //     }
-  //   }, [
-  //     currGameId,
-  //     pointersCleared,
-  //     totalPointerCount,
-  //     setGameStarted,
-  //     userLivesCount,
-  //     gameMode,
-  //     finalTimer,
-  //     userId,
-  //     userPoints,
-  //     userScore,
-  //   ]);
-
-  const postActiveGameData = async (mode) => {
-    if (userId) {
-      try {
-        const payload = {
-          player_one: userId,
-          mode: mode,
-          status: "Active",
-        };
-
-        const response = await axios.post(`${HOST_PATH}/games/${currGameId}`, payload);
-
-        if (response.data && response.data.id) {
-          console.log("Active game data posted, gameId:", response.data.id);
-
-          // Send WebSocket message
-          if (
-            wsGameRef.current &&
-            wsGameRef.current.readyState === WebSocket.OPEN
-          ) {
-            wsGameRef.current.send(
-              JSON.stringify({
-                type: "game",
-                game_id: response.data.id,
-              })
-            );
-          }
-        } else {
-          console.error("Game ID not found in response");
-        }
-      } catch (error) {
-        console.error("Error posting active game data:", error);
-        if (error.response) {
-          console.error("Response data:", error.response.data);
-        }
-      }
-    }
-  };
-
-  // Function to initialize a new round
-  const initializeRound = (mode) => {
-    if (gameStarted) return; // Prevent starting if game is already in progress
-    setTimer(0);
-    setUserScore(0);
-    setUserLives(["❤️", "❤️", "❤️"]);
-    setUserLivesCount(3);
-    setGameMode(mode);
-    setGameStarted(true);
-    setPointersCleared(false); // Reset pointers cleared state when starting a new round
-
-    postActiveGameData(mode);
-  };
 
   return (
     <main className="main-game">

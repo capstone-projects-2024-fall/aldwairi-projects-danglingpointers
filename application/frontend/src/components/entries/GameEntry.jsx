@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import convertSecondsToMinutes from "../../scripts/convert-seconds-to-minutes";
 import { HOST_PATH } from "../../scripts/constants";
 import axios from "axios";
+import useUserAuthStore from "../../stores/userAuthStore";
 
 export default function GameEntry({
   gameId,
@@ -14,6 +15,7 @@ export default function GameEntry({
   const [btnColor, setBtnColor] = useState("green");
   const [currentUsers, setCurrentUsers] = useState([]);
   const [isOnline, setIsOnline] = useState([]);
+  const { userId } = useUserAuthStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -85,8 +87,8 @@ export default function GameEntry({
           Status:
           <button
             className={`btn-status`}
-            style={{ background: btnColor }}
-            onClick={handleClick}
+            style={{ background: btnColor, cursor: userId ? "pointer" : "not-allowed" }}
+            onClick={userId ? handleClick : null}
           >
             {status === "Pending" ? "Join Game" : status}
           </button>
