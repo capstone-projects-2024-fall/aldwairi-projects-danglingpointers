@@ -16,10 +16,10 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
 
 
   
-  const fetchUserMetaData = async () => {
+  const fetchUserMetaData = async (userIdToFetch) => {
     try {
       const response = await axios.get(`${HOST_PATH}/user-metadata/`, {
-        params: { user_id: userId },
+        params: { user_id: userIdToFetch },
       });
       if (response.data && response.data.length > 0) {
         const metadata = response.data[0];
@@ -43,8 +43,8 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
   };
   
   useEffect(() => {
-    fetchUserMetaData();
-  }, [userId]);
+    fetchUserMetaData(profileUserId);
+  }, [profileUserId]);
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
