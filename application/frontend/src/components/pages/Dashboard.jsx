@@ -1,14 +1,14 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Inbox from "../dashboard-components/Inbox";
-import Store from "../dashboard-components/Store";
-import Settings from "../dashboard-components/Settings";
-import UserPreviousGames from "../dashboard-components/UserPreviousGames";
-import UserSetup from "../dashboard-components/UserSetup";
+import { HOST_PATH } from "../../scripts/constants";
 import useUserAuthStore from "../../stores/userAuthStore";
 import useUserMetaDataStore from "../../stores/userMetaDataStore";
-import axios from "axios";
-import { CHAT_URL, GAME_URL, HOST_PATH } from "../../scripts/constants";
+import Inbox from "../dashboard-components/Inbox";
+import Settings from "../dashboard-components/Settings";
+import Store from "../dashboard-components/Store";
+import UserPreviousGames from "../dashboard-components/UserPreviousGames";
+import UserSetup from "../dashboard-components/UserSetup";
 
 export default function Dashboard() {
   const { userId } = useUserAuthStore();

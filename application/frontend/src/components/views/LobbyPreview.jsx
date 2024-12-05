@@ -1,7 +1,7 @@
 import { useState } from "react";
-import GameEntry from "../entries/GameEntry";
 import useUserAuthStore from "../../stores/userAuthStore";
 import CreateGameEntry from "../entries/CreateGameEntry";
+import GameEntry from "../entries/GameEntry";
 
 export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
   const [isCreateGame, setIsCreateGame] = useState(false);
