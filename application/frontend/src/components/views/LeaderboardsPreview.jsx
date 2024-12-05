@@ -1,7 +1,74 @@
+import axios from "axios";
+import { useEffect } from "react";
 import GameEntry from "../entries/GameEntry";
 import { Link } from "react-router-dom";
+import { GAME_URL, HOST_PATH } from "../../scripts/constants";
 
-export default function LeaderboardsPreview({ leaderboardsSolo, leaderboardsVersus }) {
+export default function LeaderboardsPreview({
+  leaderboardsSolo,
+  setLeaderboardsSolo,
+  leaderboardsVersus,
+  setLeaderboardsVersus,
+}) {
+  useEffect(() => {
+    const fetchGame = async (gameId) => {
+      try {
+        const gameResponse = await axios.get(
+          `${HOST_PATH}/games/?game_id=${gameId}`
+        );
+
+        const data = gameResponse.data[0];
+
+        // let match;
+        // if (data.mode === "Solo") {
+        //   match = leaderboardsSolo.find((x) => x.id === data.id);
+        // } else {
+        //   match = leaderboardsVersus.find((x) => x.id === data.id);
+        // }
+
+        // if (data.status === "Complete" && !match) {
+        if (data.status === "Complete") {
+          data.mode === "Solo"
+            ? setLeaderboardsSolo([data, ...leaderboardsSolo])
+            : setLeaderboardsVersus([data, ...leaderboardsVersus]);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const ws = new WebSocket(GAME_URL);
+
+    ws.onopen = () => {
+      console.log("WebSocket connection to GameConsumer established");
+    };
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "game") {
+        console.log("Received game message:", message);
+        fetchGame(message.game_id);
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection to GameConsumer closed");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, [
+    leaderboardsSolo,
+    setLeaderboardsSolo,
+    leaderboardsVersus,
+    setLeaderboardsVersus,
+  ]);
+
   return (
     <article className="leaderboards-preview-container default-scrollbar">
       <div className="leaderboards-preview preview">

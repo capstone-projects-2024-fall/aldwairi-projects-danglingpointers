@@ -60,27 +60,19 @@ export default function Game() {
     const ws = new WebSocket(GAME_URL);
     wsRef.current = ws;
 
-    return () => {
-      ws.close();
-    };
-  }, []);
-
-  useEffect(() => {
-    const ws = new WebSocket(CHAT_URL);
-
     ws.onopen = () => {
-      console.log("WebSocket connection to ChatConsumer established");
+      console.log("WebSocket connection to GameConsumer established");
     };
 
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      if (message.type === "chat") {
-        console.log("Received chat message:", message);
+      if (message.type === "game") {
+        console.log("Received game message:", message);
       }
     };
 
     ws.onclose = () => {
-      console.log("WebSocket connection to ChatConsumer closed");
+      console.log("WebSocket connection to GameConsumer closed");
     };
 
     ws.onerror = (error) => {
@@ -92,6 +84,7 @@ export default function Game() {
     };
   }, []);
 
+  // Set current user points
   useEffect(() => {
     const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
     if (store) {
@@ -99,8 +92,6 @@ export default function Game() {
       userPoints.current = points;
     }
   }, [userId, userPoints]);
-
-  useEffect(() => {}, [userScore]);
 
   const postActiveGameData = async (mode) => {
     if (userId) {
@@ -110,9 +101,9 @@ export default function Game() {
           mode: mode,
           status: "Active",
         };
-        console.log("Payload:", payload); // Log the payload
+        
         const response = await axios.post(`${HOST_PATH}/games/`, payload);
-        console.log("Response data:", response.data); // Log the response data
+        
         if (response.data && response.data.id) {
           setCurrGameId(response.data.id);
           console.log("Active game data posted, gameId:", response.data.id);
@@ -199,7 +190,6 @@ export default function Game() {
             player_one_score: userScore,
             game_length: finalTimer,
             mode: gameMode,
-            // link: `game/game_id_${gameId}`,
             status: "Complete",
           });
           const prevPoints = userPoints.current;
@@ -342,7 +332,6 @@ export default function Game() {
           : userItems[selectedIndex]?.quantity || 0;
     
         if (!isPractice && currentQuantity <= 0) {
-          alert("You do not have enough of this item to use it.");
           return;
         }
     
@@ -392,34 +381,6 @@ export default function Game() {
     userLives,
     practiceItems,
   ]);
-
-  // Game Socket
-  useEffect(() => {
-    const ws = new WebSocket(ITEM_URL);
-
-    ws.onopen = () => {
-      console.log("WebSocket connection to ItemConsumer established");
-    };
-
-    ws.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      if (message.type === "item") {
-        console.log("Received item message:", message);
-      }
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket connection to ItemConsumer closed");
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    return () => {
-      ws.close();
-    };
-  }, []);
 
   return (
     <main className="main-game">

@@ -22,9 +22,9 @@ export default function Leaderboards() {
           axios.get(`${HOST_PATH}/games?longest_games=true`),
         ]);
 
-      setLeaderboardsSolo(soloResponse.data);
-      setLeaderboardsVersus(versusResponse.data);
-      setLongestGames(longestGamesResponse.data);
+      setLeaderboardsSolo(soloResponse.data.filter(x => x.status === "Complete"));
+      setLeaderboardsVersus(versusResponse.data.filter(x => x.status === "Complete"));
+      setLongestGames(longestGamesResponse.data.filter(x => x.status === "Complete"));
 
       setIsLoading(false);
     } catch (error) {
@@ -51,50 +51,13 @@ export default function Leaderboards() {
         console.log("Received WebSocket message:", message);
 
         // Handle updates from the WebSocket
-        if (message.type === "game" && message.payload) {
-          const updatedGame = message.payload;
-
-          // Update solo leaderboard
-          if (leaderboardsSolo) {
-            setLeaderboardsSolo((prev) =>
-              prev.map((game) =>
-                game.id === updatedGame.id ? { ...game, ...updatedGame } : game
-              )
-            );
-          }
-
-          // Update versus leaderboard
-          if (leaderboardsVersus) {
-            setLeaderboardsVersus((prev) =>
-              prev.map((game) =>
-                game.id === updatedGame.id ? { ...game, ...updatedGame } : game
-              )
-            );
-          }
-
-          // Update longest games leaderboard
-          if (longestGames) {
-            setLongestGames((prev) => {
-              const updatedLongestGames = prev.map((game) =>
-                game.id === updatedGame.id
-                  ? {
-                      ...game,
-                      score: Math.max(
-                        updatedGame.player_one_score || 0,
-                        updatedGame.player_two_score || 0
-                      ),
-                    }
-                  : game
-              );
-              return updatedLongestGames;
-            });
-          }
+        if (message.type === "game") {
+          fetchGames();
         }
       };
 
       ws.onclose = () => {
         console.warn("WebSocket connection closed. Reconnecting...");
-        setTimeout(connectWebSocket, 5000); // Retry after 5 seconds
       };
 
       ws.onerror = (error) => {

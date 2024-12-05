@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { HOST_PATH } from "../../scripts/constants";
 import useUserAuthStore from "../../stores/userAuthStore";
 
@@ -13,6 +14,7 @@ export default function CreateGameEntry({
   const [selectedFriend, setSelectedFriend] = useState();
   const [isFriendsChecked, setIsFriendsChecked] = useState(false);
   const { userId } = useUserAuthStore();
+  const navigate = useNavigate();
 
   const handleCreatePendingGame = async () => {
     if (isFriendsChecked && !selectedFriend) return;
@@ -23,10 +25,12 @@ export default function CreateGameEntry({
       mode: "Versus",
       status: status,
     };
+    let newGameId;
 
     try {
       const response = await axios.post(`${HOST_PATH}/games/`, newGame);
       console.log("Response data:", response.data);
+      newGameId = response.data.id;
     } catch (error) {
       console.error(error);
     } finally {
@@ -40,6 +44,7 @@ export default function CreateGameEntry({
       }
 
       setIsCreateGame(false);
+      navigate(`/versus/?game_id=${newGameId}`);
     }
   };
 

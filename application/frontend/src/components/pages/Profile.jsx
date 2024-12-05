@@ -25,9 +25,9 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
         );
         const userMetaDataResponse = await axios.get(
           `${HOST_PATH}/user-metadata?user_id=${profileUserId}`
-        )
+        );
 
-        setIsOnline(userMetaDataResponse.data[0].is_online)
+        setIsOnline(userMetaDataResponse.data[0].is_online);
 
         setProfileData({
           username: username,
@@ -55,12 +55,15 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
     try {
       console.log("Sending friend request from:", userId, "to:", profileUserId);
       await axios.post(`${HOST_PATH}/friendships/`, {
-        user_id: userId, 
-        friend_id: profileUserId, 
+        user_id: userId,
+        friend_id: profileUserId,
       });
       alert("Friend request sent!");
     } catch (error) {
-      console.error("Error sending friend request:", error.response?.data || error);
+      console.error(
+        "Error sending friend request:",
+        error.response?.data || error
+      );
     }
   };
 
@@ -94,6 +97,21 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
   };
 
   useEffect(() => {
+    const fetchGame = async (gameId) => {
+      try {
+        const gameResponse = await axios.get(
+          `${HOST_PATH}/games/?game_id=${gameId}`
+        );
+        const data = gameResponse.data[0];
+
+        if (data.status === "Complete") {
+          setRecentGames([data, ...recentGames]);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     const ws = new WebSocket(GAME_URL);
 
     ws.onopen = () => {
@@ -106,6 +124,7 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
 
       if (message.type === "game") {
         console.log("Received game message:", message);
+        fetchGame(message.game_id);
       }
     };
 
@@ -132,13 +151,15 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
           <h1>User Profile</h1>
           <div className="profile-details">
             <p>
-              <strong>Username:</strong> {profileData.username}<span>{isOnline ? "🟢" : "🔴"}</span>
+              <strong>Username:</strong> {profileData.username}
+              <span>{isOnline ? "🟢" : "🔴"}</span>
             </p>
             <p>
               <strong>Date Joined:</strong> {profileData.dateJoined}
             </p>
             <p>
-              <strong>Last Login:</strong> {profileData.lastLogin || profileData.dateJoined}
+              <strong>Last Login:</strong>{" "}
+              {profileData.lastLogin || profileData.dateJoined}
             </p>
           </div>
           <button onClick={handleFriendRequest}>Request</button>

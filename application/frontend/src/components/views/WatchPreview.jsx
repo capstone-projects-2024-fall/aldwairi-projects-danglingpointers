@@ -13,21 +13,13 @@ export default function WatchPreview({ watchGames, setWatchGames }) {
         );
         const data = gameResponse.data[0];
 
-        if (data.status === "Active") {
-          if (data.mode === "Solo") {
-            setWatchGames([data, ...watchGames]);
-          }
-          // else {
-          //   setWatchVersusGames();
-          // }
+        const match = watchGames.find(x => x.id === data.id)
+
+        if (data.status === "Active" && !match) {
+          setWatchGames([data, ...watchGames]);
         } else if (data.status === "Complete") {
-          if (data.mode === "Solo") {
-            const newGames = watchGames;
-            setWatchGames(newGames.filter((x) => x.id !== data.id));
-          }
-          // else {
-          //   setWatchVersusGames();
-          // }
+          const newGames = watchGames;
+          setWatchGames(newGames.filter((x) => x.id !== data.id));
         }
       } catch (error) {
         console.error(error);

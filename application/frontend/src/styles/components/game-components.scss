@@ -22,7 +22,8 @@
     }
 
     .game-details,
-    .start-game {
+    .start-game,
+    .opponent-details {
       display: flex;
       flex-flow: column nowrap;
       width: 300px;
@@ -30,6 +31,10 @@
       button {
         width: 125px;
       }
+    }
+
+    .opponent-details {
+      align-items: flex-end;
     }
 
     .start-game {

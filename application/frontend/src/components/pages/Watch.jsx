@@ -4,103 +4,121 @@ import { GAME_URL, HOST_PATH } from "../../scripts/constants";
 import WatchSolo from "../views/WatchSolo";
 import WatchVersus from "../views/WatchVersus";
 import WatchHighScore from "../views/WatchHighScore";
-import Loading from "../Loading";
 
 export default function Watch() {
-  const [isLoading, setIsLoading] = useState(true);
   const [watchSoloGames, setWatchSoloGames] = useState([]);
   const [watchVersusGames, setWatchVersusGames] = useState([]);
   const [watchHighScoreGames, setWatchHighScoreGames] = useState([]);
 
-  // Fetch initial data
-  const fetchGames = async () => {
-    try {
-      const [soloResponse, versusResponse, highScoreResponse] = await Promise.all([
-        axios.get(`${HOST_PATH}/games?watch=true&solo=true`),
-        axios.get(`${HOST_PATH}/games?watch=true&versus=true`),
-        axios.get(`${HOST_PATH}/games?watch=true&high_score=true`),
-      ]);
-
-      setWatchSoloGames(soloResponse.data);
-      setWatchVersusGames(versusResponse.data);
-      setWatchHighScoreGames(highScoreResponse.data);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error fetching games data:", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        const watchSoloResponse = await axios.get(
+          `${HOST_PATH}/games?watch=true&solo=true`
+        );
+        const watchVersusResponse = await axios.get(
+          `${HOST_PATH}/games?watch=true&versus=true`
+        );
+        const watchHighScoreResponse = await axios.get(
+          `${HOST_PATH}/games?watch=true&high_score=true`
+        );
+
+        setWatchSoloGames(watchSoloResponse.data ? watchSoloResponse.data : []);
+        setWatchVersusGames(
+          watchVersusResponse.data ? watchVersusResponse.data : []
+        );
+        setWatchHighScoreGames(
+          watchHighScoreResponse.data ? watchHighScoreResponse.data : []
+        );
+      } catch (error) {
+        console.error("Error fetching games data:", error);
+      }
+    };
     fetchGames();
   }, []);
 
-  // WebSocket connection
+  // Game Socket
   useEffect(() => {
-    let ws;
-    const connectWebSocket = () => {
-      ws = new WebSocket(GAME_URL);
+    const fetchGame = async (gameId) => {
+      try {
+        const gameResponse = await axios.get(
+          `${HOST_PATH}/games/?game_id=${gameId}`
+        );
+        const data = gameResponse.data[0];
 
-      ws.onopen = () => {
-        console.log("WebSocket connection established");
-      };
-
-      ws.onmessage = (event) => {
-        const message = JSON.parse(event.data);
-        
-        if (message.type === "game" && message.payload) {
-          const updatedGame = message.payload;
-
-          // Update solo games
-          setWatchSoloGames(prev => 
-            prev.map(game => 
-              game.id === updatedGame.id ? { ...game, ...updatedGame } : game
-            )
-          );
-
-          // Update versus games
-          setWatchVersusGames(prev => 
-            prev.map(game => 
-              game.id === updatedGame.id ? { ...game, ...updatedGame } : game
-            )
-          );
-
-          // Update high score games
-          setWatchHighScoreGames(prev => 
-            prev.map(game => 
-              game.id === updatedGame.id ? { ...game, ...updatedGame } : game
-            )
-          );
+        if (data.status === "Active") {
+          if (data.mode === "Solo") {
+            const newSoloGames = watchSoloGames;
+            newSoloGames.unshift(data);
+            setWatchSoloGames(newSoloGames);
+          } else {
+            const match = watchVersusGames.find(x => x.id === data.id)
+            const newVersusGames = watchVersusGames;
+            newVersusGames.unshift(data);
+            setWatchVersusGames(newVersusGames);
+          }
+        } else if (data.status === "Complete") {
+          if (data.mode === "Solo") {
+            const newSoloGames = watchSoloGames;
+            setWatchSoloGames(newSoloGames.filter((x) => x.id !== data.id));
+          } else {
+            const newVersusGames = watchVersusGames;
+            setWatchSoloGames(newVersusGames.filter((x) => x.id !== data.id));
+          }
         }
-      };
 
-      ws.onclose = () => {
-        console.warn("WebSocket connection closed. Reconnecting...");
-        setTimeout(connectWebSocket, 5000);
-      };
+        const highScoreResponse = await axios.get(
+          `${HOST_PATH}/games?watch=true&high_score=true`
+        );
 
-      ws.onerror = (error) => {
-        console.error("WebSocket error:", error);
-      };
+        setWatchHighScoreGames(highScoreResponse.data);
+      } catch (error) {
+        console.error(error);
+      }
     };
 
-    connectWebSocket();
+    const ws = new WebSocket(GAME_URL);
+
+    ws.onopen = () => {
+      console.log("WebSocket connection to GameConsumer established");
+    };
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "game") {
+        console.log("Received game message:", message);
+        if (message.game_id.includes("_")) {
+          const parts = message.game_id.split("_");
+          const socketGameId = parts[0];
+          fetchGame(socketGameId);
+        } else {
+          fetchGame(message.game_id);
+        }
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection to GameConsumer closed");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
 
     return () => {
-      if (ws) ws.close();
+      ws.close();
     };
-  }, []);
+  }, [watchSoloGames, watchVersusGames]);
 
   return (
-    <main className="watchlists-default">
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <div className="watchlists-container">
+    <main className="main-default main-watch">
+      <div className="watch-games default-scrollbar">
+        <div className="watch-grid">
           <WatchSolo watchSoloGames={watchSoloGames} />
           <WatchVersus watchVersusGames={watchVersusGames} />
           <WatchHighScore watchHighScoreGames={watchHighScoreGames} />
         </div>
-      )}
+      </div>
     </main>
   );
 }
