@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import InboxComponent from "./InboxComponent";
-import useUserAuthStore from "../../stores/userAuthStore";
 import axios from "axios";
-import { HOST_PATH, CHAT_URL } from "../../scripts/constants";
+import { useEffect, useState } from "react";
+import { CHAT_URL, HOST_PATH } from "../../scripts/constants";
+import useUserAuthStore from "../../stores/userAuthStore";
+import "../../styles/components/inbox-component.scss"; // Import SCSS styles
+import InboxComponent from "./InboxComponent";
 
 export default function Inbox({ isInboxOpen, setIsInboxOpen }) {
   const { username, userId } = useUserAuthStore();
@@ -28,7 +29,6 @@ export default function Inbox({ isInboxOpen, setIsInboxOpen }) {
           username: senderUsername,
         } = message;
 
-        // Update threads with the new message
         setThreads((prevThreads) => {
           const updatedThreads = [...prevThreads];
           const threadIndex = updatedThreads.findIndex(
@@ -61,7 +61,6 @@ export default function Inbox({ isInboxOpen, setIsInboxOpen }) {
   }, [userId, username]);
 
   useEffect(() => {
-    // Fetch friends list and initialize threads
     const fetchFriends = async () => {
       try {
         const response = await axios.get(`${HOST_PATH}/friends/`, {
@@ -86,45 +85,49 @@ export default function Inbox({ isInboxOpen, setIsInboxOpen }) {
 
   const fetchMessages = async (friendId, index) => {
     try {
-        const response = await axios.get(`http://localhost:8000/api/chat-messages/`, {
-            params: {
-                sender: userId,
-                recipient: friendId,
-            },
-        });
+      const response = await axios.get(
+        `http://localhost:8000/api/chat-messages/`,
+        {
+          params: {
+            sender: userId,
+            recipient: friendId,
+          },
+        }
+      );
 
-        // Sort messages by date in ascending order
-        const sortedMessages = response.data.sort((a, b) => new Date(a.date) - new Date(b.date));
+      const sortedMessages = response.data.sort(
+        (a, b) => new Date(a.date) - new Date(b.date)
+      );
 
-        // Update the thread with sorted messages
-        setThreads((prevThreads) => {
-            const updatedThreads = [...prevThreads];
-            updatedThreads[index].messages = sortedMessages.map((message) => ({
-                sender: message.sender === userId ? username : updatedThreads[index].friendName,
-                text: message.message,
-            }));
-            return updatedThreads;
-        });
+      setThreads((prevThreads) => {
+        const updatedThreads = [...prevThreads];
+        updatedThreads[index].messages = sortedMessages.map((message) => ({
+          sender:
+            message.sender === userId
+              ? username
+              : updatedThreads[index].friendName,
+          text: message.message,
+        }));
+        return updatedThreads;
+      });
     } catch (error) {
-        console.error("Error fetching messages:", error);
+      console.error("Error fetching messages:", error);
     }
-};
+  };
 
-const handleInboxClick = async (index) => {
+  const handleInboxClick = async (index) => {
     const friendId = threads[index].friendId;
 
-    // If the thread is not already open, fetch its messages
     if (!openThreads.includes(index)) {
-        await fetchMessages(friendId, index);
+      await fetchMessages(friendId, index);
     }
 
     setOpenThreads((prevOpenThreads) =>
-        prevOpenThreads.includes(index)
-            ? prevOpenThreads.filter((i) => i !== index)
-            : [...prevOpenThreads, index]
+      prevOpenThreads.includes(index)
+        ? prevOpenThreads.filter((i) => i !== index)
+        : [...prevOpenThreads, index]
     );
-};
-
+  };
 
   const handleInputChange = (index, value) => {
     setMessageInputs((prevInputs) => ({
@@ -135,99 +138,109 @@ const handleInboxClick = async (index) => {
 
   const handleSendMessage = async (index) => {
     if (messageInputs[index]?.trim()) {
-        const message = messageInputs[index].trim();
-        const recipientId = threads[index].friendId;
+      const message = messageInputs[index].trim();
+      const recipientId = threads[index].friendId;
 
-        // Create the message object
-        const messagePayload = {
-            sender: userId,        // Your current user's ID
-            recipient: recipientId, // The recipient's ID
-            message: message,       // The message content
-        };
+      const messagePayload = {
+        sender: userId,
+        recipient: recipientId,
+        message: message,
+      };
 
-        try {
-            // Save the message to the API
-            const response = await axios.post(
-                'http://localhost:8000/api/chat-messages/',
-                messagePayload
-            );
-            const savedMessage = response.data; // The saved message returned by the API
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/chat-messages/",
+          messagePayload
+        );
+        const savedMessage = response.data;
 
-            // Send the message via WebSocket
-            ws.send(
-                JSON.stringify({
-                    type: 'chat',
-                    user_id: userId,
-                    message: savedMessage.message, // Use savedMessage to ensure consistency
-                    username,
-                })
-            );
+        ws.send(
+          JSON.stringify({
+            type: "chat",
+            user_id: userId,
+            message: savedMessage.message,
+            username,
+          })
+        );
 
-            // Update the local state with the saved message
-            setThreads((prevThreads) => {
-                const newThreads = [...prevThreads];
-                newThreads[index].messages.push({
-                    sender: username, // Your username
-                    text: savedMessage.message, // The message content
-                });
-                return newThreads;
-            });
+        setThreads((prevThreads) => {
+          const newThreads = [...prevThreads];
+          newThreads[index].messages.push({
+            sender: username,
+            text: savedMessage.message,
+          });
+          return newThreads;
+        });
 
-            // Clear the input field
-            setMessageInputs((prevInputs) => ({
-                ...prevInputs,
-                [index]: '',
-            }));
-        } catch (error) {
-            console.error("Error saving or sending message:", error);
-        }
+        setMessageInputs((prevInputs) => ({
+          ...prevInputs,
+          [index]: "",
+        }));
+      } catch (error) {
+        console.error("Error saving or sending message:", error);
+      }
     }
-};
+  };
 
   return (
     <div
-      key="inbox"
-      className="inbox"
-      style={{ background: "gray", gridColumnEnd: isInboxOpen ? -1 : 4 }}
+      className={`inbox-component ${isInboxOpen ? "expanded" : "collapsed"}`}
     >
-      <div>
-        <div className="inbox-flex">
-          <h2>Inbox</h2>
-          <button onClick={() => setIsInboxOpen(!isInboxOpen)} style={{background: isInboxOpen ? "red" : "green", color: "white", padding: "5px 10px"}}>
-            {isInboxOpen ? "Close" : "Open"}
-          </button>
-        </div>
-        {threads.map((thread, index) => (
-          <div key={index} className="thread">
-            <InboxComponent
-              sender={
-                thread.messages.length
-                  ? thread.messages[thread.messages.length - 1].sender
-                  : thread.friendName
-              }
-              latestMsg={
-                thread.messages.length
-                  ? thread.messages[thread.messages.length - 1].text
-                  : "Start a conversation"
-              }
-              messages={thread.messages}
-              currentUser={username}
-              isThreadVisible={openThreads.includes(index)}
-              onClick={() => handleInboxClick(index)}
-            />
-            {openThreads.includes(index) && (
-              <div className="message-input">
-                <input
-                  type="text"
-                  value={messageInputs[index] || ""}
-                  onChange={(e) => handleInputChange(index, e.target.value)}
-                  placeholder="Type your message"
-                />
-                <button onClick={() => handleSendMessage(index)}>Send</button>
-              </div>
-            )}
+      <div
+        key="inbox"
+        className={`inbox ${isInboxOpen ? "open" : ""}`}
+        style={{ gridColumnEnd: isInboxOpen ? -1 : 4 }}
+      >
+        <div>
+          <div className="inbox-header">
+            <h2>Inbox</h2>
+            <button
+              className={`toggle-btn ${isInboxOpen ? "close" : ""}`}
+              onClick={() => setIsInboxOpen(!isInboxOpen)}
+            >
+              {isInboxOpen ? "Close" : "Open"}
+            </button>
           </div>
-        ))}
+          {threads.map((thread, index) => (
+            <div key={index} className="thread">
+              <InboxComponent
+                sender={
+                  thread.messages.length
+                    ? thread.messages[thread.messages.length - 1].sender
+                    : thread.friendName
+                }
+                latestMsg={
+                  thread.messages.length
+                    ? thread.messages[thread.messages.length - 1].text
+                    : "Start a conversation"
+                }
+                messages={thread.messages}
+                currentUser={username}
+                isThreadVisible={openThreads.includes(index)}
+                onClick={() => handleInboxClick(index)}
+              />
+              {openThreads.includes(index) && (
+                <div className="message-input-container">
+                  <input
+                    type="text"
+                    value={messageInputs[index] || ""}
+                    onChange={(e) =>
+                      handleInputChange(index, e.target.value)
+                    }
+                    placeholder="Type your message"
+                    className="message-input"
+                  />
+                  <button
+                    onClick={() => handleSendMessage(index)}
+                    className="send-btn"
+                  >
+                    Send
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
