@@ -61,7 +61,7 @@ export default function GameEntry({
   }, [status]);
 
   function handleClick() {
-    if (status === "Pending") navigate("/versus");
+    if (status === "Pending") navigate(`/versus/?game_id=${gameId}`);
     else navigate(`/game/game_id_${gameId}`);
   }
 

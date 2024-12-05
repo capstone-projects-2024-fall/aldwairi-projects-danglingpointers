@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useContext, useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import GameContext from "../../context/GameContext";
 import useUserAuthStore from "../../stores/userAuthStore";
 import { GAME_URL, HOST_PATH, ITEM_URL } from "../../scripts/constants";
@@ -47,7 +48,15 @@ export default function GameVersus() {
   const useItem = useRef(null);
   const userPoints = useRef(null);
   const [pendingGame, setPendingGame] = useState({});
+  const [isOtherUser, setIsOtherUser] = useState(false);
   const [currGameId, setCurrGameId] = useState(null);
+  const { search } = useLocation();
+
+  //!! ALWAYS FIRST !!
+  useEffect(() => {
+    const queryParams = new URLSearchParams(search);
+    setCurrGameId(queryParams.get('game_id'))
+  }, []);
 
   // Versus mode game confirmation web socket
   useEffect(() => {
@@ -85,7 +94,7 @@ export default function GameVersus() {
         const filteredPendingGames = response.data.filter(
           (x) => x.player_one === userId
         );
-        console.log(filteredPendingGames)
+        console.log(filteredPendingGames);
         setPendingGame(filteredPendingGames[0]);
       } catch (error) {
         console.log(error);
@@ -356,18 +365,17 @@ export default function GameVersus() {
           status: "Active",
         };
 
-        const response = await axios.post(`${HOST_PATH}/games/`, payload);
+        const response = await axios.post(`${HOST_PATH}/games/${currGameId}`, payload);
 
         if (response.data && response.data.id) {
-          setCurrGameId(response.data.id);
           console.log("Active game data posted, gameId:", response.data.id);
 
           // Send WebSocket message
           if (
-            wsItemRef.current &&
-            wsItemRef.current.readyState === WebSocket.OPEN
+            wsGameRef.current &&
+            wsGameRef.current.readyState === WebSocket.OPEN
           ) {
-            wsItemRef.current.send(
+            wsGameRef.current.send(
               JSON.stringify({
                 type: "game",
                 game_id: response.data.id,

@@ -56,6 +56,34 @@ export default function Game() {
   const userPoints = useRef(null);
   const [currGameId, setCurrGameId] = useState(null);
 
+  useEffect(() => {
+    const ws = new WebSocket(GAME_URL);
+    wsRef.current = ws;
+
+    ws.onopen = () => {
+      console.log("WebSocket connection to GameConsumer established");
+    };
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "game") {
+        console.log("Received game message:", message);
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection to GameConsumer closed");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, []);
+
   // Set current user points
   useEffect(() => {
     const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
