@@ -24,6 +24,7 @@ export default function Dashboard() {
       const response = await axios.get(`${HOST_PATH}/friendship/`, {
         params: { user_id: userId, status: "Pending", exclude_requestor: true },
       });
+      console.log(response.data)
       setPendingRequests(response.data);
     } catch (error) {
       console.error("Error fetching pending requests:", error);
@@ -102,7 +103,20 @@ export default function Dashboard() {
       >
         <div className="section pending-requests">
           <h3>Pending Friend Requests</h3>
-          {/* Content for pending requests */}
+          {pendingRequests.length > 0 ? (
+            <ul>
+              {pendingRequests.map((request) => (
+                <li key={request.id}>
+                  <Link to={`/profile/${request.user_username}`}>{request.user_username}</Link>
+                  <button onClick={() => handleAcceptRequest(request.id)}>
+                    Accept
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No pending friend requests</p>
+          )}
         </div>
         <div
           className="section friends-list"
@@ -114,7 +128,17 @@ export default function Dashboard() {
               <button className="profile-button">My Profile</button>
             </Link>
           </div>
-          {/* Content for friends list */}
+          {friends.length > 0 ? (
+            <ul>
+              {friends.map((friend) => (
+                <li key={friend.id}>
+                  <Link to={`/profile/${friend.username}`}>{friend.username}</Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>You have no friends yet</p>
+          )}
         </div>
       </div>
       <Store isInboxOpen={isInboxOpen} />
