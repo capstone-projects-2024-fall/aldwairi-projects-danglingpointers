@@ -59,17 +59,8 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
         const userMetaDataResponse = await axios.get(
           `${HOST_PATH}/user-metadata?user_id=${profileUserId}`
         );
-
-    
-        // Fetch comments for the profile using content_id (profileUserId)
-        const commentsResponse = await axios.get(`${HOST_PATH}/comments/`, {
-          params: { content_id: profileUserId }, // Fetch comments by content_id
-        });
-    
-        console.log("Comments response:", commentsResponse.data);
-    
+        
         // Update profile data
-
 
         setIsOnline(userMetaDataResponse.data[0].is_online);
 
