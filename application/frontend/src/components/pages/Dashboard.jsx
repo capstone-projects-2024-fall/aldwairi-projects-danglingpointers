@@ -11,7 +11,7 @@ import UserPreviousGames from "../dashboard-components/UserPreviousGames";
 import UserSetup from "../dashboard-components/UserSetup";
 
 export default function Dashboard() {
-  const { userId } = useUserAuthStore();
+  const { userId, username } = useUserAuthStore();
   const { isMetaDataSet, setUserMetaData } = useUserMetaDataStore();
   const [userNeedsMetaData, setUserNeedsMetaData] = useState(true);
   const [isInboxOpen, setIsInboxOpen] = useState(false);
@@ -22,14 +22,14 @@ export default function Dashboard() {
   const fetchPendingRequests = async () => {
     try {
       const response = await axios.get(`${HOST_PATH}/friendship/`, {
-        params: { user_id: userId, status: "Pending" },
+        params: { user_id: userId, status: "Pending", exclude_requestor: true },
       });
       setPendingRequests(response.data);
     } catch (error) {
       console.error("Error fetching pending requests:", error);
     }
   };
-  
+
   // Fetch friends list
   const fetchFriends = async () => {
     try {
@@ -94,41 +94,25 @@ export default function Dashboard() {
   }
 
   return (
+
     <main className="main-dashboard default-scrollbar">
+       {/* "My Profile" button */}
+      <div className="profile-button-container">
+        <Link to={`/profile/${username}`}>
+          <button className="profile-button">My Profile</button>
+        </Link>
+      </div>
       <Inbox isInboxOpen={isInboxOpen} setIsInboxOpen={setIsInboxOpen}/>
       <div className="friend-sections" style={isInboxOpen ? {display: "none"}: null}>
+
         <div className="section pending-requests">
           <h3>Pending Friend Requests</h3>
-          {pendingRequests.length > 0 ? (
-            <ul>
-              {pendingRequests.map((request) => (
-                <li key={request.id}>
-                  <Link to={`/profile/${request.user_username}`}>{request.user_username}</Link>
-                  <button onClick={() => handleAcceptRequest(request.id)}>
-                    Accept
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No pending friend requests</p>
-          )}
+          {/* Content for pending requests */}
         </div>
         <div className="section friends-list" style={isInboxOpen ? {display: "none"}: null}>
           <h3>Friends</h3>
-          {friends.length > 0 ? (
-            <ul>
-              {friends.map((friend) => (
-                <li key={friend.id}>
-                  <Link to={`/profile/${friend.username}`}>{friend.username}</Link>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>You have no friends yet</p>
-          )}
+          {/* Content for friends list */}
         </div>
-
       </div>
       <Store isInboxOpen={isInboxOpen}/>
       <Settings isInboxOpen={isInboxOpen}/>

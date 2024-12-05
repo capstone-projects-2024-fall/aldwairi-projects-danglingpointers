@@ -51,6 +51,8 @@ class ChatMessageSerializer(serializers.ModelSerializer):
         
         
 class CommentSerializer(serializers.ModelSerializer):
-    class Meta: 
+    username = serializers.CharField(source='user.username', read_only=True)
+
+    class Meta:
         model = Comment
-        fields = '__all__'
+        fields = ['id', 'username', 'comment', 'comment_type', 'content_id', 'date']
