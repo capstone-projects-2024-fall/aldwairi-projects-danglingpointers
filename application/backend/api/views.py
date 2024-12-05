@@ -202,6 +202,10 @@ class UserMetaDataViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
 
+        user = self.request.query_params.get('user')
+        if user:
+            queryset = queryset.filter(user=user)
+
         username = self.request.query_params.get('username')
         if username:
             queryset = queryset.filter(username=username)
