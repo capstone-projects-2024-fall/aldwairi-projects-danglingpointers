@@ -1,7 +1,36 @@
 .inbox-component {
-  background: "lightgray";
-  padding: "10px";
-  display: flex;
-  flex-flow: row nowrap;
-  gap: 20px;
+  background: #f4f4f4;
+  width: 18vw;
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+
+  &.expanded {
+    width: 70vw;
+    height: 70vh;
+  }
+  &.collapsed {
+    width: 18vw;
+    height: 50vw;
+  }
+
+  .inbox {
+    .inbox-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .toggle-btn {
+        background: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+
+        &:hover {
+          background: #0056b3;
+        }
+      }
+    }
+  }
 }

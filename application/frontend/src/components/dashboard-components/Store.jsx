@@ -1,15 +1,17 @@
 import axios from "axios";
-import ItemEntry from "../entries/ItemEntry";
 import { useEffect, useState } from "react";
 import { HOST_PATH } from "../../scripts/constants";
+import ItemEntry from "../entries/ItemEntry";
 
-export default function Store() {
+export default function Store({ isInboxOpen }) {
   const [itemsList, setItemsList] = useState();
   const [userMoney, setUserMoney] = useState(null);
+  const [userItems, setUserItems] = useState({});
 
   useEffect(() => {
     const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
     setUserMoney(store.state.points);
+    setUserItems(store.state.items || {});
 
     const fetchItems = async () => {
       try {
@@ -23,8 +25,21 @@ export default function Store() {
     fetchItems();
   }, []);
 
+  // Function to update user items after purchase
+  const updateUserItems = (itemId, newQuantity) => {
+    setUserItems((prevItems) => ({
+      ...prevItems,
+      [itemId]: newQuantity,
+    }));
+
+    // Update sessionStorage to persist the change
+    const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+    store.state.items[itemId] = newQuantity;
+    sessionStorage.setItem("user-metadata-state", JSON.stringify(store));
+  };
+
   return (
-    <div className="store-container default-scrollbar mb-def">
+    <div className="store-container default-scrollbar mb-def" style={isInboxOpen ? {display: "none"}: null}>
       <div className="store-details">
         <h1 className="store-title">Store</h1>
         <h1 className="user-money">{userMoney ? `$${userMoney}` : "$0"}</h1>
@@ -41,6 +56,8 @@ export default function Store() {
                 itemCost={item.cost}
                 userMoney={userMoney}
                 setUserMoney={setUserMoney}
+                itemQuantity={userItems[item.id] || 0} // Pass the quantity
+                updateUserItems={updateUserItems} // Pass the updater function
               />
             ))
           : null}

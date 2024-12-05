@@ -4,7 +4,7 @@ import { HOST_PATH } from "../../scripts/constants";
 import useUserAuthStore from "../../stores/userAuthStore";
 import GameEntry from "../entries/GameEntry";
 
-export default function UserPreviousGames() {
+export default function UserPreviousGames({ isInboxOpen }) {
   const [watchPreviews, setWatchPreviews] = useState([]);
   const { userId } = useUserAuthStore();
 
@@ -27,15 +27,16 @@ export default function UserPreviousGames() {
   }, [userId]);
 
   return (
-    <div className="user-previous-games default-scrollbar mb-def">
+    <div className="user-previous-games default-scrollbar mb-def" style={isInboxOpen ? {display: "none"}: null}>
       <div>
-        <h1 className="watchtitle">Game Replays</h1>
+        <h1 className="watchtitle">Game History</h1>
       </div>
       <article className="watchlist-container">
         {watchPreviews.map((game, index) => (
           <GameEntry
             key={index}
             gameLength={game.game_length}
+            gameId={game.id}
             users={[
               { id: game.player_one, name: "" },
               { id: game.player_two, name: "" },

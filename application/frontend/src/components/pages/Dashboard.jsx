@@ -1,19 +1,20 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Inbox from "../dashboard-components/Inbox";
-import Store from "../dashboard-components/Store";
-import Settings from "../dashboard-components/Settings";
-import UserPreviousGames from "../dashboard-components/UserPreviousGames";
-import UserSetup from "../dashboard-components/UserSetup";
+import { HOST_PATH } from "../../scripts/constants";
 import useUserAuthStore from "../../stores/userAuthStore";
 import useUserMetaDataStore from "../../stores/userMetaDataStore";
-import axios from "axios";
-import { CHAT_URL, GAME_URL, HOST_PATH } from "../../scripts/constants";
+import Inbox from "../dashboard-components/Inbox";
+import Settings from "../dashboard-components/Settings";
+import Store from "../dashboard-components/Store";
+import UserPreviousGames from "../dashboard-components/UserPreviousGames";
+import UserSetup from "../dashboard-components/UserSetup";
 
 export default function Dashboard() {
   const { userId, username } = useUserAuthStore();
   const { isMetaDataSet, setUserMetaData } = useUserMetaDataStore();
   const [userNeedsMetaData, setUserNeedsMetaData] = useState(true);
+  const [isInboxOpen, setIsInboxOpen] = useState(false);
   const [pendingRequests, setPendingRequests] = useState([]);
   const [friends, setFriends] = useState([]); // State for friends
 
@@ -28,8 +29,6 @@ export default function Dashboard() {
       console.error("Error fetching pending requests:", error);
     }
   };
-  
-  
 
   // Fetch friends list
   const fetchFriends = async () => {
@@ -44,11 +43,6 @@ export default function Dashboard() {
     }
   };
   
-  
-  
-  
-
-
   const handleAcceptRequest = async (friendshipId) => {
     try {
       console.log("Accepting request for friendshipId:", friendshipId);
@@ -63,8 +57,6 @@ export default function Dashboard() {
     }
   };
   
-  
-
   // Fetch user metadata on mount
   useEffect(() => {
     const fetchUserMetaData = async () => {
@@ -102,29 +94,29 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="main-dashboard">
-      {/* "My Profile" button */}
+
+    <main className="main-dashboard default-scrollbar">
+       {/* "My Profile" button */}
       <div className="profile-button-container">
         <Link to={`/profile/${username}`}>
           <button className="profile-button">My Profile</button>
         </Link>
       </div>
+      <Inbox isInboxOpen={isInboxOpen} setIsInboxOpen={setIsInboxOpen}/>
+      <div className="friend-sections" style={isInboxOpen ? {display: "none"}: null}>
 
-      {/* Dashboard sections */}
-      <Inbox />
-      <div className="friend-sections">
         <div className="section pending-requests">
           <h3>Pending Friend Requests</h3>
           {/* Content for pending requests */}
         </div>
-        <div className="section friends-list">
+        <div className="section friends-list" style={isInboxOpen ? {display: "none"}: null}>
           <h3>Friends</h3>
           {/* Content for friends list */}
         </div>
       </div>
-      <Store />
-      <Settings />
-      <UserPreviousGames />
+      <Store isInboxOpen={isInboxOpen}/>
+      <Settings isInboxOpen={isInboxOpen}/>
+      <UserPreviousGames isInboxOpen={isInboxOpen}/>
     </main>
   );
 }

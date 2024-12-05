@@ -52,14 +52,18 @@ export default function Watch() {
             newSoloGames.unshift(data);
             setWatchSoloGames(newSoloGames);
           } else {
-            setWatchVersusGames([data, ...watchVersusGames]);
+            const match = watchVersusGames.find(x => x.id === data.id)
+            const newVersusGames = watchVersusGames;
+            newVersusGames.unshift(data);
+            setWatchVersusGames(newVersusGames);
           }
         } else if (data.status === "Complete") {
           if (data.mode === "Solo") {
             const newSoloGames = watchSoloGames;
             setWatchSoloGames(newSoloGames.filter((x) => x.id !== data.id));
           } else {
-            setWatchVersusGames([data, ...watchVersusGames]);
+            const newVersusGames = watchVersusGames;
+            setWatchSoloGames(newVersusGames.filter((x) => x.id !== data.id));
           }
         }
 
@@ -83,7 +87,13 @@ export default function Watch() {
       const message = JSON.parse(event.data);
       if (message.type === "game") {
         console.log("Received game message:", message);
-        fetchGame(message.game_id);
+        if (message.game_id.includes("_")) {
+          const parts = message.game_id.split("_");
+          const socketGameId = parts[0];
+          fetchGame(socketGameId);
+        } else {
+          fetchGame(message.game_id);
+        }
       }
     };
 
@@ -103,7 +113,6 @@ export default function Watch() {
   return (
     <main className="main-default main-watch">
       <div className="watch-games default-scrollbar">
-        <h2>Watch</h2>
         <div className="watch-grid">
           <WatchSolo watchSoloGames={watchSoloGames} />
           <WatchVersus watchVersusGames={watchVersusGames} />

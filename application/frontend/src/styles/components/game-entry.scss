@@ -31,3 +31,21 @@
   padding: 5px;
   text-shadow: 0 1px 1px black;
 }
+
+.create-game-entry {
+  min-height: 75px;
+  max-height: 75px;
+  display: grid;
+  row-gap: 10px;
+
+  .create-container {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    
+    select {
+      width: 60%;
+      height: 25px;
+    }
+  }
+}

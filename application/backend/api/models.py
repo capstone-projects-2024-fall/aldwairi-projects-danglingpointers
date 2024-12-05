@@ -138,8 +138,8 @@ class Game(models.Model):
         ('Pending', 'Pending'),
         ('Complete', 'Complete'),
     ))
-    game_length = models.IntegerField()
-    player_one_score = models.IntegerField()
+    game_length = models.IntegerField(default=0)
+    player_one_score = models.IntegerField(default=0)
     player_two_score = models.IntegerField(null=True, blank=True)
     winner = models.ForeignKey(
         User, related_name='game_winner', on_delete=models.SET_NULL, null=True, blank=True)

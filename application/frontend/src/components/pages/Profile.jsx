@@ -12,6 +12,7 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
   const [loading, setLoading] = useState(true);
   const [userNotFound, setUserNotFound] = useState(false);
   const [profilePicture, setProfilePicture] = useState("");
+  const [isOnline, setIsOnline] = useState(false);
   const { userId } = useUserAuthStore();
 
 
@@ -50,8 +51,15 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
       try {
         // Fetch recent games
         const gamesResponse = await axios.get(
-          `${HOST_PATH}/games?recent_games=true&user_id=${userId}`
+          `${HOST_PATH}/games?recent_games=true&user_id=${profileUserId}`
         );
+        const commentsResponse = await axios.get(
+          `${HOST_PATH}/comments?user_id=${profileUserId}`
+        );
+        const userMetaDataResponse = await axios.get(
+          `${HOST_PATH}/user-metadata?user_id=${profileUserId}`
+        );
+
     
         // Fetch comments for the profile using content_id (profileUserId)
         const commentsResponse = await axios.get(`${HOST_PATH}/comments/`, {
@@ -61,6 +69,11 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
         console.log("Comments response:", commentsResponse.data);
     
         // Update profile data
+
+
+        setIsOnline(userMetaDataResponse.data[0].is_online);
+
+
         setProfileData({
           username: username,
           dateJoined: dateJoined,
@@ -80,6 +93,7 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
         }));
     
         setComments(enrichedComments);
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -90,18 +104,22 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
     
   
     fetchProfileData();
-  }, [userId, username, dateJoined, lastLogin]);
-  
+
+  }, [profileUserId, username, dateJoined, lastLogin]);
+
 
   const handleFriendRequest = async () => {
     try {
       console.log("Sending friend request from:", userId, "to:", profileUserId);
+
       const response = await axios.post(`${HOST_PATH}/friendships/`, {
+
         user_id: userId,
         friend_id: profileUserId,
       });
       alert(response.data.success || "Friend request sent!");
     } catch (error) {
+
       const errorMessage = error.response?.data?.error || "An error occurred.";
       if (errorMessage === "Friendship already exists.") {
         alert("This friendship is already active.");
@@ -113,8 +131,6 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
     }
   };
   
-  
-
   const handleRemoveFriend = async () => {
     try {
       // Fetch the friendship ID dynamically
@@ -168,6 +184,7 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
         ]);
       
       setNewComment(""); // Clear input field
+
     } catch (error) {
       console.error("Error posting comment:", error);
     }
@@ -197,6 +214,51 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
     }
   };
   
+  useEffect(() => {
+    const fetchGame = async (gameId) => {
+      try {
+        const gameResponse = await axios.get(
+          `${HOST_PATH}/games/?game_id=${gameId}`
+        );
+        const data = gameResponse.data[0];
+
+        if (data.status === "Complete") {
+          setRecentGames([data, ...recentGames]);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const ws = new WebSocket(GAME_URL);
+
+    ws.onopen = () => {
+      console.log("WebSocket connection to GameConsumer established");
+    };
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === "connected") console.log(message);
+
+      if (message.type === "game") {
+        console.log("Received game message:", message);
+        fetchGame(message.game_id);
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection to GameConsumer closed");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, []);
+
 
   if (loading) return <p>Loading profile...</p>;
   if (userNotFound) return <p>User not found in the database.</p>;
@@ -228,12 +290,14 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
           <div className="profile-details">
             <p>
               <strong>Username:</strong> {profileData.username}
+              <span>{isOnline ? "🟢" : "🔴"}</span>
             </p>
             <p>
               <strong>Date Joined:</strong> {profileData.dateJoined}
             </p>
             <p>
-              <strong>Last Login:</strong> {profileData.lastLogin || profileData.dateJoined}
+              <strong>Last Login:</strong>{" "}
+              {profileData.lastLogin || profileData.dateJoined}
             </p>
           </div>
           <button onClick={handleFriendRequest}>Request</button>
@@ -258,6 +322,7 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
                   <GameEntry
                     key={index}
                     gameLength={game.game_length}
+                    gameId={game.id}
                     users={[
                       { id: game.player_one, name: "" },
                       { id: game.player_two, name: "" },
@@ -271,6 +336,7 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
               <p>No recent games available.</p>
             )}
           </div>
+          <button onClick={handleFriendRequest}>Request</button>
         </div>
         <div className="right-column">
           <div className="comment-wall">
