@@ -18,9 +18,10 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
 
   
   const fetchUserMetaData = async (userIdToFetch) => {
+    console.log(userIdToFetch)
     try {
       const response = await axios.get(`${HOST_PATH}/user-metadata/`, {
-        params: { user_id: userIdToFetch },
+        params: { user: userIdToFetch },
       });
       if (response.data && response.data.length > 0) {
         const metadata = response.data[0];
@@ -54,13 +55,14 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
           `${HOST_PATH}/games?recent_games=true&user_id=${profileUserId}`
         );
         const commentsResponse = await axios.get(
-          `${HOST_PATH}/comments?user_id=${profileUserId}`
+          `${HOST_PATH}/comments?content_id=${profileUserId}`
         );
         const userMetaDataResponse = await axios.get(
           `${HOST_PATH}/user-metadata?user_id=${profileUserId}`
         );
+        const isOnline = profileData?.is_online || false;
       
-        setIsOnline(userMetaDataResponse.data[0].is_online);
+        setIsOnline(isOnline);
         setProfileData({
           username: username,
           dateJoined: dateJoined,
