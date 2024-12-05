@@ -5,8 +5,8 @@
   transition: all 0.3s ease-in-out;
 
   &.expanded {
-    width: 70vw;
-    height: 70vh;
+    width: 100vw;
+    height: 100vh;
   }
   &.collapsed {
     width: 18vw;
