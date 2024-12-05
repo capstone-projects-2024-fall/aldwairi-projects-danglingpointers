@@ -200,9 +200,7 @@
     grid-row-start: 1;
     grid-row-end: 2; 
     display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 10px 0;
+    justify-content: space-between;
   }
   
   .profile-button {

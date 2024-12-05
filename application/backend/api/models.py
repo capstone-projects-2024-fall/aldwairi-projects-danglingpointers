@@ -103,7 +103,7 @@ class ChatMessage(models.Model):
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    username = models.CharField(max_length=150, editable=False)  # Add username field
+    username = models.CharField(max_length=150, editable=False, default="")  # Add username field
     date = models.DateTimeField(auto_now_add=True)
     comment = models.TextField()
     comment_type = models.CharField(
