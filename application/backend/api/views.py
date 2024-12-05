@@ -527,9 +527,9 @@ class CommentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
 
-        user_id = self.request.query_params.get('user_id')
-        if user_id:
-            queryset = queryset.filter(user__id=user_id)
+        content_id = self.request.query_params.get('content_id')
+        if content_id:
+            queryset = queryset.filter(content_id=content_id)
 
             game = self.request.query_params.get('game')
             user = self.request.query_params.get('user')

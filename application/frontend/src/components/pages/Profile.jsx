@@ -23,11 +23,17 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
       });
       if (response.data && response.data.length > 0) {
         const metadata = response.data[0];
-        console.log("Received response:", response.data);
-
-        console.log("Received profile_picture from API:", metadata.profile_picture);
-        setProfilePicture(metadata.profile_picture || ""); // Ensure state is set
-        console.log("Updated state profilePicture:", metadata.profile_picture);
+        console.log("Received metadata:", metadata);
+  
+        setProfilePicture(metadata.profile_picture || "");
+        // Update sessionStorage
+        const storedData = JSON.parse(sessionStorage.getItem("user-metadata-state")) || {};
+        storedData.state = storedData.state || {};
+        storedData.state.settings = {
+          ...storedData.state.settings,
+          profile_picture: metadata.profile_picture,
+        };
+        sessionStorage.setItem("user-metadata-state", JSON.stringify(storedData));
       } else {
         console.error("No metadata found for user.");
       }
@@ -35,31 +41,45 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
       console.error("Error fetching user metadata:", error);
     }
   };
+  
   useEffect(() => {
     fetchUserMetaData();
   }, [userId]);
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
+        // Fetch recent games
         const gamesResponse = await axios.get(
           `${HOST_PATH}/games?recent_games=true&user_id=${userId}`
         );
+    
+        // Fetch comments for the profile using content_id (profileUserId)
         const commentsResponse = await axios.get(`${HOST_PATH}/comments/`, {
-          params: { user_id: profileUserId, user: true }, // Fetch user-related comments
+          params: { content_id: profileUserId }, // Fetch comments by content_id
         });
     
+        console.log("Comments response:", commentsResponse.data);
+    
+        // Update profile data
         setProfileData({
           username: username,
           dateJoined: dateJoined,
           lastLogin: lastLogin,
         });
     
+        // Update recent games
         setRecentGames(
           gamesResponse.data.filter((game) => game.status === "Complete") || []
         );
     
-        // Use comments with username
-        setComments(commentsResponse.data || []);
+        // Map comments to include commenter username
+        const enrichedComments = commentsResponse.data.map((comment) => ({
+          username: comment.username, // Use the `username` field directly from the API
+          comment: comment.comment,
+          date: comment.date,
+        }));
+    
+        setComments(enrichedComments);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -68,9 +88,10 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
       }
     };
     
-
+  
     fetchProfileData();
   }, [userId, username, dateJoined, lastLogin]);
+  
 
   const handleFriendRequest = async () => {
     try {
@@ -133,11 +154,18 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
         content_id: profileUserId, // ID of the profile the comment is for
       });
 
-      // Update local comments state
-      setComments((prevComments) => [
-        { username: username, comment: newComment, date: response.data.date },
-        ...prevComments,
-      ]);
+        // Fetch the logged-in user's username (if not already available in state)
+        const commenterUsername = response.data.username || "Anonymous"; // Use response username or fallback
+
+        // Update local comments state with the new comment
+        setComments((prevComments) => [
+          {
+            username: commenterUsername, // Use the logged-in user's username
+            comment: newComment,
+            date: response.data.date,
+          },
+          ...prevComments,
+        ]);
       
       setNewComment(""); // Clear input field
     } catch (error) {
@@ -152,14 +180,23 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
         profile_picture: profilePicture,
       });
       alert("Profile picture updated!");
-
-      // Re-fetch metadata after update
+  
+      // Update sessionStorage
+      const storedData = JSON.parse(sessionStorage.getItem("user-metadata-state")) || {};
+      storedData.state = storedData.state || {};
+      storedData.state.settings = {
+        ...storedData.state.settings,
+        profile_picture: profilePicture,
+      };
+      sessionStorage.setItem("user-metadata-state", JSON.stringify(storedData));
+  
+      // Optionally, re-fetch metadata
       fetchUserMetaData();
     } catch (error) {
       console.error("Error updating profile picture:", error);
     }
   };
-
+  
 
   if (loading) return <p>Loading profile...</p>;
   if (userNotFound) return <p>User not found in the database.</p>;
@@ -172,7 +209,7 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
           <img
           src={profilePicture || "default-profile-pic.png"}
           alt="Profile"
-          style={{ width: 100, height: 100, borderRadius: "50%" }}
+          style={{ width: 200, height: 150, borderRadius: "50%" }}
         />
         <input
           type="text"

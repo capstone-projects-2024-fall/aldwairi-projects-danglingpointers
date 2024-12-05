@@ -15,20 +15,16 @@ export default function Settings() {
   }
 
   const handleEditSettings = async () => {
-    if (editSettings) {
-      const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
-      const settings = store.state.settings;
-      const keys = Object.keys(settings);
-      values[0] = garbageCollectorColor;
-
-      for (let i = 0; i < keys.length; i++) settings[keys[i]] = values[i];
-
-      store.state.settings = settings;
-      sessionStorage.setItem("user-metadata-state", JSON.stringify(store));
-    }
+    const store = JSON.parse(sessionStorage.getItem("user-metadata-state")) || {};
+    store.state = store.state || {};
+    store.state.settings = {
+      ...store.state.settings,
+      garbageCollectorColor: garbageCollectorColor,
+    };
+    sessionStorage.setItem("user-metadata-state", JSON.stringify(store));
     setEditSettings(!editSettings);
   };
-
+  
   const handleChangeComplete = async (color) => {
     setGarbageCollectorColor(color.hex);
   };

@@ -99,13 +99,26 @@ class ChatMessage(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
 
+
+
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    username = models.CharField(max_length=150, editable=False)  # Add username field
     date = models.DateTimeField(auto_now_add=True)
     comment = models.TextField()
     comment_type = models.CharField(
         max_length=7, blank=True, choices=(('Game', 'Game'), ('User', 'User')))
     content_id = models.IntegerField()
+
+    def save(self, *args, **kwargs):
+        # Automatically set the username field from the linked user
+        if not self.username:
+            self.username = self.user.username
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.username}: {self.comment[:20]}..."
+
 
 
 class Game(models.Model):
