@@ -211,15 +211,20 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
           alt="Profile"
           style={{ width: 200, height: 150, borderRadius: "50%" }}
         />
-        <input
-          type="text"
-          value={profilePicture}
-          onChange={(e) => setProfilePicture(e.target.value)}
-          placeholder="Enter profile picture URL"
-        />
-        <button onClick={handleUpdateProfilePicture}>
-          Update Profile Picture
-        </button>
+        {userId === profileUserId && (
+        <>
+          <input
+            type="text"
+            value={profilePicture}
+            onChange={(e) => setProfilePicture(e.target.value)}
+            placeholder="Enter profile picture URL"
+          />
+          <button onClick={handleUpdateProfilePicture}>
+            Update Profile Picture
+          </button>
+        </>
+      )}
+
           <div className="profile-details">
             <p>
               <strong>Username:</strong> {profileData.username}
