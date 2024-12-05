@@ -69,12 +69,14 @@ export default function GameEntry({
 
   return (
     <section className="base-entry game-entry">
-      {currentUsers.map((user, i) => (
-        <p key={i}>
-          <Link to={`/profile/${user.username}`}>{user.username}</Link>
-          <span>{isOnline[i] ? " 🟢" : " 🔴"}</span>
-        </p>
-      ))}
+      <div className="game-scores">
+        {currentUsers.map((user, i) => (
+          <p key={i}>
+            <Link to={`/profile/${user.username}`}>{user.username}</Link>
+            <span>{isOnline[i] ? " 🟢" : " 🔴"}</span>
+          </p>
+        ))}
+      </div>
       <div className="game-scores">
         {scores.map((score, index) => (
           <p key={index}>
@@ -87,7 +89,10 @@ export default function GameEntry({
           Status:
           <button
             className={`btn-status`}
-            style={{ background: btnColor, cursor: userId ? "pointer" : "not-allowed" }}
+            style={{
+              background: btnColor,
+              cursor: userId ? "pointer" : "not-allowed",
+            }}
             onClick={userId ? handleClick : null}
           >
             {status === "Pending" ? "Join Game" : status}
