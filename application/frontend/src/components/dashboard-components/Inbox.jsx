@@ -14,36 +14,28 @@ export default function Inbox({ isInboxOpen, setIsInboxOpen }) {
   useEffect(() => {
     const socket = new WebSocket(CHAT_URL);
 
-    socket.onopen = () => {
-      console.log("WebSocket connection established");
-    };
-
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
       if (message.type === "chat") {
         console.log("Received chat message:", message);
-        const {
-          user_id,
-          message: newMessage,
-          username: senderUsername,
-        } = message;
-
-        // Update threads with the new message
+    
+        const { user_id: senderId, message: newMessage, username: senderUsername, recipient_id: recipientId } = message;
+    
         setThreads((prevThreads) => {
-          const updatedThreads = [...prevThreads];
-          const threadIndex = updatedThreads.findIndex(
-            (thread) => thread.friendId === user_id
-          );
-          if (threadIndex !== -1) {
-            updatedThreads[threadIndex].messages.push({
-              sender: senderUsername,
-              text: newMessage,
-            });
-          }
+          const updatedThreads = prevThreads.map((thread) => {
+            if (thread.friendId === senderId || thread.friendId === recipientId) {
+              // Correctly place message in the corresponding thread
+              return {
+                ...thread,
+                messages: [...thread.messages, { sender: senderUsername, text: newMessage }],
+              };
+            }
+            return thread;
+          });
           return updatedThreads;
         });
       }
-    };
+    };         
 
     socket.onclose = () => {
       console.log("WebSocket connection closed");
@@ -86,31 +78,42 @@ export default function Inbox({ isInboxOpen, setIsInboxOpen }) {
 
   const fetchMessages = async (friendId, index) => {
     try {
-        const response = await axios.get(`http://localhost:8000/api/chat-messages/`, {
-            params: {
-                sender: userId,
-                recipient: friendId,
-            },
-        });
-
-        // Sort messages by date in ascending order
-        const sortedMessages = response.data.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-        // Update the thread with sorted messages
-        setThreads((prevThreads) => {
-            const updatedThreads = [...prevThreads];
-            updatedThreads[index].messages = sortedMessages.map((message) => ({
-                sender: message.sender === userId ? username : updatedThreads[index].friendName,
+      const response = await axios.get("http://localhost:8000/api/chat-messages/", {
+        params: {
+          sender: userId,
+          recipient: friendId,
+        },
+      });
+  
+      const sortedMessages = response.data
+        .filter((message) =>
+          (message.sender === userId && message.recipient === friendId) ||
+          (message.sender === friendId && message.recipient === userId)
+        )
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+      // Ensure that we update the correct thread based on friendId
+      setThreads((prevThreads) => {
+        const updatedThreads = prevThreads.map((thread) => {
+          if (thread.friendId === friendId) {
+            return {
+              ...thread,
+              messages: sortedMessages.map((message) => ({
+                sender: message.sender === userId ? username : thread.friendName,
                 text: message.message,
-            }));
-            return updatedThreads;
+              })),
+            };
+          }
+          return thread;
         });
+        return updatedThreads;
+      });
     } catch (error) {
-        console.error("Error fetching messages:", error);
+      console.error("Error fetching messages:", error);
     }
-};
+  };    
 
-const handleInboxClick = async (index) => {
+  const handleInboxClick = async (index) => {
     const friendId = threads[index].friendId;
 
     // If the thread is not already open, fetch its messages
@@ -123,8 +126,7 @@ const handleInboxClick = async (index) => {
             ? prevOpenThreads.filter((i) => i !== index)
             : [...prevOpenThreads, index]
     );
-};
-
+  };
 
   const handleInputChange = (index, value) => {
     setMessageInputs((prevInputs) => ({
@@ -135,54 +137,55 @@ const handleInboxClick = async (index) => {
 
   const handleSendMessage = async (index) => {
     if (messageInputs[index]?.trim()) {
-        const message = messageInputs[index].trim();
-        const recipientId = threads[index].friendId;
-
-        // Create the message object
-        const messagePayload = {
-            sender: userId,        // Your current user's ID
-            recipient: recipientId, // The recipient's ID
-            message: message,       // The message content
-        };
-
-        try {
-            // Save the message to the API
-            const response = await axios.post(
-                'http://localhost:8000/api/chat-messages/',
-                messagePayload
-            );
-            const savedMessage = response.data; // The saved message returned by the API
-
-            // Send the message via WebSocket
-            ws.send(
-                JSON.stringify({
-                    type: 'chat',
-                    user_id: userId,
-                    message: savedMessage.message, // Use savedMessage to ensure consistency
-                    username,
-                })
-            );
-
-            // Update the local state with the saved message
-            setThreads((prevThreads) => {
-                const newThreads = [...prevThreads];
-                newThreads[index].messages.push({
-                    sender: username, // Your username
-                    text: savedMessage.message, // The message content
-                });
-                return newThreads;
-            });
-
-            // Clear the input field
-            setMessageInputs((prevInputs) => ({
-                ...prevInputs,
-                [index]: '',
-            }));
-        } catch (error) {
-            console.error("Error saving or sending message:", error);
-        }
+      const message = messageInputs[index].trim();
+      const recipientId = threads[index].friendId;
+      
+      const messagePayload = {
+        sender: userId,        // Your current user's ID
+        recipient: recipientId, // The recipient's ID
+        message: message,       // The message content
+      };
+  
+      try {
+        // Save the message to the API
+        const response = await axios.post('http://localhost:8000/api/chat-messages/', messagePayload);
+        const savedMessage = response.data; // The saved message returned by the API
+  
+        // Send the message via WebSocket
+        ws.send(
+          JSON.stringify({
+            type: 'chat',
+            user_id: userId,
+            message: savedMessage.message, // Use savedMessage to ensure consistency
+            username,
+            recipient_id: recipientId, // Include recipient_id to correctly update the thread
+          })
+        );
+  
+        // Update the local state with the saved message
+        setThreads((prevThreads) => {
+          const newThreads = prevThreads.map((thread) => {
+            if (thread.friendId === recipientId) {
+              return {
+                ...thread,
+                messages: [...thread.messages, { sender: username, text: savedMessage.message }],
+              };
+            }
+            return thread;
+          });
+          return newThreads;
+        });
+  
+        // Clear the input field
+        setMessageInputs((prevInputs) => ({
+          ...prevInputs,
+          [index]: '',
+        }));
+      } catch (error) {
+        console.error("Error saving or sending message:", error);
+      }
     }
-};
+  };
 
   return (
     <div
