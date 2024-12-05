@@ -134,14 +134,21 @@ class UpdateUserMetaDataView(generics.GenericAPIView):
         '''
 
         user_id = request.data.get('user_id')
-        user_points = request.data.get('user_points')
+        user_points = request.data.get('user_points', 0)
         settings = request.data.get('settings')
+
+
+        
+
 
         user = User.objects.get(id=user_id)
         userMetaData = UserMetaData.objects.get(user=user)
+        if 'profile_picture' in request.data:
+            userMetaData.profile_picture = request.data.get('profile_picture')
 
         userMetaData.user_points = user_points
         userMetaData.settings = settings
+
 
         userMetaData.save()
 
@@ -179,7 +186,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class UserMetaDataViewSet(viewsets.ModelViewSet):
-    queryset = UserMetaData.objects
+    queryset = UserMetaData.objects.all()
+
     serializer_class = UserMetaDataSerializer
 
     def get_queryset(self):
@@ -241,6 +249,8 @@ class UserMetaDataViewSet(viewsets.ModelViewSet):
         failure_rate = self.request.query_params.get('failure_rate')
         if failure_rate:
             queryset = queryset.filter(failure_rate__gte=failure_rate)
+
+        profile_picture = self.request.query_params.get('profile_picture')
 
         return queryset
 

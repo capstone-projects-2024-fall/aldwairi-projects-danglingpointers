@@ -11,8 +11,33 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
   const [userNotFound, setUserNotFound] = useState(false);
+  const [profilePicture, setProfilePicture] = useState("");
   const { userId } = useUserAuthStore();
 
+
+  
+  const fetchUserMetaData = async () => {
+    try {
+      const response = await axios.get(`${HOST_PATH}/user-metadata/`, {
+        params: { user_id: userId },
+      });
+      if (response.data && response.data.length > 0) {
+        const metadata = response.data[0];
+        console.log("Received response:", response.data);
+
+        console.log("Received profile_picture from API:", metadata.profile_picture);
+        setProfilePicture(metadata.profile_picture || ""); // Ensure state is set
+        console.log("Updated state profilePicture:", metadata.profile_picture);
+      } else {
+        console.error("No metadata found for user.");
+      }
+    } catch (error) {
+      console.error("Error fetching user metadata:", error);
+    }
+  };
+  useEffect(() => {
+    fetchUserMetaData();
+  }, [userId]);
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
@@ -120,6 +145,22 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
     }
   };
 
+  const handleUpdateProfilePicture = async () => {
+    try {
+      await axios.post(`${HOST_PATH}/update-user-metadata/`, {
+        user_id: userId,
+        profile_picture: profilePicture,
+      });
+      alert("Profile picture updated!");
+
+      // Re-fetch metadata after update
+      fetchUserMetaData();
+    } catch (error) {
+      console.error("Error updating profile picture:", error);
+    }
+  };
+
+
   if (loading) return <p>Loading profile...</p>;
   if (userNotFound) return <p>User not found in the database.</p>;
 
@@ -128,6 +169,20 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
       <div className="profile-columns">
         <div className="left-column">
           <h1>User Profile</h1>
+          <img
+          src={profilePicture || "default-profile-pic.png"}
+          alt="Profile"
+          style={{ width: 100, height: 100, borderRadius: "50%" }}
+        />
+        <input
+          type="text"
+          value={profilePicture}
+          onChange={(e) => setProfilePicture(e.target.value)}
+          placeholder="Enter profile picture URL"
+        />
+        <button onClick={handleUpdateProfilePicture}>
+          Update Profile Picture
+        </button>
           <div className="profile-details">
             <p>
               <strong>Username:</strong> {profileData.username}

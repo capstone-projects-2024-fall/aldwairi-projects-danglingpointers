@@ -66,6 +66,7 @@ class UserMetaData(models.Model):
     settings = models.JSONField(null=True, blank=True)
     user_points = models.IntegerField(default=0)
     is_online = models.BooleanField(default=False)
+    profile_picture = models.URLField(max_length=500, blank=True, null=True)
 
     @property
     def total_games_played(self):
