@@ -190,7 +190,6 @@ export default function Game() {
             player_one_score: userScore,
             game_length: finalTimer,
             mode: gameMode,
-            // link: `game/game_id_${gameId}`,
             status: "Complete",
           });
           const prevPoints = userPoints.current;

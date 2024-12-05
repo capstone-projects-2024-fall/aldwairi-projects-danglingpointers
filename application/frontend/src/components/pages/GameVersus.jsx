@@ -44,7 +44,6 @@ export default function GameVersus() {
   const recyclingBinRef = useRef(null);
   const wsItemRef = useRef(null);
   const wsGameRef = useRef(null);
-  const wsVersusGameRef = useRef(null);
   const toggleNextItem = useRef(null);
   const useItem = useRef(null);
   const userPoints = useRef(null);
@@ -350,8 +349,6 @@ export default function GameVersus() {
           winner: isWinner ? userId : playerTwoId,
           status: "Complete",
         };
-
-        console.log(payload);
 
         try {
           await axios.put(`${HOST_PATH}/games/${currGameId}/`, payload);

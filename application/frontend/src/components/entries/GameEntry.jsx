@@ -63,7 +63,7 @@ export default function GameEntry({
   }, [status]);
 
   function handleClick() {
-    if (status === "Pending") navigate(`/versus/?game_id=${gameId}`);
+    if (status === "Pending" && userId) navigate(`/versus/?game_id=${gameId}`);
     else navigate(`/game/game_id_${gameId}`);
   }
 
@@ -91,9 +91,10 @@ export default function GameEntry({
             className={`btn-status`}
             style={{
               background: btnColor,
-              cursor: userId ? "pointer" : "not-allowed",
+              cursor:
+                status === "Pending" && !userId ? "not-allowed" : "pointer",
             }}
-            onClick={userId ? handleClick : null}
+            onClick={handleClick}
           >
             {status === "Pending" ? "Join Game" : status}
           </button>

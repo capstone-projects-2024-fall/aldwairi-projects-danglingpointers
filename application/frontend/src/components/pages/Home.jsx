@@ -53,7 +53,9 @@ export default function Home() {
         <div className="preview-container">
           <LeaderboardsPreview
             leaderboardsSolo={leaderboardsSolo}
+            setLeaderboardsSolo={setLeaderboardsSolo}
             leaderboardsVersus={leaderboardsVersus}
+            setLeaderboardsVersus={setLeaderboardsVersus}
           />
           <LobbyPreview
             lobbyGames={lobbyGames}
