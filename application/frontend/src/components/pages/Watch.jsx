@@ -87,7 +87,8 @@ export default function Watch() {
       const message = JSON.parse(event.data);
       if (message.type === "game") {
         console.log("Received game message:", message);
-        if (message.game_id.includes("_")) {
+        const gid = message.game_id.toString() 
+        if (gid.includes("_")) {
           const parts = message.game_id.split("_");
           const socketGameId = parts[0];
           fetchGame(socketGameId);
