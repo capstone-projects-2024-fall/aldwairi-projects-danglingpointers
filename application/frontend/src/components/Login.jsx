@@ -19,7 +19,7 @@ function Login() {
     };
 
     try {
-      await login(formData);
+      await login(formData);      
     } catch (error) {
       console.error(error);
     } finally {

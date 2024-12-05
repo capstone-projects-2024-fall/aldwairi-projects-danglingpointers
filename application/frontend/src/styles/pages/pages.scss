@@ -9,6 +9,10 @@
   }
 }
 
+.watch-grid article { width: 100% }
+
+
+
 .max-height {
   max-height: calc(75vh - constants.$navigation-height);
   padding-right: 20px;

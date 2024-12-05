@@ -36,6 +36,7 @@ const useUserMetaDataStore = create(
           items: response.data[0].items,
         }));
       },
+      
       logoutUserMetaData: async (formData) => {
         await axios.post(`${HOST_PATH}/update-user-metadata/`, formData);
         set(() => ({

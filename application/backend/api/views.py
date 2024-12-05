@@ -44,6 +44,7 @@ class CreateOrLoginView(generics.GenericAPIView):
         # Create an account if user not found in database
         if User.objects.filter(username=username).exists():
             user = User.objects.get(username=username)
+            
         else:
             user = User.objects.create_user(
                 username=username,
