@@ -59,12 +59,8 @@ const Profile = ({ profileUserId, username, dateJoined, lastLogin }) => {
         const userMetaDataResponse = await axios.get(
           `${HOST_PATH}/user-metadata?user_id=${profileUserId}`
         );
-        
-        // Update profile data
-
+      
         setIsOnline(userMetaDataResponse.data[0].is_online);
-
-
         setProfileData({
           username: username,
           dateJoined: dateJoined,
