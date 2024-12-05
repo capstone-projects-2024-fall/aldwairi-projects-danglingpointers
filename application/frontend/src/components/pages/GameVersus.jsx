@@ -82,10 +82,11 @@ export default function GameVersus() {
     const fetchPendingGames = async () => {
       try {
         const response = await axios.get(`${HOST_PATH}/games/?lobby=true`);
-        const pendingGames = response.data.filter(
+        const filteredPendingGames = response.data.filter(
           (x) => x.player_one === userId
         );
-        setPendingGame(pendingGames[0]);
+        console.log(filteredPendingGames)
+        setPendingGame(filteredPendingGames[0]);
       } catch (error) {
         console.log(error);
       }
