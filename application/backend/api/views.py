@@ -44,6 +44,7 @@ class CreateOrLoginView(generics.GenericAPIView):
         # Create an account if user not found in database
         if User.objects.filter(username=username).exists():
             user = User.objects.get(username=username)
+            
         else:
             user = User.objects.create_user(
                 username=username,
@@ -131,19 +132,16 @@ class UpdateUserMetaDataView(generics.GenericAPIView):
         settings = request.data.get('settings')
         logout = request.data.get('logout')
 
-
-        
-
-
         user = User.objects.get(id=user_id)
         userMetaData = UserMetaData.objects.get(user=user)
+
         if 'profile_picture' in request.data:
             userMetaData.profile_picture = request.data.get('profile_picture')
 
         userMetaData.user_points = user_points
         userMetaData.settings = settings
         userMetaData.is_online = False if logout else True
-        
+
         userMetaData.save()
 
         return Response(
@@ -158,7 +156,7 @@ class LogoutUserMetaDataView(generics.GenericAPIView):
         user_id = request.data.get('user_id')
         user = User.objects.get(id=user_id)
         userMetaData = UserMetaData.objects.get(user=user)
-        
+
         userMetaData.is_online = False
         userMetaData.save()
         return Response(
@@ -370,14 +368,16 @@ class FriendshipViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user_id = self.request.query_params.get("user_id")
         status_filter = self.request.query_params.get("status")
-        exclude_requestor = self.request.query_params.get("exclude_requestor") == "true"
+        exclude_requestor = self.request.query_params.get(
+            "exclude_requestor") == "true"
 
         queryset = self.queryset
 
         if user_id:
             if status_filter == "Pending":
                 # Fetch pending requests where the user is the recipient
-                queryset = queryset.filter(friend__id=user_id, status="Pending")
+                queryset = queryset.filter(
+                    friend__id=user_id, status="Pending")
                 if exclude_requestor:
                     queryset = queryset.exclude(requestor_id=user_id)
 
@@ -470,7 +470,8 @@ class ManageFriendship(generics.GenericAPIView):
 
         # Check for existing friendships
         friendship = Friendship.objects.filter(
-            models.Q(user=user, friend=friend) | models.Q(user=friend, friend=user)
+            models.Q(user=user, friend=friend) | models.Q(
+                user=friend, friend=user)
         ).first()
 
         if friendship:
@@ -495,7 +496,8 @@ class ManageFriendship(generics.GenericAPIView):
                 )
 
         # Create a new friendship if none exists
-        Friendship.objects.create(user=user, friend=friend, requestor=user, status="Pending")
+        Friendship.objects.create(
+            user=user, friend=friend, requestor=user, status="Pending")
         return Response(
             {"success": "Friendship request sent."},
             status=status.HTTP_201_CREATED,
@@ -601,7 +603,8 @@ class CommentViewSet(viewsets.ModelViewSet):
         # Fetch user_id from request data
         user_id = request.data.get('user_id')
         text = request.data.get('text')
-        content_id = request.data.get('content_id')  # The profile ID the comment is for
+        # The profile ID the comment is for
+        content_id = request.data.get('content_id')
 
         # Validate required fields
         if not user_id or not text or not content_id:
@@ -628,6 +631,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         )
 
         return Response(CommentSerializer(comment).data, status=status.HTTP_201_CREATED)
+
 
 class ChatMessageViewSet(viewsets.ModelViewSet):
     queryset = ChatMessage.objects

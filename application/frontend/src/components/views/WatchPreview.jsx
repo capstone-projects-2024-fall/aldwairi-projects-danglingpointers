@@ -13,7 +13,7 @@ export default function WatchPreview({ watchGames, setWatchGames }) {
         );
         const data = gameResponse.data[0];
 
-        const match = watchGames.find(x => x.id === data.id)
+        const match = watchGames.find((x) => x.id === data.id);
 
         if (data.status === "Active" && !match) {
           setWatchGames([data, ...watchGames]);
@@ -36,7 +36,14 @@ export default function WatchPreview({ watchGames, setWatchGames }) {
       const message = JSON.parse(event.data);
       if (message.type === "game") {
         console.log("Received game message:", message);
-        fetchGame(message.game_id);
+        const gid = message.game_id.toString();
+        if (gid.includes("_")) {
+          const parts = message.game_id.split("_");
+          const socketGameId = parts[0];
+          fetchGame(socketGameId);
+        } else {
+          fetchGame(gid);
+        }
       }
     };
 

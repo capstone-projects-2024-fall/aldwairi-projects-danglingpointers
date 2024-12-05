@@ -19,15 +19,14 @@ export default function LeaderboardsPreview({
 
         const data = gameResponse.data[0];
 
-        // let match;
-        // if (data.mode === "Solo") {
-        //   match = leaderboardsSolo.find((x) => x.id === data.id);
-        // } else {
-        //   match = leaderboardsVersus.find((x) => x.id === data.id);
-        // }
+        let match;
+        if (data.mode === "Solo") {
+          match = leaderboardsSolo.find((x) => x.id === data.id);
+        } else {
+          match = leaderboardsVersus.find((x) => x.id === data.id);
+        }
 
-        // if (data.status === "Complete" && !match) {
-        if (data.status === "Complete") {
+        if (data.status === "Complete" && !match) {
           data.mode === "Solo"
             ? setLeaderboardsSolo([data, ...leaderboardsSolo])
             : setLeaderboardsVersus([data, ...leaderboardsVersus]);
