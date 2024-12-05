@@ -34,9 +34,14 @@ class SecurityQuestionSerializer(serializers.ModelSerializer):
 
 
 class FriendshipSerializer(serializers.ModelSerializer):
+    friend_username = serializers.ReadOnlyField()  # Include the friend_username property
+    user_username = serializers.ReadOnlyField()    # Include the user_username property
+
     class Meta: 
         model = Friendship
-        fields = '__all__'
+        fields = '__all__'  # Include all fields from the model
+        extra_fields = ['friend_username', 'user_username']  # Add custom fields
+
         
 
 class ChatMessageSerializer(serializers.ModelSerializer):
@@ -46,6 +51,8 @@ class ChatMessageSerializer(serializers.ModelSerializer):
         
         
 class CommentSerializer(serializers.ModelSerializer):
-    class Meta: 
+    username = serializers.CharField(source='user.username', read_only=True)
+
+    class Meta:
         model = Comment
-        fields = '__all__'
+        fields = ['id', 'username', 'comment', 'comment_type', 'content_id', 'date']

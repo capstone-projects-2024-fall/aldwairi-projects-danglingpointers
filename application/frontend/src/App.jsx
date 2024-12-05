@@ -15,6 +15,8 @@ import axios from "axios";
 import { GAME_URL, HOST_PATH, USER_URL } from "./scripts/constants";
 import ErrorPage from "./components/pages/ErrorPage";
 import useUserMetaDataStore from "./stores/userMetaDataStore";
+import GameReview from "./components/pages/GameReview";
+import GameVersus from "./components/pages/GameVersus";
 
 export default function App() {
   const { isLoggedIn, userId } = useUserAuthStore();
@@ -130,6 +132,19 @@ export default function App() {
           }
         />
 
+        <Route
+          path="versus"
+          element={
+            isLoggedIn ? (
+              <GameProvider>
+                <GameVersus />
+              </GameProvider>
+            ) : (
+              <ErrorPage />
+            )
+          }
+        />
+
         {profiles
           ? Object.entries(profiles).map(([key, value]) => (
               <Route
@@ -137,7 +152,7 @@ export default function App() {
                 key={key}
                 element={
                   <Profile
-                    userId={value.id}
+                    profileUserId={value.id}
                     username={value.username}
                     dateJoined={value.date_joined}
                     lastLogin={value.last_login}
@@ -152,11 +167,7 @@ export default function App() {
               <Route
                 path={`game/game_id_${value.id}`}
                 key={key}
-                element={
-                  <GameProvider>
-                    <Game />
-                  </GameProvider>
-                }
+                element={<GameReview />}
               />
             ))
           : null}

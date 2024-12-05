@@ -6,13 +6,23 @@ import useUserAuthStore from "../stores/userAuthStore";
 import useUserMetaDataStore from "../stores/userMetaDataStore";
 
 export default function Navigation() {
-  const { isLoggedIn, logout } = useUserAuthStore();
+  const { isLoggedIn, userId, logout } = useUserAuthStore();
   const { logoutUserMetaData } = useUserMetaDataStore();
 
   const handleLogout = async () => {
     try {
+      const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
+      console.log("User Metadata State:", store);
+
+      const formData = {
+        user_id: userId,
+        settings: store.state.settings,
+        user_points: store.state.points,
+        items: store.state.items,
+        logout: true,
+      };
+      await logoutUserMetaData(formData);
       await logout();
-      await logoutUserMetaData();
     } catch (error) {
       console.error(error);
     }

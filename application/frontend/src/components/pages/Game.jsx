@@ -1,10 +1,6 @@
-import GarbageCollector from "../game-components/GarbageCollector";
-import RecyclingBin from "../game-components/RecyclingBin";
-import Stack from "../game-components/Stack";
-import convertSecondsToMinutes from "../../scripts/convert-seconds-to-minutes";
-import { useEffect, useRef, useContext, useState } from "react";
-import GameContext from "../../context/GameContext";
 import axios from "axios";
+import { useContext, useEffect, useRef, useState } from "react";
+import GameContext from "../../context/GameContext";
 import {
   CHAT_URL,
   DEFAULT_SETTINGS,
@@ -12,8 +8,12 @@ import {
   HOST_PATH,
   ITEM_URL,
 } from "../../scripts/constants";
+import convertSecondsToMinutes from "../../scripts/convert-seconds-to-minutes";
 import setTemporaryItemState from "../../scripts/set-temp-item-state";
 import useUserAuthStore from "../../stores/userAuthStore";
+import GarbageCollector from "../game-components/GarbageCollector";
+import RecyclingBin from "../game-components/RecyclingBin";
+import Stack from "../game-components/Stack";
 
 export default function Game() {
   const {
@@ -60,27 +60,19 @@ export default function Game() {
     const ws = new WebSocket(GAME_URL);
     wsRef.current = ws;
 
-    return () => {
-      ws.close();
-    };
-  }, []);
-
-  useEffect(() => {
-    const ws = new WebSocket(CHAT_URL);
-
     ws.onopen = () => {
-      console.log("WebSocket connection to ChatConsumer established");
+      console.log("WebSocket connection to GameConsumer established");
     };
 
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      if (message.type === "chat") {
-        console.log("Received chat message:", message);
+      if (message.type === "game") {
+        console.log("Received game message:", message);
       }
     };
 
     ws.onclose = () => {
-      console.log("WebSocket connection to ChatConsumer closed");
+      console.log("WebSocket connection to GameConsumer closed");
     };
 
     ws.onerror = (error) => {
@@ -92,6 +84,7 @@ export default function Game() {
     };
   }, []);
 
+  // Set current user points
   useEffect(() => {
     const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
     if (store) {
@@ -100,21 +93,17 @@ export default function Game() {
     }
   }, [userId, userPoints]);
 
-  useEffect(() => {}, [userScore]);
-
   const postActiveGameData = async (mode) => {
     if (userId) {
       try {
         const payload = {
           player_one: userId,
-          player_one_score: 0, // Initial score
-          game_length: 0, // Initial game length
           mode: mode,
           status: "Active",
         };
-        console.log("Payload:", payload); // Log the payload
+        
         const response = await axios.post(`${HOST_PATH}/games/`, payload);
-        console.log("Response data:", response.data); // Log the response data
+        
         if (response.data && response.data.id) {
           setCurrGameId(response.data.id);
           console.log("Active game data posted, gameId:", response.data.id);
@@ -201,7 +190,6 @@ export default function Game() {
             player_one_score: userScore,
             game_length: finalTimer,
             mode: gameMode,
-            // link: `game/game_id_${gameId}`,
             status: "Complete",
           });
           const prevPoints = userPoints.current;
@@ -338,8 +326,20 @@ export default function Game() {
         setSelectedIndex(newIndex);
       } else if ((gameStarted || isPractice) && event.key === useItem.current) {
         event.preventDefault();
-        decrementItemInStorage(selectedIndex);
-
+    
+        const currentQuantity = isPractice
+          ? practiceItems[selectedIndex]?.quantity || 0
+          : userItems[selectedIndex]?.quantity || 0;
+    
+        if (!isPractice && currentQuantity <= 0) {
+          return;
+        }
+    
+        // Only decrement item quantity if not in practice mode
+        if (!isPractice) {
+          decrementItemInStorage(selectedIndex);
+        }
+    
         switch (selectedIndex) {
           case 0:
             setTemporaryItemState(setItemInUse, setIsSlowDown);
@@ -382,34 +382,6 @@ export default function Game() {
     practiceItems,
   ]);
 
-  // Game Socket
-  useEffect(() => {
-    const ws = new WebSocket(ITEM_URL);
-
-    ws.onopen = () => {
-      console.log("WebSocket connection to ItemConsumer established");
-    };
-
-    ws.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      if (message.type === "item") {
-        console.log("Received item message:", message);
-      }
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket connection to ItemConsumer closed");
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    return () => {
-      ws.close();
-    };
-  }, []);
-
   return (
     <main className="main-game">
       <article className="details-container">
@@ -422,15 +394,15 @@ export default function Game() {
           <div className="selected-item">
             {isPractice ? (
               <span className="item-icon">
-                {practiceItems[selectedIndex].icon}
+                {practiceItems[selectedIndex]?.icon}
               </span>
             ) : userId && Object.keys(userItems).length > 0 ? (
               <>
                 <span className="item-icon">
-                  {userItems[selectedIndex].item.icon}
+                  {userItems[selectedIndex]?.item.icon}
                 </span>
                 <span style={{ marginBottom: "7.5px" }}>
-                  {userItems[selectedIndex].quantity} remaining
+                  {userItems[selectedIndex]?.quantity} remaining
                 </span>
               </>
             ) : userId ? (

@@ -13,6 +13,11 @@ const useUserAuthStore = create(
       username: null,
       login: async (formData) => {
         const response = await axios.post(`${HOST_PATH}/login/`, formData);
+        console.log(response);
+        if (!response.data) {
+          alert("Password does not match!");
+          return;
+        }
 
         set(() => ({
           isLoggedIn: true,
@@ -30,7 +35,6 @@ const useUserAuthStore = create(
           userId: null,
           username: null,
         }));
-        sessionStorage.removeItem("user-metadata-state");
       },
     }),
     {

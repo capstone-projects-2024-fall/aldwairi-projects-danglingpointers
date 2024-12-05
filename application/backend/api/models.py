@@ -18,17 +18,35 @@ class Item(models.Model):
 
 class Friendship(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='target_user')
+        User, on_delete=models.CASCADE, related_name='target_user'
+    )
     friend = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='target_user_friend')
-    status = models.CharField(max_length=10, choices=(
-        ('Pending', 'Pending'),
-        ('Accepted', 'Accepted'),
-        ('Rejected', 'Rejected'),
-        ('Inactive', 'Inactive'),
-    ))
+        User, on_delete=models.CASCADE, related_name='target_user_friend'
+    )
+    requestor = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='friendship_requests'
+    )  # This tracks who initiated the request
+    status = models.CharField(
+        max_length=10,
+        choices=(
+            ('Pending', 'Pending'),
+            ('Accepted', 'Accepted'),
+            ('Rejected', 'Rejected'),
+            ('Inactive', 'Inactive'),
+        )
+    )
     date_request = models.DateTimeField(auto_now_add=True)
     date_response = models.DateTimeField(null=True, blank=True)
+
+    @property
+    def friend_username(self):
+        return self.friend.username
+
+    @property
+    def user_username(self):
+        return self.user.username
+
+
 
 
 class UserMetaData(models.Model):
@@ -48,6 +66,7 @@ class UserMetaData(models.Model):
     settings = models.JSONField(null=True, blank=True)
     user_points = models.IntegerField(default=0)
     is_online = models.BooleanField(default=False)
+    profile_picture = models.URLField(max_length=500, blank=True, null=True)
 
     @property
     def total_games_played(self):
@@ -80,13 +99,26 @@ class ChatMessage(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
 
+
+
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    username = models.CharField(max_length=150, editable=False, default="")  # Add username field
     date = models.DateTimeField(auto_now_add=True)
     comment = models.TextField()
     comment_type = models.CharField(
         max_length=7, blank=True, choices=(('Game', 'Game'), ('User', 'User')))
     content_id = models.IntegerField()
+
+    def save(self, *args, **kwargs):
+        # Automatically set the username field from the linked user
+        if not self.username:
+            self.username = self.user.username
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.username}: {self.comment[:20]}..."
+
 
 
 class Game(models.Model):
@@ -106,8 +138,8 @@ class Game(models.Model):
         ('Pending', 'Pending'),
         ('Complete', 'Complete'),
     ))
-    game_length = models.IntegerField()
-    player_one_score = models.IntegerField()
+    game_length = models.IntegerField(default=0)
+    player_one_score = models.IntegerField(default=0)
     player_two_score = models.IntegerField(null=True, blank=True)
     winner = models.ForeignKey(
         User, related_name='game_winner', on_delete=models.SET_NULL, null=True, blank=True)

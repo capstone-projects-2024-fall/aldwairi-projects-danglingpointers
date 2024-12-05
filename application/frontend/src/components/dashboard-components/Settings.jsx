@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { SliderPicker } from "react-color";
 
-export default function Settings() {
+export default function Settings({ isInboxOpen }) {
   const [keys, setKeys] = useState([]);
   const [values, setValues] = useState([]);
   const [editSettings, setEditSettings] = useState(false);
@@ -15,20 +15,16 @@ export default function Settings() {
   }
 
   const handleEditSettings = async () => {
-    if (editSettings) {
-      const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
-      const settings = store.state.settings;
-      const keys = Object.keys(settings);
-      values[0] = garbageCollectorColor;
-
-      for (let i = 0; i < keys.length; i++) settings[keys[i]] = values[i];
-
-      store.state.settings = settings;
-      sessionStorage.setItem("user-metadata-state", JSON.stringify(store));
-    }
+    const store = JSON.parse(sessionStorage.getItem("user-metadata-state")) || {};
+    store.state = store.state || {};
+    store.state.settings = {
+      ...store.state.settings,
+      garbageCollectorColor: garbageCollectorColor,
+    };
+    sessionStorage.setItem("user-metadata-state", JSON.stringify(store));
     setEditSettings(!editSettings);
   };
-
+  
   const handleChangeComplete = async (color) => {
     setGarbageCollectorColor(color.hex);
   };
@@ -53,7 +49,7 @@ export default function Settings() {
   }, [values]);
 
   return (
-    <div className="settings">
+    <div className="settings" style={isInboxOpen ? {display: "none"}: null}>
       <div className="settings-header flex-row-container">
         <h1>Settings</h1>
         <button
