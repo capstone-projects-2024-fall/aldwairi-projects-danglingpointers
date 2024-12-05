@@ -42,7 +42,7 @@ export default function Dashboard() {
       console.error("Error fetching friends list:", error);
     }
   };
-  
+
   const handleAcceptRequest = async (friendshipId) => {
     try {
       console.log("Accepting request for friendshipId:", friendshipId);
@@ -56,7 +56,7 @@ export default function Dashboard() {
       console.error("Error accepting friend request:", error);
     }
   };
-  
+
   // Fetch user metadata on mount
   useEffect(() => {
     const fetchUserMetaData = async () => {
@@ -94,29 +94,32 @@ export default function Dashboard() {
   }
 
   return (
-
     <main className="main-dashboard default-scrollbar">
-       {/* "My Profile" button */}
-      <div className="profile-button-container">
-        <Link to={`/profile/${username}`}>
-          <button className="profile-button">My Profile</button>
-        </Link>
-      </div>
-      <Inbox isInboxOpen={isInboxOpen} setIsInboxOpen={setIsInboxOpen}/>
-      <div className="friend-sections" style={isInboxOpen ? {display: "none"}: null}>
-
+      <Inbox isInboxOpen={isInboxOpen} setIsInboxOpen={setIsInboxOpen} />
+      <div
+        className="friend-sections"
+        style={isInboxOpen ? { display: "none" } : null}
+      >
         <div className="section pending-requests">
           <h3>Pending Friend Requests</h3>
           {/* Content for pending requests */}
         </div>
-        <div className="section friends-list" style={isInboxOpen ? {display: "none"}: null}>
-          <h3>Friends</h3>
+        <div
+          className="section friends-list"
+          style={isInboxOpen ? { display: "none" } : null}
+        >
+          <div className="profile-button-container">
+            <h3>Friends</h3>
+            <Link to={`/profile/${username}`}>
+              <button className="profile-button">My Profile</button>
+            </Link>
+          </div>
           {/* Content for friends list */}
         </div>
       </div>
-      <Store isInboxOpen={isInboxOpen}/>
-      <Settings isInboxOpen={isInboxOpen}/>
-      <UserPreviousGames isInboxOpen={isInboxOpen}/>
+      <Store isInboxOpen={isInboxOpen} />
+      <Settings isInboxOpen={isInboxOpen} />
+      <UserPreviousGames isInboxOpen={isInboxOpen} />
     </main>
   );
 }
