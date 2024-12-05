@@ -1,9 +1,17 @@
-import { forwardRef, useContext, useEffect, useState } from "react";
+import {
+  forwardRef,
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import Pointer from "./Pointer";
 import getRandomColor from "../../scripts/get-random-color";
 import GameContext from "../../context/GameContext";
 import getStackInterval from "../../scripts/get-stack-interval";
-import { ITEMS } from "../../scripts/constants";
+import { GAME_URL, ITEMS } from "../../scripts/constants";
+import useUserAuthStore from "../../stores/userAuthStore";
 
 const Stack = forwardRef((_, ref) => {
   const {
@@ -11,6 +19,8 @@ const Stack = forwardRef((_, ref) => {
     totalPointerCounter,
     setTotalPointerCounter,
     isSlowDown,
+    gameMode,
+    pendingGame,
   } = useContext(GameContext);
   const [pointers, setPointers] = useState([]);
   const {
@@ -22,6 +32,34 @@ const Stack = forwardRef((_, ref) => {
     isPractice,
     setPointersCleared,
   } = useContext(GameContext);
+  const {userId} = useUserAuthStore();
+  const wsGameRef = useRef(null);
+
+  useEffect(() => {
+    const ws = new WebSocket(GAME_URL);
+    wsGameRef.current = ws;
+
+    ws.onopen = () => {
+      console.log("WebSocket connection to GameConsumer established");
+    };
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      console.log(message);
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection to GameConsumer closed");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, []);
 
   useEffect(() => {
     if ((!gameStarted && !isPractice) || userLivesCount === 0) return;
@@ -45,11 +83,40 @@ const Stack = forwardRef((_, ref) => {
             );
 
             if (thisPointer.classList.contains("animation-four")) {
-              setUserScore((prevScore) => prevScore + ITEMS.doubleScore);
+              setUserScore((prevScore) => {
+                const newScore = prevScore + ITEMS.doubleScore;
+                if (
+                  gameMode === "Versus" &&
+                  wsGameRef.current &&
+                  wsGameRef.current.readyState === WebSocket.OPEN
+                ) {
+                  wsGameRef.current.send(
+                    JSON.stringify({
+                      type: "game",
+                      game_id: `score_${pendingGame.id}_${userId}_${newScore}`,
+                    })
+                  );
+                }
+                return newScore
+              });
             } else {
               setUserLives((lives) => {
                 let newLives = [...lives];
                 newLives.pop();
+
+                if (
+                  gameMode === "Versus" &&
+                  wsGameRef.current &&
+                  wsGameRef.current.readyState === WebSocket.OPEN
+                ) {
+                  wsGameRef.current.send(
+                    JSON.stringify({
+                      type: "game",
+                      game_id: `lives_${pendingGame.id}_${userId}_${newLives.length}`,
+                    })
+                  );
+                }
+
                 setUserLivesCount(newLives.length);
                 return newLives.length ? newLives : ["💀"];
               });
@@ -91,7 +158,7 @@ const Stack = forwardRef((_, ref) => {
     const mod = isSlowDown
       ? ITEMS.slowDownStackMod
       : ITEMS.defaultSpeedStackMod;
-      
+
     const random = getStackInterval(base, mod);
     const intervalId = setInterval(updateStack, random);
 

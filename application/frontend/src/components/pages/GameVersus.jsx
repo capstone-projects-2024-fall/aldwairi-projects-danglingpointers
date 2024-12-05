@@ -31,6 +31,8 @@ export default function GameVersus() {
     setIsSpeedUp,
     setIsSuperCollector,
     setItemInUse,
+    pendingGame,
+    setPendingGame,
   } = useContext(GameContext);
 
   const { userId } = useUserAuthStore();
@@ -47,14 +49,14 @@ export default function GameVersus() {
   const toggleNextItem = useRef(null);
   const useItem = useRef(null);
   const userPoints = useRef(null);
-  const [pendingGame, setPendingGame] = useState({});
   const [isPlayerOne, setIsPlayerOne] = useState(false);
   const [isPlayerTwo, setIsPlayerTwo] = useState(false);
   const [isOpponentPresent, setIsOpponentPresent] = useState(false);
   const [playerTwoId, setPlayerTwoId] = useState(null);
   const [playerTwoUserName, setPlayerTwoUserName] = useState(null);
   const [playerTwoScore, setPlayerTwoScore] = useState(0);
-  const [playerTwoLives, setPlayerTwoLives] = useState(null);
+  const [playerTwoLivesCount, setPlayerTwoLivesCount] = useState(3);
+  const [playerTwoLives, setPlayerTwoLives] = useState([]);
   const [isWinner, setIsWinner] = useState(false);
   const [currGameId, setCurrGameId] = useState(null);
   const { search } = useLocation();
@@ -146,8 +148,11 @@ export default function GameVersus() {
       if (gameStarted) return; // Prevent starting if game is already in progress
       setTimer(0);
       setUserScore(0);
+      setPlayerTwoScore(0);
       setUserLives(["❤️", "❤️", "❤️"]);
+      setPlayerTwoLives(["❤️", "❤️", "❤️"]);
       setUserLivesCount(3);
+      setPlayerTwoLivesCount(3);
       setGameMode(mode);
       setGameStarted(true);
       setPointersCleared(false); // Reset pointers cleared state when starting a new round
@@ -289,7 +294,6 @@ export default function GameVersus() {
         const currentQuantity = userItems[selectedIndex]?.quantity || 0;
 
         if (currentQuantity <= 0) {
-          alert("You do not have enough of this item to use it.");
           return;
         }
 
@@ -305,6 +309,19 @@ export default function GameVersus() {
           case 2:
             if (userLives.length < 10)
               setUserLives([...userLives, userLives[0]]);
+            if (
+              wsGameRef.current &&
+              wsGameRef.current.readyState === WebSocket.OPEN
+            ) {
+              wsGameRef.current.send(
+                JSON.stringify({
+                  type: "game",
+                  game_id: `lives_${newGameId}_${userId}_${
+                    userLives.length + 1
+                  }`,
+                })
+              );
+            }
             break;
           case 3:
             setTemporaryItemState(setItemInUse, setIsSuperCollector);
@@ -408,7 +425,37 @@ export default function GameVersus() {
 
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      if (message.type === "game" && message.game_id.includes("_")) {
+
+      if (message.type === "game" && message.game_id.includes("score")) {
+        const parts = message.game_id.split("_");
+        const socketGameId = parts[1];
+        const initiatorId = parts[2];
+        const newScore = parts[3];
+        console.log(userId);
+
+        if (userId != initiatorId) {
+          setPlayerTwoScore(newScore);
+        }
+      } else if (message.type === "game" && message.game_id.includes("lives")) {
+        const parts = message.game_id.split("_");
+        const socketGameId = parts[1];
+        const initiatorId = parts[2];
+        const newLives = parts[3];
+        if (userId != initiatorId) {
+
+          if (newLives < playerTwoLivesCount) {
+            setPlayerTwoLives((lives) => {
+              let newLives = [...lives];
+              newLives.pop();
+              return newLives.length ? newLives : ["💀"];
+            });
+          } else {
+            setPlayerTwoLives([...playerTwoLives, playerTwoLives[0]]);
+          }
+
+          setPlayerTwoLivesCount(newLives);
+        }
+      } else if (message.type === "game" && message.game_id.includes("_")) {
         const parts = message.game_id.split("_");
         const socketGameId = parts[0];
         const initiatorId = parts[1];
@@ -499,9 +546,9 @@ export default function GameVersus() {
           </div>
         </div>
         <div className="opponent-details">
-          <div>Opponent Name Here</div>
-          <div className="score">{userScore}</div>
-          <div className="lives-remaining">{userLives}</div>
+          <div>Opponent</div>
+          <div className="score">{playerTwoScore}</div>
+          <div className="lives-remaining">{playerTwoLives}</div>
         </div>
       </article>
 
