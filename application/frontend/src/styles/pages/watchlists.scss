@@ -10,42 +10,51 @@
 }
 
 .watchlists-container {
-    width: 100%;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-evenly;
-    align-items: flex-start;
-    gap: constants.$default-margin;
-  
-    article {
-      flex: 1;
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  gap: constants.$default-margin;
+
+  article {
+    flex: 1;
+    background-color: #d6d6d6;
+    border-radius: 8px;
+    padding: 20px;
+    min-height: calc(95vh - constants.$navigation-height);
+    max-height: calc(95vh - constants.$navigation-height);
+    overflow-y: auto;
+
+    h2 {
+      margin-bottom: 15px;
+      color: #333;
     }
+
+    .games-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .no-games {
+      text-align: center;
+      color: #666;
+      padding: 20px 0;
+    }
+  }
 }
 
 .watchlist {
-    min-height: calc(95vh - constants.$navigation-height);
-    max-height: calc(95vh - constants.$navigation-height);
-    background-color: #d6d6d6;
-    border-radius: 8px;
-    padding: 0 20px;
-    overflow-y: auto;
-  
-    .link-flex {
-      display: flex;
-      flex-flow: row nowrap;
-      justify-content: space-between;
-  
-      span {
-        flex-grow: 1;
-      }
+  .link-flex {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    span {
+      flex-grow: 1;
     }
-  
-    p,
-    ul {
-      margin-bottom: 20px;
-    }
-  
-    li {
-      list-style: none;
-    }
+  }
 }
