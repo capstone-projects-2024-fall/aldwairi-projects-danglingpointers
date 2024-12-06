@@ -166,7 +166,8 @@ class UserAccountTest(unittest.TestCase):
             )
             
             self.assertTrue(received_message.is_displayed())
-
+            import time
+            time.sleep(3)
             # User 2 replies to User 1
             reply_text = "Hello Bobby!"
             reply_input = webdriverwait2.until(EC.presence_of_element_located((By.CLASS_NAME, "message-input")))
@@ -175,11 +176,12 @@ class UserAccountTest(unittest.TestCase):
             reply_button.click()
 
             # User 1 checks the received reply
-            reply_message_id = UserAccountTest.get_message_id("alicey", reply_text)  # Generate ID for reply message
+            reply_message_id = UserAccountTest.get_message_id("alicey", reply_text)
             received_reply = webdriverwait1.until(
                 EC.presence_of_element_located((By.ID, reply_message_id))
             )
             self.assertTrue(received_reply.is_displayed())
+
 
         finally:
             driver1.quit()
