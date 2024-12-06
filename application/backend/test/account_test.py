@@ -20,6 +20,10 @@ class UserAccountTest(unittest.TestCase):
         self.api_url = "http://localhost:8000/api"
         self.test_logusername = "johndoe"
         self.test_logpassword = "password1"
+        self.test_username1 = "bobby"
+        self.test_password1 = "password1"
+        self.test_username2 = "alicey"
+        self.test_password2 = "password2"
         self.test_regusername = generate_random_string(20)
         self.test_regpassword = generate_random_string(20)
 
@@ -113,24 +117,57 @@ class UserAccountTest(unittest.TestCase):
 
         self.assertTrue(login.is_displayed())
 
-'''    def test_login_fail(self):
-        self.driver.get(self.base_url)
-        webdriverwait = WebDriverWait(self.driver, 10)
-
-        webdriverwait.until(
-            EC.presence_of_element_located((By.ID, "login-username-input"))
-        )
+    # def test_send_message(self):
+    #     driver1 = webdriver.Chrome()
+    #     driver2 = webdriver.Chrome()
         
-        self.driver.find_element(By.ID,"login-username-input").send_keys(self.test_logusername)
-        self.driver.find_element(By.ID,"login-password-input").send_keys("wrongpassword")
-        self.driver.find_element(By.ID,"login-submit-button").click()
+    #     try:
+    #         self.test_account_creation(driver1, self.test_username1, self.test_password1)
+    #         self.test_account_creation(driver2, self.test_username2, self.test_password2)
 
-        login = webdriverwait.until(
-            EC.presence_of_element_located((By.ID, "login-username-input"))
-        )
+    #         # User 1 logs in
+    #         self.driver.get(self.base_url)
+    #         webdriverwait = WebDriverWait(self.driver, 10)
 
-        self.assertTrue(login.is_displayed())
-'''
+    #         webdriverwait.until(
+    #             EC.presence_of_element_located((By.ID, "login-username-input"))
+    #         )
+            
+    #         self.driver.find_element(By.ID, "login-username-input").send_keys(self.test_logusername)
+    #         self.driver.find_element(By.ID, "login-password-input").send_keys(self.test_logpassword)
+    #         self.driver.find_element(By.ID, "login-submit-button").click()
 
+    #         watch_title = webdriverwait.until(
+    #             EC.presence_of_element_located((By.ID, "watch-title"))
+    #         )
+            
+    #         self.assertTrue(watch_title.is_displayed())
+
+    #         self.driver.find_element(By.ID, "message-input").send_keys("Hello User 2")
+    #         self.driver.find_element(By.ID, "send-message-button").click()
+
+    #         self.driver.find_element(By.ID, "logout-nav-button").click()
+
+    #         self.driver.find_element(By.ID, "login-username-input").send_keys(self.test_logusername2)
+    #         self.driver.find_element(By.ID, "login-password-input").send_keys(self.test_logpassword2)
+    #         self.driver.find_element(By.ID, "login-submit-button").click()
+
+    #         self.driver.find_element(By.ID, "message-input").send_keys("Hello User 1")
+    #         self.driver.find_element(By.ID, "send-message-button").click()
+
+    #         self.driver.find_element(By.ID, "logout-nav-button").click()
+
+    #         self.driver.find_element(By.ID, "login-username-input").send_keys(self.test_logusername)
+    #         self.driver.find_element(By.ID, "login-password-input").send_keys(self.test_logpassword)
+    #         self.driver.find_element(By.ID, "login-submit-button").click()
+
+    #         message_received = webdriverwait.until(
+    #             EC.presence_of_element_located((By.XPATH, "//div[contains(text(), 'Hello User 1')]"))
+    #         )
+            
+    #         self.assertTrue(message_received.is_displayed())
+    #     finally:
+    #         driver1.quit()
+    #         driver2.quit()
 if __name__ == "__main__":
     unittest.main()
