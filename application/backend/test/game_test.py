@@ -9,6 +9,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 
 class GameTest(unittest.TestCase):
     
@@ -45,7 +47,7 @@ class GameTest(unittest.TestCase):
         start_button = webdriverwait.until(EC.presence_of_element_located((By.ID, "start-round-button")))
         start_button.click()
         return webdriverwait
-
+    
     def test_start_game(self):
         webdriverwait = self.start_game()
 
@@ -65,45 +67,30 @@ class GameTest(unittest.TestCase):
 
         # Verify position changed
         self.assertNotEqual(initial_position, updated_position, "Memory1 position should change after game starts")
-        
-        # Give time for test to complete
-        time.sleep(2)
 
     def test_game_controls(self):
-        self.login_user()
-        webdriverwait = WebDriverWait(self.driver, 10)
+        webdriverwait = self.start_game()
 
-        webdriverwait.until(EC.presence_of_element_located((By.ID, "play-nav-button"))).click()
-
-        # Navigate to game screen
-        start_button = webdriverwait.until(
-            EC.presence_of_element_located((By.ID, "start-round-button"))
-        )
-        start_button.click()
-
-        garbage = webdriverwait.until(
-            EC.presence_of_element_located((By.ID, "garbage-collector"))
-        )
-
-        # Get control settings
-        left_key = self.driver.execute_script(
-            "return JSON.parse(sessionStorage.getItem('user-metadata-state')).state.settings.moveLeft"
-        )
-        right_key = self.driver.execute_script(
-            "return JSON.parse(sessionStorage.getItem('user-metadata-state')).state.settings.moveRight"
-        )
+        # Wait for stack initialization and garbage collector
+        stack = webdriverwait.until(EC.presence_of_element_located((By.CLASS_NAME, "stack")))
+        garbage = webdriverwait.until(EC.presence_of_element_located((By.ID, "garbage-collector")))
+        
+        # Click game area to focus
+        game_area = self.driver.find_element(By.CLASS_NAME, "game")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(game_area).click().perform()
 
         # Test left movement
         initial_left_pos = garbage.get_attribute("style")
-        self.driver.find_element(By.TAG_NAME, "body").send_keys(left_key)
-        time.sleep(0.5)  # Allow movement to complete
+        actions.key_down(Keys.ARROW_LEFT).pause(1).key_up(Keys.ARROW_LEFT).perform()
+        time.sleep(1)
         final_left_pos = garbage.get_attribute("style")
         self.assertNotEqual(initial_left_pos, final_left_pos)
 
-        # Test right movement
-        initial_right_pos = garbage.get_attribute("style") 
-        self.driver.find_element(By.TAG_NAME, "body").send_keys(right_key)
-        time.sleep(0.5)  # Allow movement to complete
+        # Test right movement  
+        initial_right_pos = garbage.get_attribute("style")
+        actions.key_down(Keys.ARROW_RIGHT).pause(1).key_up(Keys.ARROW_RIGHT).perform()
+        time.sleep(1)
         final_right_pos = garbage.get_attribute("style")
         self.assertNotEqual(initial_right_pos, final_right_pos)
 
