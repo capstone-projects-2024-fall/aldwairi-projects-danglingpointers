@@ -31,18 +31,20 @@ function Login() {
     <div className="login-container">
       <form onSubmit={handleSubmit}>
         <input
+          id="login-username-input"
           type="text"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
         <input
+          id="login-password-input"
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit">Login</button>
+        <button id="login-submit-button" type="submit">Login</button>
       </form>
     </div>
   );

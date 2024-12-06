@@ -37,17 +37,17 @@ export default function Navigation() {
         <li className="li-home"></li>
         <li>
           <Link to="/leaderboards">
-            <Button text="Leaderboards" />
+            <Button id="leaderboards-nav-button" text="Leaderboards" />
           </Link>
         </li>
         <li>
           <Link to="/play">
-            <Button text="Play" />
+            <Button id="play-nav-button" text="Play" />
           </Link>
         </li>
         <li>
           <Link to="/watch">
-            <Button text="Watch" />
+            <Button id="watch-nav-button" text="Watch" />
           </Link>
         </li>
         <li className="li-row">
@@ -57,11 +57,11 @@ export default function Navigation() {
           <>
             <li>
               <Link to="/dashboard">
-                <Button text="Dashboard" />
+                <Button id="dashboard-nav-button" text="Dashboard" />
               </Link>
             </li>
             <li>
-              <Button text="Logout" onClick={handleLogout} />
+              <Button id="logout-nav-button" text="Logout" onClick={handleLogout} />
             </li>
           </>
         ) : (
