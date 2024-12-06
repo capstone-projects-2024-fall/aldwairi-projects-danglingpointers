@@ -26,7 +26,7 @@ class GameTest(unittest.TestCase):
     def tearDown(self):
         self.driver.quit()
 
-    def login_user(self):
+    def login_user(self, testuser):
         """Helper method to login before testing game features"""
         self.driver.get(self.base_url)
         webdriverwait = WebDriverWait(self.driver, 10)
@@ -132,7 +132,14 @@ class GameTest(unittest.TestCase):
                     
                 attempts += 1
                 
-        self.fail("Could not achieve score increase with any timing")
+        self.fail("Could not achieve score increase with any timing"
+                  
+    def test_versus_gameplay(self):
+        joedriver = webdriver.Chrome()
+        bendriver = webdriver.Chrome()
+
+
+    
 
 
 if __name__ == "__main__":
