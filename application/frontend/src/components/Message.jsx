@@ -1,10 +1,20 @@
 const Message = ({ sender, message, isSender }) => {
-    return (
-      <div className={`message-container ${isSender ? 'sender' : 'recipient'}`}>
-        <p className="message-sender">{sender}</p>
-        <p className="message-text">{message}</p>
-      </div>
-    );
-  };
+  // Create a unique ID using sender and truncated message
+  const messageId = `${sender}-${message.substring(0, 10).replace(/\s+/g, '-')}`;
   
-  export default Message;
+  return (
+    <div 
+      id={`message-${messageId}`}
+      className={`message-container ${isSender ? 'sender' : 'recipient'}`}
+    >
+      <p id={`sender-${messageId}`} className="message-sender">
+        {sender}
+      </p>
+      <p id={`text-${messageId}`} className="message-text">
+        {message}
+      </p>
+    </div>
+  );
+};
+
+export default Message;

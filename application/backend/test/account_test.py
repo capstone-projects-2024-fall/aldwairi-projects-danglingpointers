@@ -27,6 +27,10 @@ class UserAccountTest(unittest.TestCase):
     def tearDown(self): 
         self.driver.quit()
     
+    def get_message_id(sender, message):
+        truncated = message[:10].replace(" ", "-")
+        return f"message-{sender}-{truncated}"
+    
     def deleteUser(self):
         # Delete test user
         try:
@@ -155,9 +159,12 @@ class UserAccountTest(unittest.TestCase):
             triangle_icon_user2.click()
 
             # User 2 checks the received message
+            message_id = driver2.get_message_id("bobby", message_text)
+
             received_message = webdriverwait2.until(
-                EC.presence_of_element_located((By.XPATH, f"//div[contains(text(), '{message_text}')]"))
-            )
+                        EC.presence_of_element_located((By.ID, message_id))
+                )
+            
             self.assertTrue(received_message.is_displayed())
 
             # User 2 replies to User 1
@@ -177,6 +184,8 @@ class UserAccountTest(unittest.TestCase):
             # return
             driver1.quit()
             driver2.quit()
+
+
 
 
 

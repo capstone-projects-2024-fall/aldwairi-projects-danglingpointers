@@ -94,6 +94,18 @@ class GameTest(unittest.TestCase):
         final_right_pos = garbage.get_attribute("style")
         self.assertNotEqual(initial_right_pos, final_right_pos)
 
+    def test_game_score(self):
+        webdriverwait = self.start_game()
+
+        # Wait for stack initialization and garbage collector
+        stack = webdriverwait.until(EC.presence_of_element_located((By.CLASS_NAME, "stack")))
+        garbage = webdriverwait.until(EC.presence_of_element_located((By.ID, "garbage-collector")))
+        
+        # Click game area to focus
+        game_area = self.driver.find_element(By.CLASS_NAME, "game")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(game_area).click().perform()
+
 
 if __name__ == "__main__":
     unittest.main()
