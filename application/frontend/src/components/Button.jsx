@@ -1,10 +1,18 @@
-const Button = ({ text, href, onClick }) => {
+const Button = ({ id, text, href, onClick }) => {
     return href ? (
-        <a href={href} className="button">
+        <a 
+            id={id}
+            href={href} 
+            className="button"
+        >
             {text}
         </a>
     ) : (
-        <button onClick={onClick} className="button">
+        <button 
+            id={id}
+            onClick={onClick} 
+            className="button"
+        >
             {text}
         </button>
     );

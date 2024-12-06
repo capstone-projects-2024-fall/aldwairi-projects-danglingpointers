@@ -5,7 +5,7 @@ import CreateGameEntry from "../entries/CreateGameEntry";
 import GameEntry from "../entries/GameEntry";
 import { GAME_URL, HOST_PATH } from "../../scripts/constants";
 
-export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
+export default function LobbyPreview({ id, lobbyGames, setLobbyGames }) {
   const [isCreateGame, setIsCreateGame] = useState(false);
   const { isLoggedIn } = useUserAuthStore();
   const handleCreateGame = async () => {
@@ -80,7 +80,7 @@ export default function LobbyPreview({ lobbyGames, setLobbyGames }) {
   }, [lobbyGames, setLobbyGames]);
 
   return (
-    <article className="default-scrollbar">
+    <article id={id} className="default-scrollbar">
       <div className="preview">
         <div className="link-flex">
           <h2>Lobby</h2>

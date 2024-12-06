@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { GAME_URL, HOST_PATH } from "../../scripts/constants";
 
-export default function WatchPreview({ watchGames, setWatchGames }) {
+export default function WatchPreview({ id, watchGames, setWatchGames }) {
   useEffect(() => {
     const fetchGame = async (gameId) => {
       try {
@@ -61,7 +61,7 @@ export default function WatchPreview({ watchGames, setWatchGames }) {
   }, [watchGames, setWatchGames]);
 
   return (
-    <article className="default-scrollbar">
+    <article id={id} className="default-scrollbar">
       <div className="preview">
         <div className="link-flex">
           <Link to="/watch">
