@@ -98,6 +98,7 @@ const GarbageCollector = forwardRef((_, ref) => {
   return (
     <>
       <section
+        id="garbage-collector"
         className="garbage-collector"
         ref={ref}
         style={{
