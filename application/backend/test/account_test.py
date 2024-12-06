@@ -159,11 +159,11 @@ class UserAccountTest(unittest.TestCase):
             triangle_icon_user2.click()
 
             # User 2 checks the received message
-            message_id = driver2.get_message_id("bobby", message_text)
+            message_id = UserAccountTest.get_message_id("bobby", message_text)
 
             received_message = webdriverwait2.until(
-                        EC.presence_of_element_located((By.ID, message_id))
-                )
+                EC.presence_of_element_located((By.ID, message_id))
+            )
             
             self.assertTrue(received_message.is_displayed())
 
@@ -175,13 +175,13 @@ class UserAccountTest(unittest.TestCase):
             reply_button.click()
 
             # User 1 checks the received reply
+            reply_message_id = UserAccountTest.get_message_id("alicey", reply_text)  # Generate ID for reply message
             received_reply = webdriverwait1.until(
-                EC.presence_of_element_located((By.XPATH, f"//div[contains(text(), '{reply_text}')]"))
+                EC.presence_of_element_located((By.ID, reply_message_id))
             )
             self.assertTrue(received_reply.is_displayed())
 
         finally:
-            # return
             driver1.quit()
             driver2.quit()
 
