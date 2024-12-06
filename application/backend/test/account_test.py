@@ -20,10 +20,7 @@ class UserAccountTest(unittest.TestCase):
         self.api_url = "http://localhost:8000/api"
         self.test_logusername = "johndoe"
         self.test_logpassword = "password1"
-        self.test_username1 = "bobby"
-        self.test_password1 = "password1"
-        self.test_username2 = "alicey"
-        self.test_password2 = "password2"
+
         self.test_regusername = generate_random_string(20)
         self.test_regpassword = generate_random_string(20)
 
@@ -117,57 +114,70 @@ class UserAccountTest(unittest.TestCase):
 
         self.assertTrue(login.is_displayed())
 
-    # def test_send_message(self):
-    #     driver1 = webdriver.Chrome()
-    #     driver2 = webdriver.Chrome()
+    def test_send_message(self):
+        driver1 = webdriver.Chrome()
+        driver2 = webdriver.Chrome()
         
-    #     try:
-    #         self.test_account_creation(driver1, self.test_username1, self.test_password1)
-    #         self.test_account_creation(driver2, self.test_username2, self.test_password2)
+        try:
+            # User 1 logs in (Bobby)
+            driver1.get(self.base_url)
+            webdriverwait1 = WebDriverWait(driver1, 10)
+            webdriverwait1.until(EC.presence_of_element_located((By.ID, "login-username-input")))
+            driver1.find_element(By.ID, "login-username-input").send_keys("bobby")
+            driver1.find_element(By.ID, "login-password-input").send_keys("password_bob")
+            driver1.find_element(By.ID, "login-submit-button").click()
 
-    #         # User 1 logs in
-    #         self.driver.get(self.base_url)
-    #         webdriverwait = WebDriverWait(self.driver, 10)
+            # User 2 logs in (Alicey)
+            driver2.get(self.base_url)
+            webdriverwait2 = WebDriverWait(driver2, 10)
+            webdriverwait2.until(EC.presence_of_element_located((By.ID, "login-username-input")))
+            driver2.find_element(By.ID, "login-username-input").send_keys("alicey")
+            driver2.find_element(By.ID, "login-password-input").send_keys("password_alicey")
+            driver2.find_element(By.ID, "login-submit-button").click()
 
-    #         webdriverwait.until(
-    #             EC.presence_of_element_located((By.ID, "login-username-input"))
-    #         )
-            
-    #         self.driver.find_element(By.ID, "login-username-input").send_keys(self.test_logusername)
-    #         self.driver.find_element(By.ID, "login-password-input").send_keys(self.test_logpassword)
-    #         self.driver.find_element(By.ID, "login-submit-button").click()
+            # User 1 clicks the triangle to open the inbox
+            triangle_icon = webdriverwait1.until(
+                EC.presence_of_element_located((By.XPATH, "//div[@id='inbox-triangle-icon']"))
+            )
+            triangle_icon.click()  # Replace the XPath with the correct identifier for the triangle
 
-    #         watch_title = webdriverwait.until(
-    #             EC.presence_of_element_located((By.ID, "watch-title"))
-    #         )
-            
-    #         self.assertTrue(watch_title.is_displayed())
+            # User 1 sends a message to User 2
+            message_text = "Hello Alicey!"
+            message_input = webdriverwait1.until(EC.presence_of_element_located((By.ID, "message-input")))
+            message_input.send_keys(message_text)
+            driver1.find_element(By.ID, "send-message-button").click()
 
-    #         self.driver.find_element(By.ID, "message-input").send_keys("Hello User 2")
-    #         self.driver.find_element(By.ID, "send-message-button").click()
+            # User 2 clicks the triangle to open the inbox
+            triangle_icon_user2 = webdriverwait2.until(
+                EC.presence_of_element_located((By.XPATH, "//div[@id='inbox-triangle-icon']"))
+            )
+            triangle_icon_user2.click()  # Replace the XPath with the correct identifier for the triangle
 
-    #         self.driver.find_element(By.ID, "logout-nav-button").click()
+            # User 2 checks the received message
+            received_message = webdriverwait2.until(
+                EC.presence_of_element_located((By.XPATH, f"//div[contains(text(), '{message_text}')]"))
+            )
+            self.assertTrue(received_message.is_displayed())
 
-    #         self.driver.find_element(By.ID, "login-username-input").send_keys(self.test_logusername2)
-    #         self.driver.find_element(By.ID, "login-password-input").send_keys(self.test_logpassword2)
-    #         self.driver.find_element(By.ID, "login-submit-button").click()
+            # User 2 replies to User 1
+            reply_text = "Hello Bobby!"
+            reply_input = webdriverwait2.until(EC.presence_of_element_located((By.ID, "message-input")))
+            reply_input.send_keys(reply_text)
+            driver2.find_element(By.ID, "send-message-button").click()
 
-    #         self.driver.find_element(By.ID, "message-input").send_keys("Hello User 1")
-    #         self.driver.find_element(By.ID, "send-message-button").click()
+            # User 1 checks the received reply
+            received_reply = webdriverwait1.until(
+                EC.presence_of_element_located((By.XPATH, f"//div[contains(text(), '{reply_text}')]"))
+            )
+            self.assertTrue(received_reply.is_displayed())
 
-    #         self.driver.find_element(By.ID, "logout-nav-button").click()
+        finally:
+            driver1.quit()
+            driver2.quit()
 
-    #         self.driver.find_element(By.ID, "login-username-input").send_keys(self.test_logusername)
-    #         self.driver.find_element(By.ID, "login-password-input").send_keys(self.test_logpassword)
-    #         self.driver.find_element(By.ID, "login-submit-button").click()
 
-    #         message_received = webdriverwait.until(
-    #             EC.presence_of_element_located((By.XPATH, "//div[contains(text(), 'Hello User 1')]"))
-    #         )
-            
-    #         self.assertTrue(message_received.is_displayed())
-    #     finally:
-    #         driver1.quit()
-    #         driver2.quit()
 if __name__ == "__main__":
-    unittest.main()
+    test = UserAccountTest()
+    test.setUp()
+    test.test_send_message()
+    test.tearDown()
