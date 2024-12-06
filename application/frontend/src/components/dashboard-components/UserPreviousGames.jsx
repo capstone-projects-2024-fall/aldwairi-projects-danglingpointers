@@ -31,7 +31,7 @@ export default function UserPreviousGames({ isInboxOpen }) {
       <div>
         <h1 className="watchtitle">Game History</h1>
       </div>
-      <article className="watchlist-container">
+      <article id= "watch-list" lassName="watchlist-container">
         {watchPreviews.map((game, index) => (
           <GameEntry
             key={index}

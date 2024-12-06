@@ -83,7 +83,7 @@ class UserAccountTest(unittest.TestCase):
         self.driver.find_element(By.ID,"login-submit-button").click()
 
         watch_title = webdriverwait.until(
-            EC.presence_of_element_located((By.ID, "watch-title"))
+            EC.presence_of_element_located((By.ID, "watch-list"))
         )
         
         self.assertTrue(watch_title.is_displayed())
@@ -101,7 +101,7 @@ class UserAccountTest(unittest.TestCase):
         self.driver.find_element(By.ID,"login-submit-button").click()
 
         watch_title = webdriverwait.until(
-            EC.presence_of_element_located((By.ID, "watch-title"))
+            EC.presence_of_element_located((By.ID, "watch-preview"))
         )
         
         self.assertTrue(watch_title.is_displayed())
