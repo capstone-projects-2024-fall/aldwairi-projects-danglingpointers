@@ -137,21 +137,22 @@ class UserAccountTest(unittest.TestCase):
 
             # User 1 clicks the triangle to open the inbox
             triangle_icon = webdriverwait1.until(
-                EC.presence_of_element_located((By.XPATH, "//div[@id='inbox-triangle-icon']"))
+                EC.presence_of_element_located((By.XPATH, "//div[@style='cursor: pointer;']"))
             )
-            triangle_icon.click()  # Replace the XPath with the correct identifier for the triangle
+            triangle_icon.click()
 
             # User 1 sends a message to User 2
             message_text = "Hello Alicey!"
-            message_input = webdriverwait1.until(EC.presence_of_element_located((By.ID, "message-input")))
+            message_input = webdriverwait1.until(EC.presence_of_element_located((By.CLASS_NAME, "message-input")))
             message_input.send_keys(message_text)
-            driver1.find_element(By.ID, "send-message-button").click()
+            send_button = driver1.find_element(By.CLASS_NAME, "send-btn")
+            send_button.click()
 
             # User 2 clicks the triangle to open the inbox
             triangle_icon_user2 = webdriverwait2.until(
-                EC.presence_of_element_located((By.XPATH, "//div[@id='inbox-triangle-icon']"))
+                EC.presence_of_element_located((By.XPATH, "//div[@style='cursor: pointer;']"))
             )
-            triangle_icon_user2.click()  # Replace the XPath with the correct identifier for the triangle
+            triangle_icon_user2.click()
 
             # User 2 checks the received message
             received_message = webdriverwait2.until(
@@ -161,9 +162,10 @@ class UserAccountTest(unittest.TestCase):
 
             # User 2 replies to User 1
             reply_text = "Hello Bobby!"
-            reply_input = webdriverwait2.until(EC.presence_of_element_located((By.ID, "message-input")))
+            reply_input = webdriverwait2.until(EC.presence_of_element_located((By.CLASS_NAME, "message-input")))
             reply_input.send_keys(reply_text)
-            driver2.find_element(By.ID, "send-message-button").click()
+            reply_button = driver2.find_element(By.CLASS_NAME, "send-btn")
+            reply_button.click()
 
             # User 1 checks the received reply
             received_reply = webdriverwait1.until(
@@ -172,8 +174,10 @@ class UserAccountTest(unittest.TestCase):
             self.assertTrue(received_reply.is_displayed())
 
         finally:
+            # return
             driver1.quit()
             driver2.quit()
+
 
 
 if __name__ == "__main__":
