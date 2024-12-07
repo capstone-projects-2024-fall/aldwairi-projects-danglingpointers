@@ -200,7 +200,30 @@ class GameTest(unittest.TestCase):
         # Verify position changed
         self.assertNotEqual(initial_position, updated_position, "Memory1 position should change after game starts")
 
+    def test_verify_garbage_collector_color(self):
+        self.login_user()
+        
+        self.start_game()
+        
+        time.sleep(1)
+        userin = self.driver.find_element(By.TAG_NAME, "body")
+        userin.send_keys(Keys.TAB)
+        userin.send_keys(Keys.TAB)
 
+        
+        # Get initial lives count
+        lives_element = self.wait.until(EC.presence_of_element_located(
+            (By.CLASS_NAME, "lives-remaining")))
+        hearts_before = lives_element.text.count("❤️")
+
+        # Trigger life increase
+        userin.send_keys(Keys.ENTER)
+        time.sleep(1)
+        
+        # Verify lives increased
+        hearts_after = lives_element.text.count("❤️")
+        self.assertEqual(hearts_after, hearts_before + 1, 
+                        f"Hearts did not increase as expected. Before: {hearts_before}, After: {hearts_after}")
 
     
 if __name__ == "__main__":
