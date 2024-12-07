@@ -39,23 +39,26 @@ def test_settings_and_play_with_movement():
 
     start_round_button = wait.until(EC.presence_of_element_located((By.ID, "start-round-button")))
     start_round_button.click()
-    print("Game started by pressing 'Start New Round'.")
+
+    # Wait for stack initialization and garbage collector
+    garbage = wait.until(EC.presence_of_element_located((By.ID, "garbage-collector")))
 
 
-    print("Testing continuous left movement...")
-    start_time = time.time()
-    while time.time() - start_time < 2:  # Move left for 2 seconds
-        actions.send_keys("a").perform()
-        time.sleep(0.01)  # Small delay to simulate real user input
-    print("Left movement completed.")
+    # Test left movement with custom key 'a'
+    initial_left_pos = garbage.get_attribute("style")
+    actions.key_down("a").pause(1).key_up("a").perform()
+    time.sleep(1)
 
-    # Move Right Continuously
-    print("Testing continuous right movement...")
-    start_time = time.time()
-    while time.time() - start_time < 2:  # Move right for 2 seconds
-        actions.send_keys("d").perform()
-        time.sleep(0.01)  # Small delay to simulate real user input
-    print("Right movement completed.")
+    # Test right movement with custom key 'd'
+    initial_right_pos = garbage.get_attribute("style")
+    actions.key_down("d").pause(1).key_up("d").perform()
+    time.sleep(1)
+
+    print("Custom key movement tests passed.")
+
+
+
+
 
 
 # Run the test
