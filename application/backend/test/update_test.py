@@ -1,4 +1,5 @@
 import unittest
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -33,7 +34,160 @@ class UpdateTest(unittest.TestCase):
         self.driver.find_element(By.ID, "login-password-input").send_keys(self.test_password)
         self.driver.find_element(By.ID, "login-submit-button").click()
 
+    def test_leaderboard_update(self):
+        self.login_user()
+        webdriverwait = WebDriverWait(self.driver, 10)
 
+        # Navigate to leaderboard first to get initial state 
+        webdriverwait.until(EC.presence_of_element_located((By.ID, "leaderboard-nav-button"))).click()
+        webdriverwait.until(EC.presence_of_element_located((By.ID, "solo-leaderboard")))
+        solo_leaderboard = self.driver.find_element(By.ID, "solo-leaderboard")
+        initial_game_scores = solo_leaderboard.find_elements(By.CLASS_NAME, "game-scores")
+        
+        # Initial count of game entries
+        webdriverwait.until(EC.presence_of_element_located((By.ID, "solo-leaderboard")))
+        solo_leaderboard = self.driver.find_element(By.ID, "solo-leaderboard")
+        initial_entries = solo_leaderboard.find_elements(By.CLASS_NAME, "game-entry")
+        initial_count = len(initial_entries)
+
+        # Play game to generate new score
+        webdriverwait.until(EC.presence_of_element_located((By.ID, "play-nav-button"))).click()
+        start_button = webdriverwait.until(EC.presence_of_element_located((By.ID, "start-round-button")))
+        start_button.click()
+        
+        # Click game area to focus
+        game_area = self.driver.find_element(By.CLASS_NAME, "game")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(game_area).click().perform()
+
+        # Try different pause durations to score points
+        pause_times = [0.011, 0.012, 0.013, 0.014, 0.015]
+        
+        for pause_duration in pause_times:
+            self.driver.refresh()
+            webdriverwait.until(EC.presence_of_element_located((By.ID, "play-nav-button"))).click()
+            start_button = webdriverwait.until(EC.presence_of_element_located((By.ID, "start-round-button")))
+            start_button.click()
+                # Wait for stack initialization and garbage collector
+            stack = webdriverwait.until(EC.presence_of_element_located((By.CLASS_NAME, "stack")))
+            garbage = webdriverwait.until(EC.presence_of_element_located((By.ID, "garbage-collector")))
+            
+            # Click game area to focus
+            game_area = self.driver.find_element(By.CLASS_NAME, "game")
+            actions = ActionChains(self.driver)
+            actions.move_to_element(game_area).click().perform()
+
+            # Wait for a pointer to appear
+            pointer = webdriverwait.until(EC.presence_of_element_located((By.CLASS_NAME, "pointer")))
+            initial_score = (self.driver.find_element(By.ID, "game-score").text)
+            
+            attempts = 0
+            while attempts < 17:
+                actions.key_down(Keys.ARROW_LEFT).pause(pause_duration).key_up(Keys.ARROW_LEFT).perform()
+                time.sleep(0.13)
+                
+                final_score = self.driver.find_element(By.ID, "game-score").text
+                if final_score != initial_score:
+
+                    actions.key_down(Keys.ARROW_RIGHT).pause(pause_duration).key_up(Keys.ARROW_RIGHT).perform()
+                    actions.key_down(Keys.ARROW_RIGHT).pause(pause_duration).key_up(Keys.ARROW_RIGHT).perform()
+                    time.sleep(15)
+
+
+                    # Return to leaderboard to check update
+                    webdriverwait.until(EC.presence_of_element_located((By.ID, "leaderboard-nav-button"))).click()
+                    
+                    # Get updated game scores specifically from solo leaderboard
+
+                    webdriverwait.until(EC.presence_of_element_located((By.ID, "solo-leaderboard")))
+                    solo_leaderboard = self.driver.find_element(By.ID, "solo-leaderboard")
+                    webdriverwait.until(EC.presence_of_element_located((By.CLASS_NAME, "game-scores")))
+                    updated_game_scores = solo_leaderboard.find_elements(By.CLASS_NAME, "game-scores")
+
+
+                    # Check for additional game entry
+                    webdriverwait.until(EC.presence_of_element_located((By.ID, "solo-leaderboard")))
+                    solo_leaderboard = self.driver.find_element(By.ID, "solo-leaderboard")
+                    updated_entries = solo_leaderboard.find_elements(By.CLASS_NAME, "game-entry")
+                    self.assertGreater(
+                        len(updated_entries),
+                        initial_count,
+                        "Should have additional game entry after completing game"
+                    )
+                    return
+                    
+                attempts += 1
+                
+        self.fail("Could not achieve score increase with any timing")
+
+    def test_watch_realtime_update(self):
+        # First browser setup
+        self.login_user()
+        webdriverwait = WebDriverWait(self.driver, 10)
+        
+        # Navigate to leaderboard to watch for updates
+        webdriverwait.until(EC.presence_of_element_located((By.ID, "leaderboard-nav-button"))).click()
+        webdriverwait.until(EC.presence_of_element_located((By.ID, "solo-watchlist")))
+        solo_leaderboard = self.driver.find_element(By.ID, "solo-watchlist")
+        initial_entries = solo_leaderboard.find_elements(By.CLASS_NAME, "game-entry")
+        initial_count = len(initial_entries)
+
+        # Setup second browser
+        driver2 = webdriver.Chrome()
+        driver2.maximize_window()
+        driver2.get(self.base_url)
+        webdriverwait2 = WebDriverWait(driver2, 10)
+        
+        # Login with test user2
+        webdriverwait2.until(EC.presence_of_element_located((By.ID, "login-username-input")))
+        driver2.find_element(By.ID, "login-username-input").send_keys("testuser2")
+        driver2.find_element(By.ID, "login-password-input").send_keys("password2")
+        driver2.find_element(By.ID, "login-submit-button").click()
+        
+        # Play game in second browser
+        webdriverwait2.until(EC.presence_of_element_located((By.ID, "play-nav-button"))).click()
+        start_button = webdriverwait2.until(EC.presence_of_element_located((By.ID, "start-round-button")))
+        start_button.click()
+        
+        # Get score in second browser
+        game_area = driver2.find_element(By.CLASS_NAME, "game")
+        actions2 = ActionChains(driver2)
+        actions2.move_to_element(game_area).click().perform()
+        
+        # Play until score changes
+        pause_times = [0.011, 0.012, 0.013, 0.014, 0.015]
+        for pause_duration in pause_times:
+            initial_score = driver2.find_element(By.ID, "game-score").text
+            attempts = 0
+            while attempts < 17:
+                actions2.key_down(Keys.ARROW_LEFT).pause(pause_duration).key_up(Keys.ARROW_LEFT).perform()
+                time.sleep(0.13)
+                final_score = driver2.find_element(By.ID, "game-score").text
+                if final_score != initial_score:
+                    # End game by moving right
+                    actions2.key_down(Keys.ARROW_RIGHT).pause(pause_duration).key_up(Keys.ARROW_RIGHT).perform()
+                    actions2.key_down(Keys.ARROW_RIGHT).pause(pause_duration).key_up(Keys.ARROW_RIGHT).perform()
+                    time.sleep(15)
+                    
+                    # Check first browser's leaderboard for update
+                    self.driver.refresh()
+                    webdriverwait.until(EC.presence_of_element_located((By.ID, "solo-leaderboard")))
+                    solo_leaderboard = self.driver.find_element(By.ID, "solo-leaderboard")
+                    updated_entries = solo_leaderboard.find_elements(By.CLASS_NAME, "game-entry")
+                    
+                    self.assertGreater(
+                        len(updated_entries),
+                        initial_count,
+                        "Leaderboard should update in real-time when another player completes a game"
+                    )
+                    
+                    driver2.quit()
+                    return
+                    
+                attempts += 1
+                
+        driver2.quit()
+        self.fail("Could not achieve score increase with any timing")
 
 if __name__ == "__main__":
     unittest.main()

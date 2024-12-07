@@ -2,7 +2,7 @@ import GameEntry from "../entries/GameEntry";
 
 export default function LeaderboardsVersus({ leaderboardsVersus }) {
   return (
-    <article className="default-scrollbar">
+    <article id= "verus-leaderboard" className="default-scrollbar">
       <div className="leaderboard">
         <div className="link-flex">
           <h2>Versus Leaderboards</h2>

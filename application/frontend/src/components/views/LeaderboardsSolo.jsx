@@ -2,8 +2,8 @@ import GameEntry from "../entries/GameEntry";
 
 export default function LeaderboardsSolo({ leaderboardsSolo }) {
   return (
-    <article className="default-scrollbar">
-      <div className="leaderboard">
+    <article id= "solo-leaderboard" className="default-scrollbar">
+      <div id= "solo-leaderboard" className="leaderboard">
         <div className="link-flex">
           <h2>Solo Leaderboards</h2>
           <span></span>

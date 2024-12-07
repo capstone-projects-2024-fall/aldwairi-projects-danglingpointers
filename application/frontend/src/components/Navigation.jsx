@@ -37,7 +37,7 @@ export default function Navigation() {
         <li className="li-home"></li>
         <li>
           <Link to="/leaderboards">
-            <Button id="leaderboards-nav-button" text="Leaderboards" />
+            <Button id="leaderboard-nav-button" text="Leaderboards" />
           </Link>
         </li>
         <li>
