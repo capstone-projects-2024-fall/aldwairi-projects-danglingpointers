@@ -69,7 +69,7 @@ class UserAccountTest(unittest.TestCase):
         self.driver.find_element(By.ID,"security-submit-button").click()
 
         watch_title = webdriverwait.until(
-            EC.presence_of_element_located((By.CLASS_NAME, "watch-title"))
+            EC.presence_of_element_located((By.ID, "inbox-component"))
         )
         
         self.assertTrue(watch_title.is_displayed())
