@@ -20,8 +20,8 @@ class GameTest(unittest.TestCase):
         self.base_url = "http://localhost:3000"
         self.api_url = "http://localhost:8000/api"
         # Test user credentials
-        self.test_username = "johndoe"
-        self.test_password = "password1"
+        self.test_username = "testuser12"
+        self.test_password = "password12"
 
     def tearDown(self):
         self.driver.quit()

@@ -68,7 +68,8 @@ class UpdateTest(unittest.TestCase):
             webdriverwait.until(EC.presence_of_element_located((By.ID, "play-nav-button"))).click()
             start_button = webdriverwait.until(EC.presence_of_element_located((By.ID, "start-round-button")))
             start_button.click()
-                # Wait for stack initialization and garbage collector
+            
+            # Wait for stack initialization and garbage collector
             stack = webdriverwait.until(EC.presence_of_element_located((By.CLASS_NAME, "stack")))
             garbage = webdriverwait.until(EC.presence_of_element_located((By.ID, "garbage-collector")))
             

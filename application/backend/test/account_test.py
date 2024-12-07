@@ -18,8 +18,8 @@ class UserAccountTest(unittest.TestCase):
         self.driver.maximize_window()
         self.base_url = "http://localhost:3000"
         self.api_url = "http://localhost:8000/api"
-        self.test_logusername = "johndoe"
-        self.test_logpassword = "password1"
+        self.test_logusername = "testuser12"
+        self.test_logpassword = "password12"
 
         self.test_regusername = generate_random_string(20)
         self.test_regpassword = generate_random_string(20)
@@ -69,7 +69,7 @@ class UserAccountTest(unittest.TestCase):
         self.driver.find_element(By.ID,"security-submit-button").click()
 
         watch_title = webdriverwait.until(
-            EC.presence_of_element_located((By.ID, "watch-title"))
+            EC.presence_of_element_located((By.CLASS_NAME, "watch-title"))
         )
         
         self.assertTrue(watch_title.is_displayed())
@@ -87,7 +87,7 @@ class UserAccountTest(unittest.TestCase):
         self.driver.find_element(By.ID,"login-submit-button").click()
 
         watch_title = webdriverwait.until(
-            EC.presence_of_element_located((By.ID, "watch-list"))
+            EC.presence_of_element_located((By.CLASS_NAME, "watchtitle"))
         )
         
         self.assertTrue(watch_title.is_displayed())
@@ -105,7 +105,7 @@ class UserAccountTest(unittest.TestCase):
         self.driver.find_element(By.ID,"login-submit-button").click()
 
         watch_title = webdriverwait.until(
-            EC.presence_of_element_located((By.ID, "watch-preview"))
+            EC.presence_of_element_located((By.CLASS_NAME, "watchtitle"))
         )
         
         self.assertTrue(watch_title.is_displayed())
@@ -121,7 +121,6 @@ class UserAccountTest(unittest.TestCase):
     def test_send_message(self):
         driver1 = webdriver.Chrome()
         driver2 = webdriver.Chrome()
-        1
         # User 1 logs in (Bobby)
         driver1.get(self.base_url)
         webdriverwait1 = WebDriverWait(driver1, 10)

@@ -40,5 +40,19 @@
             "is_active": true,
             "is_superuser": false
         }
+    },
+    {
+        "model": "auth.User",
+        "pk": "3",
+        "fields": {
+            "username": "testuser12",
+            "first_name": "password12",
+            "last_name": "atAyNnZnTw",
+            "email": "vyolQVjNCH@sample.com",
+            "password": "123456",
+            "is_staff": false,
+            "is_active": true,
+            "is_superuser": false
+        }
     }
 ]
