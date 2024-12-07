@@ -3,7 +3,7 @@ import GameEntry from "../entries/GameEntry";
 export default function WatchSolo({ watchSoloGames }) {
   return (
     <article className="default-scrollbar">
-      <div className="watchlist">
+      <div id ="solo-watchlist" className="watchlist">
         <div className="link-flex">
           <h2>Watch Solo Games</h2>
           <span></span>
