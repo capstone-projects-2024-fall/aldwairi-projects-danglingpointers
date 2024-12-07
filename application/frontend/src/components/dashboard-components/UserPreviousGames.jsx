@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
 import { HOST_PATH } from "../../scripts/constants";
 import useUserAuthStore from "../../stores/userAuthStore";
 import GameEntry from "../entries/GameEntry";
@@ -31,7 +31,7 @@ export default function UserPreviousGames({ isInboxOpen }) {
       <div>
         <h1 className="watchtitle">Game History</h1>
       </div>
-      <article id= "watch-list" lassName="watchlist-container">
+      <article id= "watch-list" className="watchlist-container">
         {watchPreviews.map((game, index) => (
           <GameEntry
             key={index}
