@@ -134,7 +134,7 @@ class GameTest(unittest.TestCase):
                 attempts += 1
                 
         self.fail("Could not achieve score increase with any timing")
-                  
+
     def test_versus_gameplay(self):
         driver1 = webdriver.Chrome()
         driver2 = webdriver.Chrome()
