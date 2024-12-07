@@ -28,7 +28,6 @@ def test_settings_and_play_with_movement():
     move_left_input.click()
     actions.send_keys("a").perform()
 
-    # Locate "Move Right" input by finding the parent `li` with text content and selecting the input inside it
     move_right_input = driver.find_element(By.XPATH, "//li[contains(., 'Move Right')]/input")
     move_right_input.click()
     actions.send_keys("d").perform()
