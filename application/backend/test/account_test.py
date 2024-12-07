@@ -121,74 +121,70 @@ class UserAccountTest(unittest.TestCase):
     def test_send_message(self):
         driver1 = webdriver.Chrome()
         driver2 = webdriver.Chrome()
+        1
+        # User 1 logs in (Bobby)
+        driver1.get(self.base_url)
+        webdriverwait1 = WebDriverWait(driver1, 10)
+        webdriverwait1.until(EC.presence_of_element_located((By.ID, "login-username-input")))
+        driver1.find_element(By.ID, "login-username-input").send_keys("bobby")
+        driver1.find_element(By.ID, "login-password-input").send_keys("password_bob")
+        driver1.find_element(By.ID, "login-submit-button").click()
+
+        # User 2 logs in (Alicey)
+        driver2.get(self.base_url)
+        webdriverwait2 = WebDriverWait(driver2, 10)
+        webdriverwait2.until(EC.presence_of_element_located((By.ID, "login-username-input")))
+        driver2.find_element(By.ID, "login-username-input").send_keys("alicey")
+        driver2.find_element(By.ID, "login-password-input").send_keys("password_alicey")
+        driver2.find_element(By.ID, "login-submit-button").click()
+
+        # User 1 clicks the triangle to open the inbox
+        triangle_icon = webdriverwait1.until(
+            EC.presence_of_element_located((By.XPATH, "//div[@style='cursor: pointer;']"))
+        )
+        triangle_icon.click()
+
+        # User 1 sends a message to User 2
+        message_text = "Hello Alicey!"
+        message_input = webdriverwait1.until(EC.presence_of_element_located((By.CLASS_NAME, "message-input")))
+        message_input.send_keys(message_text)
+        send_button = driver1.find_element(By.CLASS_NAME, "send-btn")
+        send_button.click()
+
+        # User 2 clicks the triangle to open the inbox
+        triangle_icon_user2 = webdriverwait2.until(
+            EC.presence_of_element_located((By.XPATH, "//div[@style='cursor: pointer;']"))
+        )
+        triangle_icon_user2.click()
+
+
+        # User 2 checks the received message
+        message_id = UserAccountTest.get_message_id("bobby", message_text)
+
+        received_message = webdriverwait2.until(
+            EC.presence_of_element_located((By.ID, message_id))
+        )
         
-        try:
-            # User 1 logs in (Bobby)
-            driver1.get(self.base_url)
-            webdriverwait1 = WebDriverWait(driver1, 10)
-            webdriverwait1.until(EC.presence_of_element_located((By.ID, "login-username-input")))
-            driver1.find_element(By.ID, "login-username-input").send_keys("bobby")
-            driver1.find_element(By.ID, "login-password-input").send_keys("password_bob")
-            driver1.find_element(By.ID, "login-submit-button").click()
+        self.assertTrue(received_message.is_displayed())
+        import time
+        time.sleep(3)
+        # User 2 replies to User 1
+        reply_text = "Hello Bobby!"
+        reply_input = webdriverwait2.until(EC.presence_of_element_located((By.CLASS_NAME, "message-input")))
+        reply_input.send_keys(reply_text)
+        reply_button = driver2.find_element(By.CLASS_NAME, "send-btn")
+        reply_button.click()
 
-            # User 2 logs in (Alicey)
-            driver2.get(self.base_url)
-            webdriverwait2 = WebDriverWait(driver2, 10)
-            webdriverwait2.until(EC.presence_of_element_located((By.ID, "login-username-input")))
-            driver2.find_element(By.ID, "login-username-input").send_keys("alicey")
-            driver2.find_element(By.ID, "login-password-input").send_keys("password_alicey")
-            driver2.find_element(By.ID, "login-submit-button").click()
-
-            # User 1 clicks the triangle to open the inbox
-            triangle_icon = webdriverwait1.until(
-                EC.presence_of_element_located((By.XPATH, "//div[@style='cursor: pointer;']"))
-            )
-            triangle_icon.click()
-
-            # User 1 sends a message to User 2
-            message_text = "Hello Alicey!"
-            message_input = webdriverwait1.until(EC.presence_of_element_located((By.CLASS_NAME, "message-input")))
-            message_input.send_keys(message_text)
-            send_button = driver1.find_element(By.CLASS_NAME, "send-btn")
-            send_button.click()
-
-            # User 2 clicks the triangle to open the inbox
-            triangle_icon_user2 = webdriverwait2.until(
-                EC.presence_of_element_located((By.XPATH, "//div[@style='cursor: pointer;']"))
-            )
-            triangle_icon_user2.click()
-
-            # User 2 checks the received message
-            message_id = UserAccountTest.get_message_id("bobby", message_text)
-            received_message = webdriverwait2.until(
-                EC.presence_of_element_located((By.ID, message_id))
-            )
-            self.assertTrue(received_message.is_displayed())
-
-            # User 2 replies to User 1
-            reply_text = "Hello Bobby!"
-            reply_input = webdriverwait2.until(EC.presence_of_element_located((By.CLASS_NAME, "message-input")))
-            reply_input.send_keys(reply_text)
-            reply_button = driver2.find_element(By.CLASS_NAME, "send-btn")
-            reply_button.click()
-
-            # User 1 checks the received reply
-            reply_message_id = UserAccountTest.get_message_id("alicey", reply_text)  # Generate ID for reply message
-            received_reply = webdriverwait1.until(
-                EC.presence_of_element_located((By.ID, reply_message_id))
-            )
-            self.assertTrue(received_reply.is_displayed())
-
-        finally:
-            driver1.quit()
-            driver2.quit()
-
+        # User 1 checks the received reply
+        reply_message_id = UserAccountTest.get_message_id("alicey", reply_text)
+        received_reply = webdriverwait1.until(
+            EC.presence_of_element_located((By.ID, reply_message_id))
+        )
+        self.assertTrue(received_reply.is_displayed())
 
 
 
 
 if __name__ == "__main__":
-    test = UserAccountTest()
-    test.setUp()
-    test.test_send_message()
-    test.tearDown() 
+    unittest.main()
+
