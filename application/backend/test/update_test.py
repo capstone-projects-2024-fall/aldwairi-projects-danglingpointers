@@ -140,8 +140,8 @@ class UpdateTest(unittest.TestCase):
         
         # Login with test user2
         webdriverwait2.until(EC.presence_of_element_located((By.ID, "login-username-input")))
-        driver2.find_element(By.ID, "login-username-input").send_keys("testuser2")
-        driver2.find_element(By.ID, "login-password-input").send_keys("password2")
+        driver2.find_element(By.ID, "login-username-input").send_keys("alicey")
+        driver2.find_element(By.ID, "login-password-input").send_keys("password_alicey")
         driver2.find_element(By.ID, "login-submit-button").click()
         
         # Play game in second browser
@@ -167,18 +167,18 @@ class UpdateTest(unittest.TestCase):
                     # End game by moving right
                     actions2.key_down(Keys.ARROW_RIGHT).pause(pause_duration).key_up(Keys.ARROW_RIGHT).perform()
                     actions2.key_down(Keys.ARROW_RIGHT).pause(pause_duration).key_up(Keys.ARROW_RIGHT).perform()
-                    time.sleep(15)
+                    time.sleep(1)
                     
                     # Check first browser's leaderboard for update
                     self.driver.refresh()
-                    webdriverwait.until(EC.presence_of_element_located((By.ID, "solo-leaderboard")))
-                    solo_leaderboard = self.driver.find_element(By.ID, "solo-leaderboard")
+                    webdriverwait.until(EC.presence_of_element_located((By.ID, "solo-watchlist")))
+                    solo_leaderboard = self.driver.find_element(By.ID, "solo-watchlist")
                     updated_entries = solo_leaderboard.find_elements(By.CLASS_NAME, "game-entry")
                     
                     self.assertGreater(
                         len(updated_entries),
                         initial_count,
-                        "Leaderboard should update in real-time when another player completes a game"
+                        "Watchlist should update in real-time when another player plays a game"
                     )
                     
                     driver2.quit()
