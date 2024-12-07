@@ -15,8 +15,8 @@ class UpdateTest(unittest.TestCase):
         self.base_url = "http://localhost:3000"
         self.api_url = "http://localhost:8000/api"
         # Test user credentials
-        self.test_username = "johndoe"
-        self.test_password = "password1"
+        self.test_username = "testuser12"
+        self.test_password = "password12"
 
     def tearDown(self):
         self.driver.quit()
@@ -68,7 +68,7 @@ class UpdateTest(unittest.TestCase):
             webdriverwait.until(EC.presence_of_element_located((By.ID, "play-nav-button"))).click()
             start_button = webdriverwait.until(EC.presence_of_element_located((By.ID, "start-round-button")))
             start_button.click()
-            
+
             # Wait for stack initialization and garbage collector
             stack = webdriverwait.until(EC.presence_of_element_located((By.CLASS_NAME, "stack")))
             garbage = webdriverwait.until(EC.presence_of_element_located((By.ID, "garbage-collector")))
@@ -121,16 +121,16 @@ class UpdateTest(unittest.TestCase):
                 
         self.fail("Could not achieve score increase with any timing")
 
-    def test_watch_realtime_update(self):
-        # First browser setup
+    def test_watch_realtime(self):
+        # First browser setup - watching
         self.login_user()
         webdriverwait = WebDriverWait(self.driver, 10)
         
-        # Navigate to leaderboard to watch for updates
-        webdriverwait.until(EC.presence_of_element_located((By.ID, "leaderboard-nav-button"))).click()
+        # Navigate to watchlist
+        webdriverwait.until(EC.presence_of_element_located((By.ID, "watch-nav-button"))).click()
         webdriverwait.until(EC.presence_of_element_located((By.ID, "solo-watchlist")))
-        solo_leaderboard = self.driver.find_element(By.ID, "solo-watchlist")
-        initial_entries = solo_leaderboard.find_elements(By.CLASS_NAME, "game-entry")
+        solo_watchlist = self.driver.find_element(By.ID, "solo-watchlist")
+        initial_entries = solo_watchlist.find_elements(By.CLASS_NAME, "game-entry")
         initial_count = len(initial_entries)
 
         # Setup second browser
@@ -139,56 +139,31 @@ class UpdateTest(unittest.TestCase):
         driver2.get(self.base_url)
         webdriverwait2 = WebDriverWait(driver2, 10)
         
-        # Login with test user2
-        webdriverwait2.until(EC.presence_of_element_located((By.ID, "login-username-input")))
-        driver2.find_element(By.ID, "login-username-input").send_keys("alicey")
-        driver2.find_element(By.ID, "login-password-input").send_keys("password_alicey")
-        driver2.find_element(By.ID, "login-submit-button").click()
+        try:
+            # Login as different user
+            webdriverwait2.until(EC.presence_of_element_located((By.ID, "login-username-input")))
+            driver2.find_element(By.ID, "login-username-input").send_keys("alicey")
+            driver2.find_element(By.ID, "login-password-input").send_keys("password_alicey")
+            driver2.find_element(By.ID, "login-submit-button").click()
+            
+            # Start game in second browser
+            webdriverwait2.until(EC.presence_of_element_located((By.ID, "play-nav-button"))).click()
+            start_button = webdriverwait2.until(EC.presence_of_element_located((By.ID, "start-round-button")))
+            start_button.click()
+            
+            # First browser should see update immediately
+            webdriverwait.until(EC.presence_of_element_located((By.ID, "solo-watchlist")))
+            solo_watchlist = self.driver.find_element(By.ID, "solo-watchlist")
+            updated_entries = solo_watchlist.find_elements(By.CLASS_NAME, "game-entry")
+            
+            self.assertGreater(
+                len(updated_entries),
+                initial_count,
+                "Watchlist should update in real-time when another player starts a game"
+            )
         
-        # Play game in second browser
-        webdriverwait2.until(EC.presence_of_element_located((By.ID, "play-nav-button"))).click()
-        start_button = webdriverwait2.until(EC.presence_of_element_located((By.ID, "start-round-button")))
-        start_button.click()
-        
-        # Get score in second browser
-        game_area = driver2.find_element(By.CLASS_NAME, "game")
-        actions2 = ActionChains(driver2)
-        actions2.move_to_element(game_area).click().perform()
-        
-        # Play until score changes
-        pause_times = [0.011, 0.012, 0.013, 0.014, 0.015]
-        for pause_duration in pause_times:
-            initial_score = driver2.find_element(By.ID, "game-score").text
-            attempts = 0
-            while attempts < 17:
-                actions2.key_down(Keys.ARROW_LEFT).pause(pause_duration).key_up(Keys.ARROW_LEFT).perform()
-                time.sleep(0.13)
-                final_score = driver2.find_element(By.ID, "game-score").text
-                if final_score != initial_score:
-                    # End game by moving right
-                    actions2.key_down(Keys.ARROW_RIGHT).pause(pause_duration).key_up(Keys.ARROW_RIGHT).perform()
-                    actions2.key_down(Keys.ARROW_RIGHT).pause(pause_duration).key_up(Keys.ARROW_RIGHT).perform()
-                    time.sleep(1)
-                    
-                    # Check first browser's leaderboard for update
-                    self.driver.refresh()
-                    webdriverwait.until(EC.presence_of_element_located((By.ID, "solo-watchlist")))
-                    solo_leaderboard = self.driver.find_element(By.ID, "solo-watchlist")
-                    updated_entries = solo_leaderboard.find_elements(By.CLASS_NAME, "game-entry")
-                    
-                    self.assertGreater(
-                        len(updated_entries),
-                        initial_count,
-                        "Watchlist should update in real-time when another player plays a game"
-                    )
-                    
-                    driver2.quit()
-                    return
-                    
-                attempts += 1
-                
-        driver2.quit()
-        self.fail("Could not achieve score increase with any timing")
+        finally:
+            driver2.quit()
 
 if __name__ == "__main__":
     unittest.main()
