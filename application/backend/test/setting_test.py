@@ -24,11 +24,12 @@ def test_settings_and_play_with_movement():
     edit_button = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "button[style*='background-color: blue']")))
     edit_button.click()
     
-    move_left_input = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[value='ArrowLeft']")))
+    move_left_input = driver.find_element(By.XPATH, "//li[contains(., 'Move Left')]/input")
     move_left_input.click()
     actions.send_keys("a").perform()
-    
-    move_right_input = driver.find_element(By.CSS_SELECTOR, "input[value='ArrowRight']")
+
+    # Locate "Move Right" input by finding the parent `li` with text content and selecting the input inside it
+    move_right_input = driver.find_element(By.XPATH, "//li[contains(., 'Move Right')]/input")
     move_right_input.click()
     actions.send_keys("d").perform()
     
