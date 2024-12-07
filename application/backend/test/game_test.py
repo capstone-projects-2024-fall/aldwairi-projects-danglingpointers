@@ -26,7 +26,8 @@ class GameTest(unittest.TestCase):
     def tearDown(self):
         self.driver.quit()
 
-    def login_user(self, testuser):
+
+    def login_user(self):
         """Helper method to login before testing game features"""
         self.driver.get(self.base_url)
         webdriverwait = WebDriverWait(self.driver, 10)
@@ -132,11 +133,72 @@ class GameTest(unittest.TestCase):
                     
                 attempts += 1
                 
-        self.fail("Could not achieve score increase with any timing"
+        self.fail("Could not achieve score increase with any timing")
                   
     def test_versus_gameplay(self):
-        joedriver = webdriver.Chrome()
-        bendriver = webdriver.Chrome()
+        driver1 = webdriver.Chrome()
+        driver2 = webdriver.Chrome()
+
+        # User 1 logs in (Bobby)
+        driver1.get(self.base_url)
+        webdriverwait1 = WebDriverWait(driver1, 10)
+        webdriverwait1.until(EC.presence_of_element_located((By.ID, "login-username-input")))
+        driver1.find_element(By.ID, "login-username-input").send_keys("bobby")
+        driver1.find_element(By.ID, "login-password-input").send_keys("password_bob")
+        driver1.find_element(By.ID, "login-submit-button").click()
+
+        webdriverwait1.until(EC.presence_of_element_located((By.ID, "home-nav-button"))).click()
+
+        # User 2 logs in (Alicey)
+        driver2.get(self.base_url)
+        webdriverwait2 = WebDriverWait(driver2, 10)
+        webdriverwait2.until(EC.presence_of_element_located((By.ID, "login-username-input")))
+        driver2.find_element(By.ID, "login-username-input").send_keys("alicey")
+        driver2.find_element(By.ID, "login-password-input").send_keys("password_alicey")
+        driver2.find_element(By.ID, "login-submit-button").click()
+
+        webdriverwait2.until(EC.presence_of_element_located((By.ID, "home-nav-button"))).click()
+
+        # User 1 starts game
+        webdriverwait1.until(EC.presence_of_element_located((By.ID, "create-game-button"))).click()
+
+        # User 2 joins game
+        webdriverwait2.until(EC.presence_of_element_located((By.ID, "join-game"))).click()
+
+                # Get initial stack state
+        stack = webdriverwait1.until(EC.presence_of_element_located((By.CLASS_NAME, "stack")))
+        memory1_initial = stack.find_elements(By.CLASS_NAME, "memory.memory1")[0]
+        initial_position = memory1_initial.location
+
+        # Wait until memory position changes
+        webdriverwait1.until(
+            lambda driver: stack.find_elements(By.CLASS_NAME, "memory.memory1")[0].location != initial_position
+        )
+
+        # Get updated position
+        memory1_updated = stack.find_elements(By.CLASS_NAME, "memory.memory1")[0]  
+        updated_position = memory1_updated.location
+
+        # Verify position changed
+        self.assertNotEqual(initial_position, updated_position, "Memory1 position should change after game starts")
+
+                # Get initial stack state
+        stack = webdriverwait2.until(EC.presence_of_element_located((By.CLASS_NAME, "stack")))
+        memory1_initial = stack.find_elements(By.CLASS_NAME, "memory.memory1")[0]
+        initial_position = memory1_initial.location
+
+        # Wait until memory position changes
+        webdriverwait2.until(
+            lambda driver: stack.find_elements(By.CLASS_NAME, "memory.memory1")[0].location != initial_position
+        )
+
+        # Get updated position
+        memory1_updated = stack.find_elements(By.CLASS_NAME, "memory.memory1")[0]  
+        updated_position = memory1_updated.location
+
+        # Verify position changed
+        self.assertNotEqual(initial_position, updated_position, "Memory1 position should change after game starts")
+
 
 
     

@@ -86,6 +86,7 @@ export default function LobbyPreview({ id, lobbyGames, setLobbyGames }) {
           <h2>Lobby</h2>
           {isLoggedIn && (
             <button
+              id = "create-game-button"
               className="btn-create-game-modal"
               onClick={handleCreateGame}
               style={{ background: isCreateGame ? "yellow" : "white" }}

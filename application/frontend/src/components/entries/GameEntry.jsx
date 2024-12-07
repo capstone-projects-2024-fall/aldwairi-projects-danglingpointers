@@ -88,6 +88,7 @@ export default function GameEntry({
         <div className="game-status">
           Status:
           <button
+            id= "join-game"
             className={`btn-status`}
             style={{
               background: btnColor,

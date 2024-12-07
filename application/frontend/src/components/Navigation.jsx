@@ -30,7 +30,7 @@ export default function Navigation() {
 
   return (
     <nav className="navigation">
-      <Link to="/" text="Dangling Pointers">
+      <Link to="/" text="Dangling Pointers" id="home-nav-button">
         <h1>Dangling Pointers</h1>
       </Link>
       <ul className="ul-default">
