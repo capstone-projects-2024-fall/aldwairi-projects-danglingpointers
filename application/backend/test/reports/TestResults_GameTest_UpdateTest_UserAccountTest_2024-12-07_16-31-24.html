@@ -11,9 +11,9 @@
         <div class="row">
             <div class="col-xs-12">
                 <h2 class="text-capitalize">Stack Memory Game Test Results</h2>
-                <p class='attribute'><strong>Start Time: </strong>2024-12-07 16:19:38</p>
-                <p class='attribute'><strong>Duration: </strong>140.04 s</p>
-                <p class='attribute'><strong>Summary: </strong>Total: 13, Pass: 8, Error: 5</p>
+                <p class='attribute'><strong>Start Time: </strong>2024-12-07 16:31:24</p>
+                <p class='attribute'><strong>Duration: </strong>128.94 s</p>
+                <p class='attribute'><strong>Summary: </strong>Total: 13, Pass: 11, Error: 2</p>
             </div>
         </div>
         <div class="row">
@@ -78,38 +78,6 @@ Score: 0
 Score: 0
 Score: 0
 Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
-Score: 0
 Score: 2
 </p>
                             </td>
@@ -122,22 +90,12 @@ Score: 2
                             <td class="col-xs-1">
                             </td>
                         </tr>
-                        <tr class='warning'>
+                        <tr class='success'>
                             <td class="col-xs-10">test_verify_garbage_collector_color</td>
                             <td class="col-xs-1">
-                                <span class="label label-warning" style="display:block;width:40px;">Error</span>
+                                <span class="label label-success" style="display:block;width:40px;">Pass</span>
                             </td>
                             <td class="col-xs-1">
-                                <button class="btn btn-default btn-xs">View</button>
-                            </td>
-                        </tr>
-                        <tr style="display:none;">
-                            <td class="col-xs-9" colspan="3"><p style="color:maroon;">AttributeError: 'GameTest' object has no attribute 'wait'</p><p style="color:maroon;">Traceback (most recent call last):
-  File "c:\Users\laxjo\OneDrive\Desktop\Capstone\aldwairi-projects-danglingpointers\application\backend\test\GameTest.py", line 215, in test_verify_garbage_collector_color
-    lives_element = self.wait.until(EC.presence_of_element_located(
-                    ^^^^^^^^^
-AttributeError: 'GameTest' object has no attribute 'wait'
-</p>
                             </td>
                         </tr>
                         <tr class='warning'>
@@ -150,15 +108,20 @@ AttributeError: 'GameTest' object has no attribute 'wait'
                             </td>
                         </tr>
                         <tr style="display:none;">
-                            <td class="col-xs-9" colspan="3"><p style="color:maroon;">TimeoutException: Message: 
+                            <td class="col-xs-9" colspan="3"><p style="color:maroon;">ElementClickInterceptedException: Message: element click intercepted: Element <a text="Dangling Pointers" id="home-nav-button" href="/">...</a> is not clickable at point (137, 66). Other element would receive the click: <nav class="navigation">...</nav>
+  (Session info: chrome=131.0.6778.109)
 Stacktrace:
 	GetHandleVerifier [0x00007FF63BA46CF5+28821]
 	(No symbol) [0x00007FF63B9B3880]
 	(No symbol) [0x00007FF63B85578A]
-	(No symbol) [0x00007FF63B8A91BE]
-	(No symbol) [0x00007FF63B8A94AC]
-	(No symbol) [0x00007FF63B8F2647]
-	(No symbol) [0x00007FF63B8CF33F]
+	(No symbol) [0x00007FF63B8B0E8E]
+	(No symbol) [0x00007FF63B8AE92C]
+	(No symbol) [0x00007FF63B8ABAF6]
+	(No symbol) [0x00007FF63B8AAA51]
+	(No symbol) [0x00007FF63B89CD9B]
+	(No symbol) [0x00007FF63B8CF2FA]
+	(No symbol) [0x00007FF63B89C3F6]
+	(No symbol) [0x00007FF63B8CF510]
 	(No symbol) [0x00007FF63B8EF412]
 	(No symbol) [0x00007FF63B8CF0A3]
 	(No symbol) [0x00007FF63B89A778]
@@ -174,20 +137,31 @@ Stacktrace:
 	BaseThreadInitThunk [0x00007FFDEE58259D+29]
 	RtlUserThreadStart [0x00007FFDEFECAF38+40]
 </p><p style="color:maroon;">Traceback (most recent call last):
-  File "c:\Users\laxjo\OneDrive\Desktop\Capstone\aldwairi-projects-danglingpointers\application\backend\test\GameTest.py", line 163, in test_versus_gameplay
-    webdriverwait1.until(EC.presence_of_element_located((By.ID, "create-game-button"))).click()
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\laxjo\OneDrive\Desktop\Capstone\aldwairi-projects-danglingpointers\.venv\Lib\site-packages\selenium\webdriver\support\wait.py", line 105, in until
-    raise TimeoutException(message, screen, stacktrace)
-selenium.common.exceptions.TimeoutException: Message: 
+  File "c:\Users\laxjo\OneDrive\Desktop\Capstone\aldwairi-projects-danglingpointers\application\backend\test\GameTest.py", line 160, in test_versus_gameplay
+    webdriverwait2.until(EC.presence_of_element_located((By.ID, "home-nav-button"))).click()
+  File "C:\Users\laxjo\OneDrive\Desktop\Capstone\aldwairi-projects-danglingpointers\.venv\Lib\site-packages\selenium\webdriver\remote\webelement.py", line 94, in click
+    self._execute(Command.CLICK_ELEMENT)
+  File "C:\Users\laxjo\OneDrive\Desktop\Capstone\aldwairi-projects-danglingpointers\.venv\Lib\site-packages\selenium\webdriver\remote\webelement.py", line 395, in _execute
+    return self._parent.execute(command, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\laxjo\OneDrive\Desktop\Capstone\aldwairi-projects-danglingpointers\.venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 380, in execute
+    self.error_handler.check_response(response)
+  File "C:\Users\laxjo\OneDrive\Desktop\Capstone\aldwairi-projects-danglingpointers\.venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 229, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.ElementClickInterceptedException: Message: element click intercepted: Element <a text="Dangling Pointers" id="home-nav-button" href="/">...</a> is not clickable at point (137, 66). Other element would receive the click: <nav class="navigation">...</nav>
+  (Session info: chrome=131.0.6778.109)
 Stacktrace:
 	GetHandleVerifier [0x00007FF63BA46CF5+28821]
 	(No symbol) [0x00007FF63B9B3880]
 	(No symbol) [0x00007FF63B85578A]
-	(No symbol) [0x00007FF63B8A91BE]
-	(No symbol) [0x00007FF63B8A94AC]
-	(No symbol) [0x00007FF63B8F2647]
-	(No symbol) [0x00007FF63B8CF33F]
+	(No symbol) [0x00007FF63B8B0E8E]
+	(No symbol) [0x00007FF63B8AE92C]
+	(No symbol) [0x00007FF63B8ABAF6]
+	(No symbol) [0x00007FF63B8AAA51]
+	(No symbol) [0x00007FF63B89CD9B]
+	(No symbol) [0x00007FF63B8CF2FA]
+	(No symbol) [0x00007FF63B89C3F6]
+	(No symbol) [0x00007FF63B8CF510]
 	(No symbol) [0x00007FF63B8EF412]
 	(No symbol) [0x00007FF63B8CF0A3]
 	(No symbol) [0x00007FF63B89A778]
@@ -208,7 +182,7 @@ Stacktrace:
                         </tr>
                         <tr>
                             <td colspan="3">
-                                Total: 5, Pass: 3, Error: 2 -- Duration: 55.36 s
+                                Total: 5, Pass: 4, Error: 1 -- Duration: 41.34 s
                             </td>
                         </tr>
                     </tbody>
@@ -244,7 +218,7 @@ Stacktrace:
                         </tr>
                         <tr>
                             <td colspan="3">
-                                Total: 2, Pass: 2 -- Duration: 44.83 s
+                                Total: 2, Pass: 2 -- Duration: 39.54 s
                             </td>
                         </tr>
                     </tbody>
@@ -286,22 +260,12 @@ Stacktrace:
                             <td class="col-xs-1">
                             </td>
                         </tr>
-                        <tr class='warning'>
+                        <tr class='success'>
                             <td class="col-xs-10">test_click_specific_color</td>
                             <td class="col-xs-1">
-                                <span class="label label-warning" style="display:block;width:40px;">Error</span>
+                                <span class="label label-success" style="display:block;width:40px;">Pass</span>
                             </td>
                             <td class="col-xs-1">
-                                <button class="btn btn-default btn-xs">View</button>
-                            </td>
-                        </tr>
-                        <tr style="display:none;">
-                            <td class="col-xs-9" colspan="3"><p style="color:maroon;">AttributeError: 'UserAccountTest' object has no attribute 'login'</p><p style="color:maroon;">Traceback (most recent call last):
-  File "c:\Users\laxjo\OneDrive\Desktop\Capstone\aldwairi-projects-danglingpointers\application\backend\test\UserAccountTest.py", line 189, in test_click_specific_color
-    self.login()
-    ^^^^^^^^^^
-AttributeError: 'UserAccountTest' object has no attribute 'login'
-</p>
                             </td>
                         </tr>
                         <tr class='warning'>
@@ -370,27 +334,23 @@ Stacktrace:
 </p>
                             </td>
                         </tr>
-                        <tr class='warning'>
+                        <tr class='success'>
                             <td class="col-xs-10">test_settings_and_play_with_movement</td>
                             <td class="col-xs-1">
-                                <span class="label label-warning" style="display:block;width:40px;">Error</span>
+                                <span class="label label-success" style="display:block;width:40px;">Pass</span>
                             </td>
                             <td class="col-xs-1">
                                 <button class="btn btn-default btn-xs">View</button>
                             </td>
                         </tr>
                         <tr style="display:none;">
-                            <td class="col-xs-9" colspan="3"><p style="color:maroon;">AttributeError: 'UserAccountTest' object has no attribute 'login_user'</p><p style="color:maroon;">Traceback (most recent call last):
-  File "c:\Users\laxjo\OneDrive\Desktop\Capstone\aldwairi-projects-danglingpointers\application\backend\test\UserAccountTest.py", line 229, in test_settings_and_play_with_movement
-    self.login_user()
-    ^^^^^^^^^^^^^^^
-AttributeError: 'UserAccountTest' object has no attribute 'login_user'
+                            <td class="col-xs-9" colspan="3"><p>Custom key movement tests passed.
 </p>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
-                                Total: 6, Pass: 3, Error: 3 -- Duration: 39.85 s
+                                Total: 6, Pass: 5, Error: 1 -- Duration: 48.06 s
                             </td>
                         </tr>
                     </tbody>

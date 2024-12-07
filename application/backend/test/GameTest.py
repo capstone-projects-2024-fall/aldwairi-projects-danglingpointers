@@ -201,9 +201,7 @@ class GameTest(unittest.TestCase):
         self.assertNotEqual(initial_position, updated_position, "Memory1 position should change after game starts")
 
     def test_verify_garbage_collector_color(self):
-        self.login_user()
-        
-        self.start_game()
+        webdriverwait = self.start_game()
         
         time.sleep(1)
         userin = self.driver.find_element(By.TAG_NAME, "body")
@@ -212,7 +210,7 @@ class GameTest(unittest.TestCase):
 
         
         # Get initial lives count
-        lives_element = self.wait.until(EC.presence_of_element_located(
+        lives_element = webdriverwait.until(EC.presence_of_element_located(
             (By.CLASS_NAME, "lives-remaining")))
         hearts_before = lives_element.text.count("❤️")
 

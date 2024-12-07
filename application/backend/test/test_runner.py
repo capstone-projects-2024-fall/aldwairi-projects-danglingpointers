@@ -33,7 +33,7 @@ def run_test_suite():
     with open(report_file, 'w') as f:
         runner = HTMLTestRunner(
             stream=f,
-            report_title="Stack Memory Game Test Results",
+            report_title="Dangling Pointers Test Report",
             descriptions="Test Results for Capstone Project",
             combine_reports=True,
             add_timestamp=True

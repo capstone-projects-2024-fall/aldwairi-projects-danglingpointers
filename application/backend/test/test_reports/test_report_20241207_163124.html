@@ -1,0 +1,104 @@
+
+Running tests... 
+----------------------------------------------------------------------
+ test_game_controls (GameTest.GameTest.test_game_controls) ... OK (9.376120)s
+ test_game_score (GameTest.GameTest.test_game_score) ... OK (9.924338)s
+ test_start_game (GameTest.GameTest.test_start_game) ... OK (7.322973)s
+ test_verify_garbage_collector_color (GameTest.GameTest.test_verify_garbage_collector_color) ... OK (6.251970)s
+ test_versus_gameplay (GameTest.GameTest.test_versus_gameplay) ... ERROR (8.468203)s
+ test_leaderboard_update (UpdateTest.UpdateTest.test_leaderboard_update) ... OK (26.888231)s
+ test_watch_realtime (UpdateTest.UpdateTest.test_watch_realtime) ... OK (12.646844)s
+ test_account_creation (UserAccountTest.UserAccountTest.test_account_creation) ... OK (5.249190)s
+ test_account_login (UserAccountTest.UserAccountTest.test_account_login) ... OK (4.455976)s
+ test_account_logout (UserAccountTest.UserAccountTest.test_account_logout) ... OK (5.085326)s
+ test_click_specific_color (UserAccountTest.UserAccountTest.test_click_specific_color) ... OK (5.994956)s
+ test_send_message (UserAccountTest.UserAccountTest.test_send_message) ... ERROR (18.156223)s
+ test_settings_and_play_with_movement (UserAccountTest.UserAccountTest.test_settings_and_play_with_movement) ... OK (9.119274)s
+
+======================================================================
+ERROR [8.468203s]: GameTest.GameTest.test_versus_gameplay
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\Users\laxjo\OneDrive\Desktop\Capstone\aldwairi-projects-danglingpointers\application\backend\test\GameTest.py", line 160, in test_versus_gameplay
+    webdriverwait2.until(EC.presence_of_element_located((By.ID, "home-nav-button"))).click()
+  File "C:\Users\laxjo\OneDrive\Desktop\Capstone\aldwairi-projects-danglingpointers\.venv\Lib\site-packages\selenium\webdriver\remote\webelement.py", line 94, in click
+    self._execute(Command.CLICK_ELEMENT)
+  File "C:\Users\laxjo\OneDrive\Desktop\Capstone\aldwairi-projects-danglingpointers\.venv\Lib\site-packages\selenium\webdriver\remote\webelement.py", line 395, in _execute
+    return self._parent.execute(command, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\laxjo\OneDrive\Desktop\Capstone\aldwairi-projects-danglingpointers\.venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 380, in execute
+    self.error_handler.check_response(response)
+  File "C:\Users\laxjo\OneDrive\Desktop\Capstone\aldwairi-projects-danglingpointers\.venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 229, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.ElementClickInterceptedException: Message: element click intercepted: Element <a text="Dangling Pointers" id="home-nav-button" href="/">...</a> is not clickable at point (137, 66). Other element would receive the click: <nav class="navigation">...</nav>
+  (Session info: chrome=131.0.6778.109)
+Stacktrace:
+	GetHandleVerifier [0x00007FF63BA46CF5+28821]
+	(No symbol) [0x00007FF63B9B3880]
+	(No symbol) [0x00007FF63B85578A]
+	(No symbol) [0x00007FF63B8B0E8E]
+	(No symbol) [0x00007FF63B8AE92C]
+	(No symbol) [0x00007FF63B8ABAF6]
+	(No symbol) [0x00007FF63B8AAA51]
+	(No symbol) [0x00007FF63B89CD9B]
+	(No symbol) [0x00007FF63B8CF2FA]
+	(No symbol) [0x00007FF63B89C3F6]
+	(No symbol) [0x00007FF63B8CF510]
+	(No symbol) [0x00007FF63B8EF412]
+	(No symbol) [0x00007FF63B8CF0A3]
+	(No symbol) [0x00007FF63B89A778]
+	(No symbol) [0x00007FF63B89B8E1]
+	GetHandleVerifier [0x00007FF63BD7FCED+3408013]
+	GetHandleVerifier [0x00007FF63BD9745F+3504127]
+	GetHandleVerifier [0x00007FF63BD8B63D+3455453]
+	GetHandleVerifier [0x00007FF63BB0BDFB+835995]
+	(No symbol) [0x00007FF63B9BEB9F]
+	(No symbol) [0x00007FF63B9BA854]
+	(No symbol) [0x00007FF63B9BA9ED]
+	(No symbol) [0x00007FF63B9AA1D9]
+	BaseThreadInitThunk [0x00007FFDEE58259D+29]
+	RtlUserThreadStart [0x00007FFDEFECAF38+40]
+
+
+======================================================================
+ERROR [18.156223s]: UserAccountTest.UserAccountTest.test_send_message
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\Users\laxjo\OneDrive\Desktop\Capstone\aldwairi-projects-danglingpointers\application\backend\test\UserAccountTest.py", line 167, in test_send_message
+    received_message = webdriverwait2.until(
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\laxjo\OneDrive\Desktop\Capstone\aldwairi-projects-danglingpointers\.venv\Lib\site-packages\selenium\webdriver\support\wait.py", line 105, in until
+    raise TimeoutException(message, screen, stacktrace)
+selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+	GetHandleVerifier [0x00007FF63BA46CF5+28821]
+	(No symbol) [0x00007FF63B9B3880]
+	(No symbol) [0x00007FF63B85578A]
+	(No symbol) [0x00007FF63B8A91BE]
+	(No symbol) [0x00007FF63B8A94AC]
+	(No symbol) [0x00007FF63B8F2647]
+	(No symbol) [0x00007FF63B8CF33F]
+	(No symbol) [0x00007FF63B8EF412]
+	(No symbol) [0x00007FF63B8CF0A3]
+	(No symbol) [0x00007FF63B89A778]
+	(No symbol) [0x00007FF63B89B8E1]
+	GetHandleVerifier [0x00007FF63BD7FCED+3408013]
+	GetHandleVerifier [0x00007FF63BD9745F+3504127]
+	GetHandleVerifier [0x00007FF63BD8B63D+3455453]
+	GetHandleVerifier [0x00007FF63BB0BDFB+835995]
+	(No symbol) [0x00007FF63B9BEB9F]
+	(No symbol) [0x00007FF63B9BA854]
+	(No symbol) [0x00007FF63B9BA9ED]
+	(No symbol) [0x00007FF63B9AA1D9]
+	BaseThreadInitThunk [0x00007FFDEE58259D+29]
+	RtlUserThreadStart [0x00007FFDEFECAF38+40]
+
+
+----------------------------------------------------------------------
+Ran 13 tests in 0:02:49
+
+FAILED
+ (Errors=2)
+
+Generating HTML reports... 
+reports\TestResults_GameTest_UpdateTest_UserAccountTest_2024-12-07_16-31-24.html

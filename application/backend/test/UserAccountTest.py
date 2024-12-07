@@ -169,7 +169,6 @@ class UserAccountTest(unittest.TestCase):
         )
         
         self.assertTrue(received_message.is_displayed())
-        import time
         time.sleep(3)
         # User 2 replies to User 1
         reply_text = "Hello Bobby!"
