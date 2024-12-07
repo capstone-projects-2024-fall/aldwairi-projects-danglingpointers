@@ -161,11 +161,12 @@ class GameTest(unittest.TestCase):
 
         # User 1 starts game
         webdriverwait1.until(EC.presence_of_element_located((By.ID, "create-game-button"))).click()
+        webdriverwait1.until(EC.presence_of_element_located((By.ID, "startv-game"))).click()
 
         # User 2 joins game
         webdriverwait2.until(EC.presence_of_element_located((By.ID, "join-game"))).click()
 
-                # Get initial stack state
+        # Get initial stack state
         stack = webdriverwait1.until(EC.presence_of_element_located((By.CLASS_NAME, "stack")))
         memory1_initial = stack.find_elements(By.CLASS_NAME, "memory.memory1")[0]
         initial_position = memory1_initial.location
@@ -202,7 +203,5 @@ class GameTest(unittest.TestCase):
 
 
     
-
-
 if __name__ == "__main__":
     unittest.main()
