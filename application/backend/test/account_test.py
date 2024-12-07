@@ -121,7 +121,7 @@ class UserAccountTest(unittest.TestCase):
     def test_send_message(self):
         driver1 = webdriver.Chrome()
         driver2 = webdriver.Chrome()
-        
+        1
         # User 1 logs in (Bobby)
         driver1.get(self.base_url)
         webdriverwait1 = WebDriverWait(driver1, 10)
@@ -157,6 +157,7 @@ class UserAccountTest(unittest.TestCase):
         )
         triangle_icon_user2.click()
 
+
         # User 2 checks the received message
         message_id = UserAccountTest.get_message_id("bobby", message_text)
 
@@ -186,3 +187,4 @@ class UserAccountTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
