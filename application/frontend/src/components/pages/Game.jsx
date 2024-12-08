@@ -386,36 +386,43 @@ export default function Game() {
     <main className="main-game">
       <article className="details-container">
         <div className="game-details">
-          <div className="timer">Timer: {convertSecondsToMinutes(timer)}</div>
-          <div className="score">Score: {userScore}</div>
-          <div className="lives-remaining">Lives: {userLives}</div>
+          <div id="game-timer" className="timer">
+            Timer: {convertSecondsToMinutes(timer)}
+          </div>
+          <div id="game-score" className="score">
+            Score: {userScore}
+          </div>
+          <div id="game-lives" className="lives-remaining">
+            Lives: {userLives}
+          </div>
         </div>
-        <div className="user-items">
-          <div className="selected-item">
+        <div id="game-items" className="user-items">
+          <div id="selected-item" className="selected-item">
             {isPractice ? (
-              <span className="item-icon">
+              <span id="practice-item-icon" className="item-icon">
                 {practiceItems[selectedIndex]?.icon}
               </span>
             ) : userId && Object.keys(userItems).length > 0 ? (
               <>
-                <span className="item-icon">
+                <span id="user-item-icon" className="item-icon">
                   {userItems[selectedIndex]?.item.icon}
                 </span>
-                <span style={{ marginBottom: "7.5px" }}>
+                <span id="item-quantity" style={{ marginBottom: "7.5px" }}>
                   {userItems[selectedIndex]?.quantity} remaining
                 </span>
               </>
             ) : userId ? (
-              <p className="item-warning">You are out of items!</p>
+              <p id="no-items-warning" className="item-warning">You are out of items!</p>
             ) : (
-              <p className="item-warning">Login or Practice to use items!</p>
+              <p id="login-warning" className="item-warning">Login or Practice to use items!</p>
             )}
           </div>
         </div>
-        <div className="start-game">
+        <div id="start-game" className="start-game">
           {/* Start Round Button */}
           <button
             onClick={() => initializeRound("Solo")}
+            id="start-round-button"
             className="start-round-button"
             style={{
               background:
@@ -436,6 +443,7 @@ export default function Game() {
 
           <button
             onClick={togglePractice}
+            id="start-pround-button"
             className="start-round-button"
             style={{
               background: isPractice || !gameStarted ? "blue" : "red",

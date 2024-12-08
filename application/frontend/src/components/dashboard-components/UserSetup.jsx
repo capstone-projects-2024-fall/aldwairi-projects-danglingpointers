@@ -81,12 +81,13 @@ export default function UserSetup({ setUserNeedsMetaData }) {
           </label>
           <input
             type="password"
+            id="security-answer-input"
             placeholder="Enter your answer here"
             value={securityAnswer}
             onChange={(e) => setSecurityAnswer(e.target.value)}
           />
         </div>
-        <button type="submit">Submit</button>
+        <button id="security-submit-button" type="submit">Submit</button>
       </form>
     </main>
   );

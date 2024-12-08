@@ -195,9 +195,11 @@ export default function Inbox({ isInboxOpen, setIsInboxOpen }) {
 
   return (
     <div
+      id = "inbox-component"
       className={`inbox-component ${isInboxOpen ? "expanded" : "collapsed"}`}
     >
       <div
+        id = "inbox"
         key="inbox"
         className={`inbox ${isInboxOpen ? "open" : ""}`}
         style={{ gridColumnEnd: isInboxOpen ? -1 : 4 }}

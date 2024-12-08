@@ -78,9 +78,18 @@ export default function Leaderboards() {
         <Loading />
       ) : (
         <div className="leaderboards-container">
-          <LeaderboardsSolo leaderboardsSolo={leaderboardsSolo} />
-          <LeaderboardsVersus leaderboardsVersus={leaderboardsVersus} />
-          <LeaderboardsLongestGames longestGames={longestGames} />
+          <LeaderboardsSolo 
+            id="solo-leaderboard"
+            leaderboardsSolo={leaderboardsSolo} 
+          />
+          <LeaderboardsVersus 
+            id="versus-leaderboard"
+            leaderboardsVersus={leaderboardsVersus} 
+          />
+          <LeaderboardsLongestGames 
+            id="longest-games-leaderboard"
+            longestGames={longestGames} 
+          />
         </div>
       )}
     </main>

@@ -91,6 +91,7 @@ export default function CreateGameEntry({
         ) : null}
       </div>
       <button
+        id = "startv-game"
         className="btn-status"
         style={{
           background: "purple",

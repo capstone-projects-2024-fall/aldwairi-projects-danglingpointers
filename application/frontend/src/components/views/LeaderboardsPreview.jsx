@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { GAME_URL, HOST_PATH } from "../../scripts/constants";
 
 export default function LeaderboardsPreview({
+  id,
   leaderboardsSolo,
   setLeaderboardsSolo,
   leaderboardsVersus,
@@ -69,7 +70,7 @@ export default function LeaderboardsPreview({
   ]);
 
   return (
-    <article className="leaderboards-preview-container default-scrollbar">
+    <article id={id} className="leaderboards-preview-container default-scrollbar">
       <div className="leaderboards-preview preview">
         <div className="link-flex">
           <Link to="/leaderboards">

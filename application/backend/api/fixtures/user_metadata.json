@@ -1,0 +1,144 @@
+
+[
+    {
+        "model": "api.UserMetaData",
+        "pk": "0",
+        "fields":{
+            "id": 0,
+            "security_answer": "elmstreet",
+            "solo_games_played": 0,
+            "solo_high_score": 0,
+            "solo_high_time": 0,
+            "versus_games_played": 0,
+            "versus_high_score": 0,
+            "versus_high_time": 0,
+            "versus_wins": 0,
+            "versus_losses": 0,
+            "items": {
+                "0": 1,
+                "1": 1,
+                "2": 1,
+                "3": 1,
+                "4": 1
+            },
+            "settings": {
+                "useItem": "Enter",
+                "moveLeft": "ArrowLeft",
+                "moveRight": "ArrowRight",
+                "toggleNextItem": "Tab",
+                "garbageCollectorColor": "#0022ff"
+            },
+            "user_points": 0,
+            "is_online": true,
+            "profile_picture": null,
+            "user": 0,
+            "security_question": 0
+        }
+    },
+    {
+        "model": "api.UserMetaData",
+        "pk": "1",
+        "fields":{
+            "id": 1,
+            "security_answer": "elmstreet",
+            "solo_games_played": 0,
+            "solo_high_score": 0,
+            "solo_high_time": 0,
+            "versus_games_played": 0,
+            "versus_high_score": 0,
+            "versus_high_time": 0,
+            "versus_wins": 0,
+            "versus_losses": 0,
+            "items": {
+                "0": 1,
+                "1": 1,
+                "2": 1,
+                "3": 1,
+                "4": 1
+            },
+            "settings": {
+                "useItem": "Enter",
+                "moveLeft": "ArrowLeft",
+                "moveRight": "ArrowRight",
+                "toggleNextItem": "Tab",
+                "garbageCollectorColor": "#0022ff"
+            },
+            "user_points": 0,
+            "is_online": true,
+            "profile_picture": null,
+            "user": 1,
+            "security_question": 0
+        }
+    },
+    {
+        "model": "api.UserMetaData",
+        "pk": "2",
+        "fields":{
+            "id": 2,
+            "security_answer": "elmstreet",
+            "solo_games_played": 0,
+            "solo_high_score": 0,
+            "solo_high_time": 0,
+            "versus_games_played": 0,
+            "versus_high_score": 0,
+            "versus_high_time": 0,
+            "versus_wins": 0,
+            "versus_losses": 0,
+            "items": {
+                "0": 1,
+                "1": 1,
+                "2": 1,
+                "3": 1,
+                "4": 1
+            },
+            "settings": {
+                "useItem": "Enter",
+                "moveLeft": "ArrowLeft",
+                "moveRight": "ArrowRight",
+                "toggleNextItem": "Tab",
+                "garbageCollectorColor": "#0022ff"
+            },
+            "user_points": 0,
+            "is_online": true,
+            "profile_picture": null,
+            "user": 2,
+            "security_question": 0
+        }
+},
+{
+    "model": "api.UserMetaData",
+    "pk": "3",
+    "fields":{
+        "id": 3,
+        "security_answer": "elmstreet",
+        "solo_games_played": 0,
+        "solo_high_score": 0,
+        "solo_high_time": 0,
+        "versus_games_played": 0,
+        "versus_high_score": 0,
+        "versus_high_time": 0,
+        "versus_wins": 0,
+        "versus_losses": 0,
+        "items": {
+            "0": 1,
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1
+        },
+        "settings": {
+            "useItem": "Enter",
+            "moveLeft": "ArrowLeft",
+            "moveRight": "ArrowRight",
+            "toggleNextItem": "Tab",
+            "garbageCollectorColor": "#0022ff"
+        },
+        "user_points": 0,
+        "is_online": true,
+        "profile_picture": null,
+        "user": 3,
+        "security_question": 0
+    }
+    }
+
+]

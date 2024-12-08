@@ -2,8 +2,8 @@ import GameEntry from "../entries/GameEntry";
 
 export default function LeaderboardsHighScore({ longestGames }) {
   return (
-    <article className="default-scrollbar">
-      <div className="leaderboard">
+    <article id = "longest-leaderboard" className="default-scrollbar">
+      <div id= "longest-leaderboard" className="leaderboard">
         <div className="link-flex">
           <h2>Longest Games</h2>
           <span></span>
