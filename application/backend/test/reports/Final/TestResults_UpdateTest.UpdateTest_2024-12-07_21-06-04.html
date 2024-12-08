@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dangling Pointers Test Report</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="text-capitalize">Dangling Pointers Test Report</h2>
+                <p class='attribute'><strong>Start Time: </strong>2024-12-07 21:06:04</p>
+                <p class='attribute'><strong>Duration: </strong>50.47 s</p>
+                <p class='attribute'><strong>Summary: </strong>Total: 2, Pass: 2</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-10 col-md-10">
+                <table class='table table-hover table-responsive'>
+                    <thead>
+                        <tr>
+                            <th>UpdateTest.UpdateTest</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class='success'>
+                            <td class="col-xs-10">test_leaderboard_update</td>
+                            <td class="col-xs-1">
+                                <span class="label label-success" style="display:block;width:40px;">Pass</span>
+                            </td>
+                            <td class="col-xs-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-xs-9" colspan="3"><p>
+=== Starting Leaderboard Update Test ===
+1. Logging in user...
+User logged in
+2. Getting initial leaderboard state...
+Initial entries count: 0
+3. Starting game session...
+Game session started
+4. Setting up game focus...
+Game focus set
+5. Testing score increase with different timings...
+
+   Testing pause duration: 0.011
+   Setting up game elements...
+ Game elements ready
+   Waiting for pointer...
+ Initial score: Score: 0
+   Attempting to increase score...
+   Attempt 1: Score remains Score: 0
+   Attempt 2: Score remains Score: 0
+   Attempt 3: Score remains Score: 0
+   Attempt 4: Score remains Score: 0
+   Attempt 5: Score remains Score: 0
+   Attempt 6: Score remains Score: 0
+   Attempt 7: Score remains Score: 0
+   Attempt 8: Score remains Score: 0
+   Attempt 9: Score remains Score: 0
+   Attempt 10: Score remains Score: 0
+   Attempt 11: Score remains Score: 0
+   Attempt 12: Score remains Score: 0
+   Attempt 13: Score remains Score: 0
+   Attempt 14: Score remains Score: 0
+   Attempt 15: Score remains Score: 0
+   Attempt 16: Score remains Score: 0
+   Attempt 17: Score remains Score: 0
+
+   Testing pause duration: 0.012
+   Setting up game elements...
+ Game elements ready
+   Waiting for pointer...
+ Initial score: Score: 0
+   Attempting to increase score...
+   Attempt 1: Score remains Score: 0
+   Attempt 2: Score remains Score: 0
+   Attempt 3: Score remains Score: 0
+   Attempt 4: Score remains Score: 0
+   Attempt 5: Score remains Score: 0
+   Attempt 6: Score remains Score: 0
+   Attempt 7: Score remains Score: 0
+   Attempt 8: Score remains Score: 0
+   Attempt 9: Score remains Score: 0
+   Attempt 10: Score remains Score: 0
+   Attempt 11: Score remains Score: 0
+   Attempt 12: Score remains Score: 0
+   Attempt 13: Score remains Score: 0
+   Attempt 14: Score remains Score: 0
+   Attempt 15: Score remains Score: 0
+   Score increased to Score: 2
+6. Moving garbage collector right...
+ Movement complete
+7. Checking leaderboard update...
+ Leaderboard update verified
+=== Leaderboard Update Test Completed Successfully ===
+
+</p>
+                            </td>
+                        </tr>
+                        <tr class='success'>
+                            <td class="col-xs-10">test_watch_realtime</td>
+                            <td class="col-xs-1">
+                                <span class="label label-success" style="display:block;width:40px;">Pass</span>
+                            </td>
+                            <td class="col-xs-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-xs-9" colspan="3"><p>
+=== Starting Real-time Watch Test ===
+1. Setting up first browser...
+ First browser ready
+2. Getting initial watchlist state...
+ Initial watchlist entries: 0
+3. Setting up second browser...
+ Second browser ready
+4. Logging in second user...
+ Second user logged in
+5. Starting game in second browser...
+ Game started in second browser
+6. Verifying watchlist update...
+ Real-time update verified
+=== Real-time Watch Test Completed Successfully ===
+
+Cleaning up test environment...
+ Test environment cleaned up
+</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                Total: 2, Pass: 2 -- Duration: 50.47 s
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('td').on('click', '.btn', function(e){
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                var $this = $(this);
+                var $nextRow = $this.closest('tr').next('tr');
+                $nextRow.slideToggle("fast");
+                $this.text(function(i, text){
+                    if (text === 'View') {
+                        return 'Hide';
+                    } else {
+                        return 'View';
+                    };
+                });
+            });
+        });
+    </script>
+</body>
+</html
