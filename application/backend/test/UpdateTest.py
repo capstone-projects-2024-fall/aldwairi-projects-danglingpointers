@@ -33,6 +33,7 @@ class UpdateTest(unittest.TestCase):
         self.driver.find_element(By.ID, "login-username-input").send_keys(self.test_username)
         self.driver.find_element(By.ID, "login-password-input").send_keys(self.test_password)
         self.driver.find_element(By.ID, "login-submit-button").click()
+        webdriverwait.until(EC.presence_of_element_located((By.ID, "inbox-component")))
 
     def test_leaderboard_update(self):
         self.login_user()
@@ -127,6 +128,7 @@ class UpdateTest(unittest.TestCase):
         webdriverwait = WebDriverWait(self.driver, 10)
         
         # Navigate to watchlist
+        
         webdriverwait.until(EC.presence_of_element_located((By.ID, "watch-nav-button"))).click()
         webdriverwait.until(EC.presence_of_element_located((By.ID, "solo-watchlist")))
         solo_watchlist = self.driver.find_element(By.ID, "solo-watchlist")
@@ -145,6 +147,7 @@ class UpdateTest(unittest.TestCase):
             driver2.find_element(By.ID, "login-username-input").send_keys("alicey")
             driver2.find_element(By.ID, "login-password-input").send_keys("password_alicey")
             driver2.find_element(By.ID, "login-submit-button").click()
+            webdriverwait2.until(EC.presence_of_element_located((By.ID, "inbox-component")))
             
             # Start game in second browser
             webdriverwait2.until(EC.presence_of_element_located((By.ID, "play-nav-button"))).click()

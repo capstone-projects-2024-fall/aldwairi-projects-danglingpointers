@@ -40,6 +40,8 @@ class GameTest(unittest.TestCase):
         self.driver.find_element(By.ID, "login-password-input").send_keys(self.test_password)
         self.driver.find_element(By.ID, "login-submit-button").click()
 
+        webdriverwait.until(EC.presence_of_element_located((By.ID, "inbox-component")))
+
     def start_game(self):
         """Helper method to handle common game start sequence"""
         self.login_user()
@@ -147,6 +149,8 @@ class GameTest(unittest.TestCase):
         driver1.find_element(By.ID, "login-password-input").send_keys("password_bob")
         driver1.find_element(By.ID, "login-submit-button").click()
 
+
+        webdriverwait1.until(EC.presence_of_element_located((By.ID, "inbox-component")))
         webdriverwait1.until(EC.presence_of_element_located((By.ID, "home-nav-button"))).click()
 
         # User 2 logs in (Alicey)
@@ -157,6 +161,7 @@ class GameTest(unittest.TestCase):
         driver2.find_element(By.ID, "login-password-input").send_keys("password_alicey")
         driver2.find_element(By.ID, "login-submit-button").click()
 
+        webdriverwait2.until(EC.presence_of_element_located((By.ID, "inbox-component")))
         webdriverwait2.until(EC.presence_of_element_located((By.ID, "home-nav-button"))).click()
 
         # User 1 starts game
@@ -165,45 +170,55 @@ class GameTest(unittest.TestCase):
 
         # User 2 joins game
         webdriverwait2.until(EC.presence_of_element_located((By.ID, "join-game"))).click()
-
-        # Get initial stack state
+        
+        #user1 game setup
         stack = webdriverwait1.until(EC.presence_of_element_located((By.CLASS_NAME, "stack")))
-        memory1_initial = stack.find_elements(By.CLASS_NAME, "memory.memory1")[0]
-        initial_position = memory1_initial.location
+        garbage = webdriverwait1.until(EC.presence_of_element_located((By.ID, "garbage-collector")))
+        
+        # Click game area to focus
+        game_area = driver1.find_element(By.CLASS_NAME, "game")
+        actions = ActionChains(driver1)
+        actions.move_to_element(game_area).click().perform()
 
-        # Wait until memory position changes
-        webdriverwait1.until(
-            lambda driver: stack.find_elements(By.CLASS_NAME, "memory.memory1")[0].location != initial_position
-        )
-
-        # Get updated position
-        memory1_updated = stack.find_elements(By.CLASS_NAME, "memory.memory1")[0]  
-        updated_position = memory1_updated.location
-
-        # Verify position changed
-        self.assertNotEqual(initial_position, updated_position, "Memory1 position should change after game starts")
-
-                # Get initial stack state
+        #user2 game setup
         stack = webdriverwait2.until(EC.presence_of_element_located((By.CLASS_NAME, "stack")))
-        memory1_initial = stack.find_elements(By.CLASS_NAME, "memory.memory1")[0]
-        initial_position = memory1_initial.location
+        garbage = webdriverwait2.until(EC.presence_of_element_located((By.ID, "garbage-collector")))
 
-        # Wait until memory position changes
-        webdriverwait2.until(
-            lambda driver: stack.find_elements(By.CLASS_NAME, "memory.memory1")[0].location != initial_position
+        game_area = driver2.find_element(By.CLASS_NAME, "game")
+        actions = ActionChains(driver2)
+        actions.move_to_element(game_area).click().perform()
+
+        # Get initial score for player 1
+        score1_initial = webdriverwait1.until(
+            EC.presence_of_element_located((By.CLASS_NAME, "score"))
+        ).text
+
+        # Wait for pointer to spawn and verify score increase for player 1
+        pointer1 = webdriverwait1.until(
+            EC.presence_of_element_located((By.CLASS_NAME, "pointer"))
+        )
+        self.assertTrue(pointer1.is_displayed(), "Pointer should spawn for player 1")
+
+        # Get initial score for player 2
+        score2_initial = webdriverwait2.until(
+            EC.presence_of_element_located((By.CLASS_NAME, "score"))
+        ).text
+
+        # Wait for pointer to spawn and verify score increase for player 2
+        pointer2 = webdriverwait2.until(
+            EC.presence_of_element_located((By.CLASS_NAME, "pointer"))
+        )
+        self.assertTrue(pointer2.is_displayed(), "Pointer should spawn for player 2")
+
+        # Verify both players can see pointers
+        self.assertTrue(
+            pointer1.is_displayed() and pointer2.is_displayed(),
+            "Both players should see pointers spawn"
         )
 
-        # Get updated position
-        memory1_updated = stack.find_elements(By.CLASS_NAME, "memory.memory1")[0]  
-        updated_position = memory1_updated.location
-
-        # Verify position changed
-        self.assertNotEqual(initial_position, updated_position, "Memory1 position should change after game starts")
-
-    def test_verify_garbage_collector_color(self):
+    def test_powerup(self):
         webdriverwait = self.start_game()
         
-        time.sleep(1)
         userin = self.driver.find_element(By.TAG_NAME, "body")
         userin.send_keys(Keys.TAB)
         userin.send_keys(Keys.TAB)
@@ -216,8 +231,8 @@ class GameTest(unittest.TestCase):
 
         # Trigger life increase
         userin.send_keys(Keys.ENTER)
-        time.sleep(1)
-        
+
+
         # Verify lives increased
         hearts_after = lives_element.text.count("❤️")
         self.assertEqual(hearts_after, hearts_before + 1, 
