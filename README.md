@@ -1,5 +1,7 @@
 # README
 
+
+
 ## Confirm Installation
 - Python [↗](https://www.python.org/downloads/)
   - `python --version` OR `py, python3`
@@ -50,8 +52,21 @@ $ docker network inspect <NAME>
 $ docker-compose exec api bash
 $ python manage.py makemigrations
 $ python manage.py migrate
-$ python manage.py createsuperuser
-$ python manage.py loaddata users_table items_table games_table security_questions
+$ python manage.py loaddata users_table items_table security_questions
+$ python manage.py createsuperuser (follow prompts... can view Admin panel at localhost:8000/admin)
 ```
 
 **ALWAYS RUN `docker-compose down` WHEN FINISHED DEVELOPING**
+
+## Additional Sources
+
+- Create a Django project [↗](https://docs.djangoproject.com/en/5.0/intro/tutorial01/#creating-a-project)
+- Start a Django app [↗](https://docs.djangoproject.com/en/5.0/intro/tutorial01/#creating-the-polls-app)
+- psycopg2 installation [↗](https://www.psycopg.org/install/)
+- PostgreSQL and Django [↗](https://stackoverflow.com/questions/5394331/how-to-set-up-a-postgresql-database-in-django)
+- Django Extensions [↗](https://django-extensions.readthedocs.io/en/latest/)
+- Django Channels [↗](https://channels.readthedocs.io/en/stable/installation.html)
+- Redis Channel Layer [↗](https://channels.readthedocs.io/en/stable/topics/channel_layers.html?highlight=redis#redis-channel-layer)
+- Channels Redis package [↗](https://pypi.org/project/channels-redis/)
+- Redis [↗](https://redis.io/docs/latest/)
+- Create a Vite project with React [↗](https://vitejs.dev/guide/#scaffolding-your-first-vite-project)
