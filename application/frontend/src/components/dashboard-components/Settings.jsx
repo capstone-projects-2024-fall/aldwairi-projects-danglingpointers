@@ -17,21 +17,28 @@ export default function Settings({ isInboxOpen }) {
   const handleEditSettings = async () => {
     const store = JSON.parse(sessionStorage.getItem("user-metadata-state")) || {};
     store.state = store.state || {};
-    store.state.settings = {
-      ...store.state.settings,
-      garbageCollectorColor: garbageCollectorColor,
-    };
+
+    store.state.settings = keys.reduce((settings, key, index) => {
+      settings[key] = values[index];
+      return settings;
+    }, {});
+
     sessionStorage.setItem("user-metadata-state", JSON.stringify(store));
     setEditSettings(!editSettings);
   };
-  
+
   const handleChangeComplete = async (color) => {
     setGarbageCollectorColor(color.hex);
+
+    const updatedValues = [...values];
+    const colorIndex = keys.indexOf("garbageCollectorColor");
+    if (colorIndex !== -1) updatedValues[colorIndex] = color.hex;
+    setValues(updatedValues);
   };
 
   useEffect(() => {
-    const store = JSON.parse(sessionStorage.getItem("user-metadata-state"));
-    const settings = store.state.settings;
+    const store = JSON.parse(sessionStorage.getItem("user-metadata-state")) || {};
+    const settings = store.state?.settings || {};
 
     const sortedKeys = Object.keys(settings).sort();
     const sortedObject = {};
@@ -45,11 +52,12 @@ export default function Settings({ isInboxOpen }) {
   }, []);
 
   useEffect(() => {
-    setGarbageCollectorColor(values[0]);
-  }, [values]);
+    const colorIndex = keys.indexOf("garbageCollectorColor");
+    if (colorIndex !== -1) setGarbageCollectorColor(values[colorIndex]);
+  }, [values, keys]);
 
   return (
-    <div className="settings" style={isInboxOpen ? {display: "none"}: null}>
+    <div className="settings" style={isInboxOpen ? { display: "none" } : null}>
       <div className="settings-header flex-row-container">
         <h1>Settings</h1>
         <button

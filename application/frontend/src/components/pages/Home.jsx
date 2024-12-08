@@ -52,16 +52,22 @@ export default function Home() {
       ) : (
         <div className="preview-container">
           <LeaderboardsPreview
+            id="leaderboards-preview"
             leaderboardsSolo={leaderboardsSolo}
             setLeaderboardsSolo={setLeaderboardsSolo}
             leaderboardsVersus={leaderboardsVersus}
             setLeaderboardsVersus={setLeaderboardsVersus}
           />
           <LobbyPreview
+            id="lobby-preview"
             lobbyGames={lobbyGames}
             setLobbyGames={setLobbyGames}
           />
-          <WatchPreview watchGames={watchGames} setWatchGames={setWatchGames} />
+          <WatchPreview 
+            id="watch-preview"
+            watchGames={watchGames} 
+            setWatchGames={setWatchGames} 
+          />
         </div>
       )}
     </main>

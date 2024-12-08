@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dangling Pointers Test Report</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="text-capitalize">Dangling Pointers Test Report</h2>
+                <p class='attribute'><strong>Start Time: </strong>2024-12-07 21:06:04</p>
+                <p class='attribute'><strong>Duration: </strong>61.43 s</p>
+                <p class='attribute'><strong>Summary: </strong>Total: 5, Pass: 5</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-10 col-md-10">
+                <table class='table table-hover table-responsive'>
+                    <thead>
+                        <tr>
+                            <th>GameTest.GameTest</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class='success'>
+                            <td class="col-xs-10">test_game_controls</td>
+                            <td class="col-xs-1">
+                                <span class="label label-success" style="display:block;width:40px;">Pass</span>
+                            </td>
+                            <td class="col-xs-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-xs-9" colspan="3"><p>
+=== Starting Game Controls Test ===
+1. Starting game session...
+ Game session started
+2. Setting up game elements...
+ Game elements loaded
+3. Setting up game focus...
+ Game focus set
+4. Testing left movement...
+ Left movement verified
+5. Testing right movement...
+ Right movement verified
+=== Game Controls Test Completed Successfully ===
+
+</p>
+                            </td>
+                        </tr>
+                        <tr class='success'>
+                            <td class="col-xs-10">test_game_score</td>
+                            <td class="col-xs-1">
+                                <span class="label label-success" style="display:block;width:40px;">Pass</span>
+                            </td>
+                            <td class="col-xs-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-xs-9" colspan="3"><p>
+=== Starting Game Score Test ===
+1. Setting up test parameters...
+ Testing pause durations: [0.011, 0.012, 0.013, 0.014, 0.015]
+2. Logging in user...
+ User logged in
+
+3. Testing with pause duration: 0.011
+4. Starting game round...
+ Game round started
+5. Setting up game elements...
+ Game elements loaded
+6. Setting game focus...
+ Game focus set
+7. Waiting for pointer...
+ Initial score: Score: 0
+8. Testing score increase...
+   Attempt 1: Score remains Score: 0
+   Attempt 2: Score remains Score: 0
+   Attempt 3: Score remains Score: 0
+   Attempt 4: Score remains Score: 0
+   Attempt 5: Score remains Score: 0
+   Attempt 6: Score remains Score: 0
+   Attempt 7: Score remains Score: 0
+   Attempt 8: Score remains Score: 0
+   Attempt 9: Score remains Score: 0
+   Attempt 10: Score remains Score: 0
+   Attempt 11: Score remains Score: 0
+   Attempt 12: Score remains Score: 0
+   Attempt 13: Score remains Score: 0
+   Attempt 14: Score remains Score: 0
+ Score increased from Score: 0 to Score: 2
+=== Game Score Test Completed Successfully ===
+
+</p>
+                            </td>
+                        </tr>
+                        <tr class='success'>
+                            <td class="col-xs-10">test_powerup</td>
+                            <td class="col-xs-1">
+                                <span class="label label-success" style="display:block;width:40px;">Pass</span>
+                            </td>
+                            <td class="col-xs-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-xs-9" colspan="3"><p>
+=== Starting Power-Up Test ===
+1. Starting game session...
+ Game session started
+2. Setting up game controls...
+ Game controls configured
+3. Getting initial lives count...
+ Initial lives count: 3
+4. Triggering power-up...
+ Power-up activated
+5. Verifying lives increase...
+ Lives increased from 3 to 4
+=== Power-Up Test Completed Successfully ===
+
+</p>
+                            </td>
+                        </tr>
+                        <tr class='success'>
+                            <td class="col-xs-10">test_start_game</td>
+                            <td class="col-xs-1">
+                                <span class="label label-success" style="display:block;width:40px;">Pass</span>
+                            </td>
+                            <td class="col-xs-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-xs-9" colspan="3"><p>
+=== Starting Game Initialization Test ===
+1. Starting game session...
+ Game session started
+2. Getting initial stack state...
+ Initial position captured
+3. Waiting for memory movement...
+ Memory movement detected
+4. Verifying position change...
+ Position change verified
+=== Game Initialization Test Completed Successfully ===
+
+</p>
+                            </td>
+                        </tr>
+                        <tr class='success'>
+                            <td class="col-xs-10">test_versus_gameplay</td>
+                            <td class="col-xs-1">
+                                <span class="label label-success" style="display:block;width:40px;">Pass</span>
+                            </td>
+                            <td class="col-xs-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-xs-9" colspan="3"><p>
+=== Starting Versus Gameplay Test ===
+1. Setting up test environment...
+ Browser instances created
+2. Logging in Player 1 (Bobby)...
+ Player 1 logged in
+3. Navigating to home screen for Player 1...
+ Player 1 at home screen
+4. Logging in Player 2 (Alicey)...
+ Player 2 logged in
+5. Starting versus game...
+ Game created by Player 1
+6. Player 2 joining game...
+ Player 2 joined game
+7. Setting up game for both players...
+   Setting up Player 1...
+ Player 1 setup complete
+   Setting up Player 2...
+ Player 2 setup complete
+8. Verifying pointers for both players...
+ Both players' pointers verified
+=== Versus Gameplay Test Completed Successfully ===
+
+Cleaning up test environment...
+ Test environment cleaned up
+</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                Total: 5, Pass: 5 -- Duration: 61.43 s
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('td').on('click', '.btn', function(e){
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                var $this = $(this);
+                var $nextRow = $this.closest('tr').next('tr');
+                $nextRow.slideToggle("fast");
+                $this.text(function(i, text){
+                    if (text === 'View') {
+                        return 'Hide';
+                    } else {
+                        return 'View';
+                    };
+                });
+            });
+        });
+    </script>
+</body>
+</html
